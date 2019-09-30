@@ -1,7 +1,7 @@
 const express = require("express");
-const router = express.Router();
-
 const uuid = require("uuid");
+const config = require("config");
+const router = express.Router();
 
 const races = [
   {
