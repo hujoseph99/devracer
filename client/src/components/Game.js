@@ -4,7 +4,10 @@ import TextField from "./TextField";
 class Game extends Component {
   render() {
     return (
-      <div className="my-auto">
+      <div
+        className="d-flex justify-content-center"
+        style={{ marginTop: "3rem" }}
+      >
         <TextField />
       </div>
     );
