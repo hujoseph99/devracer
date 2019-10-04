@@ -1,18 +1,19 @@
 import React, { Component } from "react";
 import Card from "react-bootstrap/Card";
 import "./css/textField.css";
-import axios from "axios";
+
+import { getRace } from "../actions/raceAction";
+import { connect } from "react-redux";
+import PropTypes from "prop-types";
 
 class TextField extends Component {
-  state = {
-    text: ""
+  static propTypes = {
+    snippet: PropTypes.string.isRequired,
+    getRace: PropTypes.func.isRequired
   };
 
   componentDidMount() {
-    axios
-      .get("/api/race")
-      .then(res => this.setState({ text: res.data.snippet }))
-      .catch(err => console.log(err));
+    this.props.getRace();
   }
 
   render() {
@@ -20,7 +21,7 @@ class TextField extends Component {
       <div>
         <Card style={{ width: "40rem" }}>
           <Card.Body className="gameField">
-            <Card.Text>{this.state.text}</Card.Text>
+            <Card.Text>{this.props.snippet}</Card.Text>
           </Card.Body>
         </Card>
       </div>
@@ -28,4 +29,11 @@ class TextField extends Component {
   }
 }
 
-export default TextField;
+const mapStateToProps = state => ({
+  snippet: state.race.snippet
+});
+
+export default connect(
+  mapStateToProps,
+  { getRace }
+)(TextField);
