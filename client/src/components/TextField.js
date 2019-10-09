@@ -18,7 +18,7 @@ class TextField extends Component {
 
   render() {
     return (
-      <div>
+      <div className="mb-3">
         <Card style={{ width: "40rem" }}>
           <Card.Body className="gameField">
             <Card.Text>{this.props.snippet}</Card.Text>
