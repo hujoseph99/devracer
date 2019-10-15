@@ -1,7 +1,16 @@
-import { GET_RACE } from "../actions/types";
+import {
+  GET_RACE,
+  INPUT_CORRECT,
+  INPUT_INCORRECT,
+  INPUT_FINISHED_WORD
+} from "../actions/types";
 
 const initialState = {
-  snippet: ""
+  snippet: "",
+  correctEnd: 0,
+  incorrectStart: 0,
+  incorrectEnd: 0,
+  currWordStart: 0
 };
 
 export default function(state = initialState, action) {
@@ -10,6 +19,22 @@ export default function(state = initialState, action) {
       return {
         ...state,
         snippet: action.payload.snippet
+      };
+    case INPUT_CORRECT:
+      return {
+        ...state,
+        correctEnd: action.payload.end
+      };
+    case INPUT_INCORRECT:
+      return {
+        ...state,
+        incorrectStart: action.payload.start,
+        incorrectEnd: action.payload.end
+      };
+    case INPUT_FINISHED_WORD:
+      return {
+        ...state,
+        currWordStart: action.payload.newStart
       };
     default:
       return state;

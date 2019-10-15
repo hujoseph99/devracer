@@ -9,6 +9,10 @@ import PropTypes from "prop-types";
 class TextField extends Component {
   static propTypes = {
     snippet: PropTypes.string.isRequired,
+    correctEnd: PropTypes.number.isRequired,
+    incorrectStart: PropTypes.number.isRequired,
+    incorrectEnd: PropTypes.number.isRequired,
+    currWordStart: PropTypes.number.isRequired,
     getRace: PropTypes.func.isRequired
   };
 
@@ -17,11 +21,22 @@ class TextField extends Component {
   }
 
   render() {
+    const successText = this.props.snippet.slice(0, this.props.correctEnd);
+    const failText = this.props.snippet.slice(
+      this.props.incorrectStart,
+      this.props.incorrectEnd
+    );
+    const restText = this.props.snippet.slice(this.props.incorrectStart);
+
     return (
       <div className="mb-3">
         <Card style={{ width: "40rem" }}>
           <Card.Body className="gameField">
-            <Card.Text>{this.props.snippet}</Card.Text>
+            <Card.Text>
+              <span className="text-success">{successText}</span>
+              <span className="bg-danger">{failText}</span>
+              {restText}
+            </Card.Text>
           </Card.Body>
         </Card>
       </div>
@@ -30,7 +45,7 @@ class TextField extends Component {
 }
 
 const mapStateToProps = state => ({
-  snippet: state.race.snippet
+  ...state.race
 });
 
 export default connect(
