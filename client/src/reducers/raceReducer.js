@@ -23,7 +23,9 @@ export default function(state = initialState, action) {
     case INPUT_CORRECT:
       return {
         ...state,
-        correctEnd: action.payload.end
+        correctEnd: action.payload.end,
+        incorrectStart: action.payload.end,
+        incorrectEnd: action.payload.end
       };
     case INPUT_INCORRECT:
       return {
@@ -34,7 +36,10 @@ export default function(state = initialState, action) {
     case INPUT_FINISHED_WORD:
       return {
         ...state,
-        currWordStart: action.payload.newStart
+        currWordStart: action.payload.newStart,
+        correctEnd: action.payload.newStart,
+        incorrectStart: action.payload.newStart,
+        incorrectEnd: action.payload.newStart
       };
     default:
       return state;

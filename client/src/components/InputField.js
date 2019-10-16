@@ -21,16 +21,56 @@ class InputField extends Component {
     inputFinishedWord: PropTypes.func.isRequired
   };
 
-  componentDidMount() {
-    this.props.inputCorrect(10);
-    this.props.inputIncorrect(10, 15);
-  }
+  firstDifference = (str1, str2) => {
+    var shorterLength = Math.min(str1.length, str2.length);
+
+    for (var i = 0; i < shorterLength; i++) {
+      if (str1[i] !== str2[i]) return i;
+    }
+
+    if (str1.length !== str2.length) return shorterLength;
+
+    return -1;
+  };
+
+  handleChange = () => {
+    var currWordStart = this.props.currWordStart;
+    var currInput = document.getElementById("formCurrWord").value;
+    var targetInput = this.props.snippet.slice(
+      currWordStart,
+      currWordStart + currInput.length
+    );
+
+    var difference = this.firstDifference(currInput, targetInput);
+
+    // No difference
+    if (difference === -1) {
+      // end of word
+      if (currInput.slice(-1) === " ") {
+        this.props.inputFinishedWord(currWordStart + currInput.length);
+        document.getElementById("formCurrWord").value = "";
+      } else {
+        this.props.inputCorrect(currWordStart + currInput.length);
+      }
+    } else {
+      this.props.inputCorrect(currWordStart + difference);
+      this.props.inputIncorrect(
+        currWordStart + difference,
+        currWordStart + currInput.length
+      );
+    }
+  };
 
   render() {
     return (
       <div>
         <InputGroup className="mb-3" style={{ width: "40rem" }}>
-          <FormControl id="formCurrWord" placeholder="Enter text" type="text" />
+          <FormControl
+            id="formCurrWord"
+            placeholder="Enter text"
+            type="text"
+            onChange={this.handleChange}
+          />
         </InputGroup>
       </div>
     );

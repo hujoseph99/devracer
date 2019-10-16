@@ -26,7 +26,7 @@ class TextField extends Component {
       this.props.incorrectStart,
       this.props.incorrectEnd
     );
-    const restText = this.props.snippet.slice(this.props.incorrectStart);
+    const restText = this.props.snippet.slice(this.props.incorrectEnd);
 
     return (
       <div className="mb-3">
