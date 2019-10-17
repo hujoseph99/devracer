@@ -6,7 +6,10 @@ import { InputGroup, FormControl } from "react-bootstrap";
 import {
   inputCorrect,
   inputIncorrect,
-  inputFinishedWord
+  inputFinishedWord,
+  updateWPM,
+  setStartTime,
+  setEndTime
 } from "../actions/raceAction";
 
 class InputField extends Component {
@@ -16,9 +19,16 @@ class InputField extends Component {
     incorrectStart: PropTypes.number.isRequired,
     incorrectEnd: PropTypes.number.isRequired,
     currWordStart: PropTypes.number.isRequired,
+    wpm: PropTypes.number.isRequired,
+    startTime: PropTypes.number.isRequired,
+    endTime: PropTypes.number.isRequired,
+    wordsTyped: PropTypes.number.isRequired,
     inputCorrect: PropTypes.func.isRequired,
     inputIncorrect: PropTypes.func.isRequired,
-    inputFinishedWord: PropTypes.func.isRequired
+    inputFinishedWord: PropTypes.func.isRequired,
+    updateWPM: PropTypes.func.isRequired,
+    setStartTime: PropTypes.func.isRequired,
+    setEndTime: PropTypes.func.isRequired
   };
 
   firstDifference = (str1, str2) => {
@@ -33,6 +43,21 @@ class InputField extends Component {
     return -1;
   };
 
+  // TODO: change this implementation so maybe this is called every second??
+  updateWPM = hasEnded => {
+    var currDate = new Date().getTime();
+    if (!this.props.startTime) {
+      // sets the start time when the user starts typing in milliseconds from EPOCH
+      this.props.setStartTime(currDate);
+    } else if (hasEnded) {
+      this.props.setEndTime(currDate);
+    } else {
+      var secondsElapsed = (currDate - this.props.startTime) / 1000;
+      var wpm = Math.round((this.props.wordsTyped / secondsElapsed) * 60);
+      this.props.updateWPM(wpm);
+    }
+  };
+
   handleChange = () => {
     var currWordStart = this.props.currWordStart;
     var currInput = document.getElementById("formCurrWord").value;
@@ -42,6 +67,8 @@ class InputField extends Component {
     );
 
     var difference = this.firstDifference(currInput, targetInput);
+
+    this.updateWPM(false);
 
     // No difference
     if (difference === -1) {
@@ -83,5 +110,12 @@ const mapStateToProps = state => ({
 
 export default connect(
   mapStateToProps,
-  { inputCorrect, inputIncorrect, inputFinishedWord }
+  {
+    inputCorrect,
+    inputIncorrect,
+    inputFinishedWord,
+    updateWPM,
+    setStartTime,
+    setEndTime
+  }
 )(InputField);

@@ -30,6 +30,7 @@ class TextField extends Component {
 
     return (
       <div className="mb-3">
+        <p>WPM: {this.props.wpm}</p>
         <Card style={{ width: "40rem" }}>
           <Card.Body className="gameField">
             <Card.Text>

@@ -2,7 +2,10 @@ import {
   GET_RACE,
   INPUT_CORRECT,
   INPUT_INCORRECT,
-  INPUT_FINISHED_WORD
+  INPUT_FINISHED_WORD,
+  UPDATE_WPM,
+  SET_START_TIME,
+  SET_END_TIME
 } from "../actions/types";
 
 const initialState = {
@@ -10,7 +13,11 @@ const initialState = {
   correctEnd: 0,
   incorrectStart: 0,
   incorrectEnd: 0,
-  currWordStart: 0
+  currWordStart: 0,
+  wpm: 0,
+  startTime: 0,
+  endTime: 0,
+  wordsTyped: 0
 };
 
 export default function(state = initialState, action) {
@@ -39,7 +46,23 @@ export default function(state = initialState, action) {
         currWordStart: action.payload.newStart,
         correctEnd: action.payload.newStart,
         incorrectStart: action.payload.newStart,
-        incorrectEnd: action.payload.newStart
+        incorrectEnd: action.payload.newStart,
+        wordsTyped: state.wordsTyped + 1
+      };
+    case UPDATE_WPM:
+      return {
+        ...state,
+        wpm: action.payload.newWPM
+      };
+    case SET_START_TIME:
+      return {
+        ...state,
+        startTime: action.payload.startTime
+      };
+    case SET_END_TIME:
+      return {
+        ...state,
+        endTime: action.payload.endTime
       };
     default:
       return state;

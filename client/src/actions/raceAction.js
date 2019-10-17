@@ -3,7 +3,10 @@ import {
   GET_RACE,
   INPUT_CORRECT,
   INPUT_INCORRECT,
-  INPUT_FINISHED_WORD
+  INPUT_FINISHED_WORD,
+  UPDATE_WPM,
+  SET_START_TIME,
+  SET_END_TIME
 } from "./types";
 
 // getRace gets a single race from backend
@@ -35,10 +38,34 @@ export const inputIncorrect = (start, end) => dispatch => {
   });
 };
 
-// updates the state to reflect the new current word (i.e., called when a word is completed)
+// updates the state to reflect the new current word (e.g., called when a word is completed)
 export const inputFinishedWord = newStart => dispatch => {
   dispatch({
     type: INPUT_FINISHED_WORD,
     payload: { newStart }
+  });
+};
+
+// updates the state to reflect the new current wpm
+export const updateWPM = newWPM => dispatch => {
+  dispatch({
+    type: UPDATE_WPM,
+    payload: { newWPM }
+  });
+};
+
+// updates start time
+export const setStartTime = startTime => dispatch => {
+  dispatch({
+    type: SET_START_TIME,
+    payload: { startTime }
+  });
+};
+
+// updates end time
+export const setEndTime = endTime => dispatch => {
+  dispatch({
+    type: SET_END_TIME,
+    payload: { endTime }
   });
 };
