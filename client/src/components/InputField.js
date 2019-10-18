@@ -31,6 +31,22 @@ class InputField extends Component {
     setEndTime: PropTypes.func.isRequired
   };
 
+  componentDidMount() {
+    const interval = setInterval(this.updateWPM, 2000);
+    this.setState({ interval });
+  }
+
+  setStartTime = () => {
+    if (!this.props.startTime) {
+      // sets the start time when the user starts typing in milliseconds from EPOCH
+      this.props.setStartTime(new Date().getTime());
+    }
+  };
+
+  clearInput = () => {
+    document.getElementById("formCurrWord").value = "";
+  };
+
   firstDifference = (str1, str2) => {
     var shorterLength = Math.min(str1.length, str2.length);
 
@@ -43,15 +59,10 @@ class InputField extends Component {
     return -1;
   };
 
-  // TODO: change this implementation so maybe this is called every second??
-  updateWPM = hasEnded => {
-    var currDate = new Date().getTime();
-    if (!this.props.startTime) {
-      // sets the start time when the user starts typing in milliseconds from EPOCH
-      this.props.setStartTime(currDate);
-    } else if (hasEnded) {
-      this.props.setEndTime(currDate);
-    } else {
+  updateWPM = () => {
+    if (this.props.startTime) {
+      var currDate = new Date().getTime();
+
       var secondsElapsed = (currDate - this.props.startTime) / 1000;
       var wpm = Math.round((this.props.wordsTyped / secondsElapsed) * 60);
       this.props.updateWPM(wpm);
@@ -66,16 +77,26 @@ class InputField extends Component {
       currWordStart + currInput.length
     );
 
+    this.setStartTime();
     var difference = this.firstDifference(currInput, targetInput);
-
-    this.updateWPM(false);
 
     // No difference
     if (difference === -1) {
+      // finish condition
+      if (
+        this.props.currWordStart + currInput.length ===
+        this.props.snippet.length
+      ) {
+        this.updateWPM();
+        this.props.setEndTime(new Date().getTime());
+        clearInterval(this.state.interval);
+        this.clearInput();
+      }
+
       // end of word
       if (currInput.slice(-1) === " ") {
         this.props.inputFinishedWord(currWordStart + currInput.length);
-        document.getElementById("formCurrWord").value = "";
+        this.clearInput();
       } else {
         this.props.inputCorrect(currWordStart + currInput.length);
       }
