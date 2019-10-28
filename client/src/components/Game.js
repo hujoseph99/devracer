@@ -5,9 +5,13 @@ import io from "socket.io-client";
 
 class Game extends Component {
   componentDidMount() {
-    var socket = io.connect("http://localhost:5000");
-    socket.on("test", function(data) {
-      console.log(data);
+    let rand = Math.floor(Math.random() * 10);
+    var socket = io.connect("http://localhost:5000", {
+      query: {
+        room: rand >= 3 ? "244" : "122",
+        username: rand >= 5 ? "John" : "Dave",
+        wpm: rand >= 7 ? "120" : "100"
+      }
     });
   }
 
