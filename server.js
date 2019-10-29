@@ -8,6 +8,7 @@ app.use(express.json());
 
 // Configure routes
 app.use("/api/race", require("./routes/api/race"));
+app.use("/api/auth", require("./routes/api/auth"));
 
 mongoose
   .connect(config.get("dbUri"), {

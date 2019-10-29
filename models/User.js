@@ -2,14 +2,14 @@ const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 const schemaTypes = mongoose.Schema.Types;
 
-const userSchema = new Schema({
-  name: {
+const UserSchema = new Schema({
+  username: {
     type: schemaTypes.String,
     required: true
   },
   wpm: {
     type: schemaTypes.Decimal128,
-    required: true
+    default: 0
   },
   email: {
     type: schemaTypes.String,
@@ -25,4 +25,4 @@ const userSchema = new Schema({
   }
 });
 
-module.exports = userSchema;
+module.exports = User = mongoose.model("users", UserSchema);
