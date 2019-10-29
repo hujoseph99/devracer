@@ -10,7 +10,7 @@ import {
   updateWPM,
   setStartTime,
   setEndTime
-} from "../actions/raceAction";
+} from "../../actions/raceAction";
 
 class InputField extends Component {
   static propTypes = {

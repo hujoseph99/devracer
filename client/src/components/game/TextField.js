@@ -1,8 +1,8 @@
 import React, { Component } from "react";
 import Card from "react-bootstrap/Card";
-import "./css/textField.css";
+import "../css/textField.css";
 
-import { getRace } from "../actions/raceAction";
+import { getRace } from "../../actions/raceAction";
 import { connect } from "react-redux";
 import PropTypes from "prop-types";
 

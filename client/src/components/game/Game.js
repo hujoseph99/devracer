@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import TextField from "./TextField";
 import InputField from "./InputField";
 
-import { getRace } from "../actions/raceAction";
+import { getRace } from "../../actions/raceAction";
 import { connect } from "react-redux";
 import PropTypes from "prop-types";
 
