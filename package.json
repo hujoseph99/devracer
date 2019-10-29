@@ -11,8 +11,10 @@
   "author": "Joseph Hu",
   "license": "MIT",
   "dependencies": {
+    "bcryptjs": "^2.4.3",
     "config": "^3.2.4",
     "express": "^4.17.1",
+    "jsonwebtoken": "^8.5.1",
     "mongoose": "^5.7.7",
     "socket.io": "^2.3.0",
     "uuid": "^3.3.3"
