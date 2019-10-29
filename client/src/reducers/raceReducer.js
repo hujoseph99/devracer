@@ -10,6 +10,7 @@ import {
 
 const initialState = {
   snippet: "",
+  roomNum: 0,
   correctEnd: 0,
   incorrectStart: 0,
   incorrectEnd: 0,
@@ -25,6 +26,7 @@ export default function(state = initialState, action) {
     case GET_RACE:
       return {
         ...state,
+        roomNum: action.payload.roomNum,
         snippet: action.payload.snippet
       };
     case INPUT_CORRECT:

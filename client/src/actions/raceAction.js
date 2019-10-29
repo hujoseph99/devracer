@@ -13,12 +13,12 @@ import {
 export const getRace = () => dispatch => {
   axios
     .get("/api/race")
-    .then(res =>
+    .then(res => {
       dispatch({
         type: GET_RACE,
         payload: res.data
-      })
-    )
+      });
+    })
     .catch(err => console.log(err));
 };
 

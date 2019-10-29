@@ -9,16 +9,13 @@ import PropTypes from "prop-types";
 class TextField extends Component {
   static propTypes = {
     snippet: PropTypes.string.isRequired,
+    roomNum: PropTypes.string.isRequired,
     correctEnd: PropTypes.number.isRequired,
     incorrectStart: PropTypes.number.isRequired,
     incorrectEnd: PropTypes.number.isRequired,
     currWordStart: PropTypes.number.isRequired,
     getRace: PropTypes.func.isRequired
   };
-
-  componentDidMount() {
-    this.props.getRace();
-  }
 
   render() {
     const successText = this.props.snippet.slice(0, this.props.correctEnd);
