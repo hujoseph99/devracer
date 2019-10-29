@@ -2,10 +2,13 @@ const express = require("express");
 const router = express.Router();
 const RaceSnippet = require("../../models/RaceSnippet");
 
-// TODO: Need to ensure that all members of the same lobby have the same snippet
 router.get("/", (req, res) => {
   var room = require("../../multiplayer/multiplayer").getRoom();
 
+  // have to first find an open room to figure out what snippet to return
+  // if snippet already exists within that room, just return it
+  // otherwise, have to get a random snippet from db return that and add the snippet
+  //  to the room
   if (room["room"].hasOwnProperty("snippet")) {
     res.json({ roomNum: room.roomNum, snippet: room.room.snippet });
   } else {

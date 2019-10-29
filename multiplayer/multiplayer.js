@@ -1,5 +1,16 @@
+// expected rooms layout:
+// {
+//   roomNum: {
+//     isOpen: true/false,
+//     users: [{
+//       username,
+//       wpm
+//     }]
+//   }
+// }
 var rooms = {};
 
+// function to deal with websocket logic
 startSocket = server => {
   const io = require("socket.io").listen(server);
 
@@ -13,6 +24,12 @@ startSocket = server => {
   });
 };
 
+// checks rooms and gets an available room number
+// returns:
+// {
+//   room: object corresponding to given roomNum object in "rooms" object above,
+//   roomNum: a number
+// }
 getRoom = () => {
   for (var prop in rooms) {
     if (rooms[prop].hasOwnProperty("isOpen")) {
@@ -24,7 +41,6 @@ getRoom = () => {
     }
   }
   // there is no open room, create a new one -- use random number from 0 - 100
-  // TODO: Need to disallow usernames of "isOpen"
   let newRoom = Math.floor(Math.random() * 100);
   rooms[newRoom] = {
     isOpen: true
