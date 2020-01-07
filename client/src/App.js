@@ -1,5 +1,5 @@
 import React from "react";
-import "./App.css";
+import "./css/App.css";
 
 import AppNavbar from "./components/navbar/AppNavbar";
 import Game from "./components/game/Game";
