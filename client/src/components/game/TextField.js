@@ -2,7 +2,6 @@ import React, { Component } from "react";
 import Card from "react-bootstrap/Card";
 import "../../css/textField.css";
 
-import { getRace } from "../../actions/raceAction";
 import { connect } from "react-redux";
 import PropTypes from "prop-types";
 
@@ -13,7 +12,6 @@ class TextField extends Component {
     incorrectStart: PropTypes.number.isRequired,
     incorrectEnd: PropTypes.number.isRequired,
     currWordStart: PropTypes.number.isRequired,
-    getRace: PropTypes.func.isRequired
   };
 
   render() {
@@ -47,7 +45,4 @@ const mapStateToProps = state => ({
   ...state.race
 });
 
-export default connect(
-  mapStateToProps,
-  { getRace }
-)(TextField);
+export default connect(mapStateToProps, null)(TextField);
