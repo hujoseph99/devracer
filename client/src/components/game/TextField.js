@@ -18,12 +18,13 @@ class TextField extends Component {
   };
 
   render() {
-    const successText = this.props.snippet.slice(0, this.props.correctEnd);
-    const failText = this.props.snippet.slice(
+    let snippet = this.props.snippet;
+    const successText = snippet ? snippet.slice(0, this.props.correctEnd) : "";
+    const failText = snippet ? snippet.slice(
       this.props.incorrectStart,
       this.props.incorrectEnd
-    );
-    const restText = this.props.snippet.slice(this.props.incorrectEnd);
+    ) : "";
+    const restText = snippet ? snippet.slice(this.props.incorrectEnd) : "";
 
     return (
       <div className="mb-3">

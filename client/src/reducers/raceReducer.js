@@ -1,5 +1,5 @@
 import {
-  GET_RACE,
+  UPDATE_RACE,
   INPUT_CORRECT,
   INPUT_INCORRECT,
   INPUT_FINISHED_WORD,
@@ -18,16 +18,22 @@ const initialState = {
   wpm: 0,
   startTime: 0,
   endTime: 0,
-  wordsTyped: 0
+  wordsTyped: 0,
+  inRace: false,
+  inProgress: false,
+  isFinished: false,
+  players: []
 };
 
 export default function(state = initialState, action) {
   switch (action.type) {
-    case GET_RACE:
+    case UPDATE_RACE:
       return {
         ...state,
-        roomNum: action.payload.roomNum,
-        snippet: action.payload.snippet
+        snippet: action.payload.snippet.snippet,
+        players: action.payload.players,
+        inProgress: action.payload.inProgress,
+        isFinished: action.payload.isFinished
       };
     case INPUT_CORRECT:
       return {
