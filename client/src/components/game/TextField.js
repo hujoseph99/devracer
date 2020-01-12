@@ -9,7 +9,6 @@ import PropTypes from "prop-types";
 class TextField extends Component {
   static propTypes = {
     snippet: PropTypes.string.isRequired,
-    roomNum: PropTypes.string.isRequired,
     correctEnd: PropTypes.number.isRequired,
     incorrectStart: PropTypes.number.isRequired,
     incorrectEnd: PropTypes.number.isRequired,
@@ -44,6 +43,7 @@ class TextField extends Component {
 }
 
 const mapStateToProps = state => ({
+  snippet: state.snippet,
   ...state.race
 });
 

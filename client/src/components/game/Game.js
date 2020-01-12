@@ -10,7 +10,6 @@ import io from "socket.io-client";
 
 class Game extends Component {
   static propTypes = {
-    roomNum: PropTypes.string.isRequired,
     updateRace: PropTypes.func.isRequired
   };
 
@@ -27,7 +26,7 @@ class Game extends Component {
   // TODO: This will be called every time props updated.  Need to change it so
   //  that it won't keep connecting every time props are updated
   componentDidUpdate() {
-      // io.connect("localhost:5000/")
+      // io.connect("localhost:5000/");
       // if (this.props.roomNum) {
       //   var room = io.connect("localhost:5000/" + this.props.roomNum, {
       //     query: {

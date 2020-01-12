@@ -45,7 +45,7 @@ startSocket = server => {
 //   roomNum: a number
 // }
 getRoom = () => {
-  // for (var prop in rooms) {
+  // for (var prop in rooms) 
   //   if (rooms[prop].hasOwnProperty("isOpen")) {
   //     if (rooms[prop]["isOpen"]) {
   //       return { room: rooms[prop], roomNum: prop };
