@@ -26,15 +26,16 @@ startSocket = server => {
   const io = require("socket.io").listen(server);
 
   io.on("connection", socket => {
-    var query = socket.handshake["query"];
-    if (query.username) {
-      room.players.push({
-        username: query.username,
-        isParticipant: !room.inProgress,
-        wpm: 0
-      });
-      socket.emit("update", room);
-    }
+    socket.on("new_connection", data => {
+      if (data.username) {
+        room.players.push({
+          username: data.username,
+          isParticipant: !room.inProgress,
+          wpm: 0
+        });
+        io.emit("update", room);
+      }
+    });
   });
 };
 

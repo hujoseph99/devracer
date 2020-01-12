@@ -14,12 +14,15 @@ class Game extends Component {
   };
 
   componentDidMount() {
-    let socket = io.connect("localhost:5000/", { 
-      query: { 
-        username: Math.floor(Math.random() * 20) > 10 ? "John" : "Doe"
-      }
+    let socket = io("localhost:5000/");
+
+    socket.emit("new_connection", { 
+      username: Math.floor(Math.random() * 20) > 10 ? "John" : "Doe"
     });
-    socket.on("update", room => this.props.updateRace(room));
+
+    socket.on("update", room => {
+      this.props.updateRace(room);
+    });
     // this.props.getRace(;
   }
 

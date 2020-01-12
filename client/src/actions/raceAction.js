@@ -9,6 +9,7 @@ import {
 } from "./types";
 
 export const updateRace = room => dispatch => {
+  console.log(room);
   dispatch({
     type: UPDATE_RACE,
     payload: room
