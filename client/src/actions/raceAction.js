@@ -9,25 +9,11 @@ import {
 } from "./types";
 
 export const updateRace = room => dispatch => {
-  console.log(room);
   dispatch({
     type: UPDATE_RACE,
     payload: room
   })
 }
-
-// getRace gets a single race from backend
-export const getRace = () => dispatch => {
-  // axios
-  //   .get("/api/race")
-  //   .then(res => {
-  //     dispatch({
-  //       type: GET_RACE,
-  //       payload: res.data
-  //     });
-  //   })
-  //   .catch(err => console.log(err));
-};
 
 // updates state to reflect the new ending index of the correct portion of the snippet
 export const inputCorrect = end => dispatch => {

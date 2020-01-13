@@ -1,4 +1,7 @@
 import React, { Component } from "react";
+
+import { login } from "../../actions/userActions";
+
 import Modal from "react-bootstrap/Modal";
 import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
@@ -21,6 +24,10 @@ class LoginModal extends Component {
     this.setState({
       [e.target.id]: e.target.value
     });
+  };
+
+  handleSubmit = () => {
+    this.props.login(this.state.username, this.state.password);
   };
 
   render() {
@@ -50,7 +57,7 @@ class LoginModal extends Component {
                   onChange={this.handleChange}
                 />
               </Form.Group>
-              <Button variant="primary" type="submit">
+              <Button variant="primary" onClick={this.handleSubmit}>
                 Login
               </Button>
             </Form>
@@ -63,4 +70,4 @@ class LoginModal extends Component {
 
 const mapStateToProps = state => ({});
 
-export default connect(mapStateToProps, {})(LoginModal);
+export default connect(mapStateToProps, { login })(LoginModal);

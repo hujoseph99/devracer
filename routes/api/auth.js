@@ -41,7 +41,8 @@ router.post("/login", (req, res) => {
             user: {
               _id: user._id,
               username: user.username,
-              wpm: user.wpm
+              nickname: user.nickname,
+              wpm: parseInt(user.wpm)
             }
           });
         }

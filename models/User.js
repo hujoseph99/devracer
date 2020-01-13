@@ -7,6 +7,10 @@ const UserSchema = new Schema({
     type: schemaTypes.String,
     required: true
   },
+  nickname: {
+    type: schemaTypes.String,
+    required: true
+  },
   wpm: {
     type: schemaTypes.Decimal128,
     default: 0
