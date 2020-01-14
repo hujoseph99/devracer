@@ -10,7 +10,7 @@ import {
   updateWPM,
   setStartTime,
   setEndTime
-} from "../../actions/raceAction";
+} from "../../actions/raceActions";
 
 class InputField extends Component {
   static propTypes = {
@@ -129,14 +129,11 @@ const mapStateToProps = state => ({
   ...state.race
 });
 
-export default connect(
-  mapStateToProps,
-  {
-    inputCorrect,
-    inputIncorrect,
-    inputFinishedWord,
-    updateWPM,
-    setStartTime,
-    setEndTime
-  }
-)(InputField);
+export default connect(mapStateToProps, {
+  inputCorrect,
+  inputIncorrect,
+  inputFinishedWord,
+  updateWPM,
+  setStartTime,
+  setEndTime
+})(InputField);

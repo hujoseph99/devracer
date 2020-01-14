@@ -8,6 +8,7 @@ import {
   REGISTER_SUCCESS,
   REGISTER_FAIL
 } from "./types";
+import { returnErrors } from "./errorActions";
 import axios from "axios";
 
 // Login User
@@ -31,12 +32,11 @@ export const login = (username, password) => dispatch => {
       })
     )
     .catch(err => {
-      console.log(err.response.data);
-      // dispatch(
-      //   returnErrors(err.response.data, err.response.status, "LOGIN_FAIL")
-      // );
-      // dispatch({
-      //   type: LOGIN_FAIL
-      // });
+      dispatch(
+        returnErrors(err.response.data, err.response.status, "LOGIN_FAIL")
+      );
+      dispatch({
+        type: LOGIN_FAIL
+      });
     });
 };

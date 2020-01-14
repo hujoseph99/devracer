@@ -1,17 +1,53 @@
 import React, { Component } from "react";
 
 import { login } from "../../actions/userActions";
+import { clearErrors } from "../../actions/errorActions";
 
+import Alert from "react-bootstrap/Alert";
 import Modal from "react-bootstrap/Modal";
 import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
 import { connect } from "react-redux";
+import PropTypes from "prop-types";
 
 class LoginModal extends Component {
   state = {
-    show: true,
+    show: false,
     username: "",
     password: ""
+  };
+
+  static propTypes = {
+    error: PropTypes.object.isRequired,
+    login: PropTypes.func.isRequired,
+    clearErrors: PropTypes.func.isRequired
+  };
+
+  componentDidUpdate(prevProps) {
+    const { isAuthenticated, error } = this.props;
+    if (error !== prevProps.error) {
+      // Check for register error
+      if (error.id === "LOGIN_FAIL") {
+        this.setState({ msg: error.msg.msg });
+      } else {
+        this.setState({ msg: null });
+      }
+    }
+
+    // If authenticated, close modal
+    if (this.state.show) {
+      if (isAuthenticated) {
+        this.toggle();
+      }
+    }
+  }
+
+  toggle = () => {
+    // Clear errors
+    this.props.clearErrors();
+    this.setState({
+      show: !this.state.show
+    });
   };
 
   handleShow = () => {
@@ -39,6 +75,9 @@ class LoginModal extends Component {
 
         <Modal show={this.state.show}>
           <Modal.Body>
+            {this.state.msg ? (
+              <Alert variant="danger">{this.state.msg}</Alert>
+            ) : null}
             <Form>
               <Form.Group controlId="username">
                 <Form.Label>Username</Form.Label>
@@ -68,6 +107,9 @@ class LoginModal extends Component {
   }
 }
 
-const mapStateToProps = state => ({});
+const mapStateToProps = state => ({
+  error: state.error,
+  isAuthenticated: state.user.isAuthenticated
+});
 
-export default connect(mapStateToProps, { login })(LoginModal);
+export default connect(mapStateToProps, { login, clearErrors })(LoginModal);

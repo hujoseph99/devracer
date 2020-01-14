@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import TextField from "./TextField";
 import InputField from "./InputField";
 
-import { updateRace } from "../../actions/raceAction";
+import { updateRace } from "../../actions/raceActions";
 import { connect } from "react-redux";
 import PropTypes from "prop-types";
 
@@ -16,7 +16,7 @@ class Game extends Component {
   componentDidMount() {
     let socket = io("localhost:5000/");
 
-    socket.emit("new_connection", { 
+    socket.emit("new_connection", {
       username: Math.floor(Math.random() * 20) > 10 ? "John" : "Doe"
     });
 
@@ -29,17 +29,17 @@ class Game extends Component {
   // TODO: This will be called every time props updated.  Need to change it so
   //  that it won't keep connecting every time props are updated
   componentDidUpdate() {
-      // io.connect("localhost:5000/");
-      // if (this.props.roomNum) {
-      //   var room = io.connect("localhost:5000/" + this.props.roomNum, {
-      //     query: {
-      //       username: Math.floor(Math.random() * 20) > 10 ? "John" : "Doe",
-      //     }
-      //   });
-      //   room.on("updateWPM", room => {
-      //     console.log(room);
-      //   });
-      // }
+    // io.connect("localhost:5000/");
+    // if (this.props.roomNum) {
+    //   var room = io.connect("localhost:5000/" + this.props.roomNum, {
+    //     query: {
+    //       username: Math.floor(Math.random() * 20) > 10 ? "John" : "Doe",
+    //     }
+    //   });
+    //   room.on("updateWPM", room => {
+    //     console.log(room);
+    //   });
+    // }
   }
 
   render() {
@@ -61,7 +61,4 @@ const mapStateToProps = state => ({
   roomNum: state.race.roomNum
 });
 
-export default connect(
-  mapStateToProps,
-  { updateRace }
-)(Game);
+export default connect(mapStateToProps, { updateRace })(Game);

@@ -1,5 +1,10 @@
 import { combineReducers } from "redux";
-import race from "./raceReducer";
-import user from "./userReducer";
+import raceReducer from "./raceReducer";
+import userReducer from "./userReducer";
+import errorReducer from "./errorReducer";
 
-export default combineReducers({ race, user });
+export default combineReducers({
+  race: raceReducer,
+  user: userReducer,
+  error: errorReducer
+});
