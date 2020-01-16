@@ -19,5 +19,10 @@ export const LOGOUT_SUCCESS = "LOGOUT_SUCCESS";
 export const REGISTER_SUCCESS = "REGISTER_SUCCESS";
 export const REGISTER_FAIL = "REGISTER_FAIL";
 
+// Error actions
 export const GET_ERRORS = "GET_ERRORS";
 export const CLEAR_ERRORS = "CLEAR_ERRORS";
+
+// Router actions
+export const JOIN_GAME = "JOIN_GAME";
+export const RETURN_MENU = "RETURN_MENU";

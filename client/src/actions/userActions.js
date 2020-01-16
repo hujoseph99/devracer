@@ -1,14 +1,11 @@
 import {
-  USER_LOADED,
-  USER_LOADING,
-  AUTH_ERROR,
   LOGIN_SUCCESS,
   LOGIN_FAIL,
-  LOGOUT_SUCCESS,
   REGISTER_SUCCESS,
   REGISTER_FAIL
 } from "./types";
 import { returnErrors } from "./errorActions";
+import { joinGame, returnMenu } from "./routerActions";
 import axios from "axios";
 
 // Login User
@@ -25,12 +22,13 @@ export const login = (username, password) => dispatch => {
 
   axios
     .post("http://localhost:5000/api/auth/login", body, config)
-    .then(res =>
+    .then(res => {
       dispatch({
         type: LOGIN_SUCCESS,
         payload: res.data
-      })
-    )
+      });
+      dispatch(joinGame());
+    })
     .catch(err => {
       dispatch(
         returnErrors(err.response.data, err.response.status, "LOGIN_FAIL")
@@ -72,12 +70,13 @@ export const register = (
 
   axios
     .post("http://localhost:5000/api/auth/register", body, config)
-    .then(res =>
+    .then(res => {
       dispatch({
         type: REGISTER_SUCCESS,
         payload: res.data
-      })
-    )
+      });
+      dispatch(joinGame());
+    })
     .catch(err => {
       console.log(err);
       dispatch(
