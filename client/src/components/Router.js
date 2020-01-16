@@ -14,19 +14,19 @@ class Router extends Component {
 
   getRenderPage() {
     if (this.props.inGame) {
-      return (
-        <div>
-          <AppNavbar />
-          <Game />
-        </div>
-      );
+      return <Game />;
     } else if (this.props.inMenu) {
       return <MainMenu />;
     }
   }
 
   render() {
-    return this.getRenderPage();
+    return (
+      <div>
+        <AppNavbar />
+        {this.getRenderPage()}
+      </div>
+    );
   }
 }
 

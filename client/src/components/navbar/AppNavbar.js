@@ -7,7 +7,7 @@ class AppNavbar extends Component {
     return (
       <div>
         <Navbar bg="dark" variant="dark">
-          <Navbar.Brand href="#home">Typers.io</Navbar.Brand>
+          <Navbar.Brand>Typers.io</Navbar.Brand>
           <Nav className="mr-auto"></Nav>
         </Navbar>
       </div>
