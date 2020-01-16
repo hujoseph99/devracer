@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 
-import { login } from "../../actions/userActions";
+import { register } from "../../actions/userActions";
 import { clearErrors } from "../../actions/errorActions";
 
 import Alert from "react-bootstrap/Alert";
@@ -10,16 +10,20 @@ import Button from "react-bootstrap/Button";
 import { connect } from "react-redux";
 import PropTypes from "prop-types";
 
-class LoginModal extends Component {
+class RegisterModal extends Component {
   state = {
     show: false,
-    username: "",
-    password: ""
+    username: null,
+    nickname: null,
+    password: null,
+    confirmPassword: null,
+    msg: null
   };
 
   static propTypes = {
+    isAuthenticated: PropTypes.bool.isRequired,
     error: PropTypes.object.isRequired,
-    login: PropTypes.func.isRequired,
+    register: PropTypes.func.isRequired,
     clearErrors: PropTypes.func.isRequired
   };
 
@@ -27,7 +31,7 @@ class LoginModal extends Component {
     const { isAuthenticated, error } = this.props;
     if (error !== prevProps.error) {
       // Check for register error
-      if (error.id === "LOGIN_FAIL") {
+      if (error.id === "REGISTER_FAIL") {
         this.setState({ msg: error.msg.msg });
       } else {
         this.setState({ msg: null });
@@ -64,14 +68,20 @@ class LoginModal extends Component {
 
   handleSubmit = e => {
     e.preventDefault();
-    this.props.login(this.state.username, this.state.password);
+
+    this.props.register(
+      this.state.username,
+      this.state.nickname,
+      this.state.password,
+      this.state.confirmPassword
+    );
   };
 
   render() {
     return (
       <div>
         <Button variant="primary" onClick={this.handleShow}>
-          User
+          Register
         </Button>
 
         <Modal show={this.state.show}>
@@ -79,12 +89,21 @@ class LoginModal extends Component {
             {this.state.msg ? (
               <Alert variant="danger">{this.state.msg}</Alert>
             ) : null}
-            <Form>
+            <Form onSubmit={this.handleSubmit}>
               <Form.Group controlId="username">
                 <Form.Label>Username</Form.Label>
                 <Form.Control
                   type="text"
-                  placeholder="Enter username"
+                  placeholder="Username"
+                  onChange={this.handleChange}
+                />
+              </Form.Group>
+
+              <Form.Group controlId="nickname">
+                <Form.Label>Nickname</Form.Label>
+                <Form.Control
+                  type="text"
+                  placeholder="Nickname"
                   onChange={this.handleChange}
                 />
               </Form.Group>
@@ -97,8 +116,17 @@ class LoginModal extends Component {
                   onChange={this.handleChange}
                 />
               </Form.Group>
-              <Button variant="primary" onClick={this.handleSubmit}>
-                Login
+
+              <Form.Group controlId="confirmPassword">
+                <Form.Label>Confirm Password</Form.Label>
+                <Form.Control
+                  type="password"
+                  placeholder="Password"
+                  onChange={this.handleChange}
+                />
+              </Form.Group>
+              <Button variant="primary" type="submit">
+                Register
               </Button>
             </Form>
           </Modal.Body>
@@ -113,4 +141,6 @@ const mapStateToProps = state => ({
   isAuthenticated: state.user.isAuthenticated
 });
 
-export default connect(mapStateToProps, { login, clearErrors })(LoginModal);
+export default connect(mapStateToProps, { register, clearErrors })(
+  RegisterModal
+);

@@ -30,7 +30,7 @@ export default function(state = initialState, action) {
         nickname: action.payload.user.nickname,
         wpm: action.payload.user.wpm,
         token: action.payload.token,
-        id: action.payload.user.id,
+        id: action.payload.user._id,
         isGuest: false,
         isAuthenticated: true
       };

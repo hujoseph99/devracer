@@ -15,10 +15,6 @@ const UserSchema = new Schema({
     type: schemaTypes.Decimal128,
     default: 0
   },
-  email: {
-    type: schemaTypes.String,
-    required: true
-  },
   password: {
     type: schemaTypes.String,
     required: true

@@ -51,16 +51,16 @@ router.post("/login", (req, res) => {
   });
 });
 
-// @route   POST api/auth/signup
+// @route   POST api/auth/register
 // @desc    Register new user
 // @access  Public
 // expects 	{username, email, password}
-router.post("/signup", (req, res) => {
-  const { username, email, password } = req.body;
+router.post("/register", (req, res) => {
+  const { username, nickname, password } = req.body;
 
   // very simple validation for username, email, and password
   // TODO: Improve validation
-  if (!username || !email || !password) {
+  if (!username || !nickname || !password) {
     return res.status(400).json({ msg: "Please enter all fields" });
   }
 
@@ -70,11 +70,7 @@ router.post("/signup", (req, res) => {
       return res.status(400).json({ msg: "That username is unavailable" });
 
     // create new user.  register_date and wpm populated by default
-    const newUser = new User({
-      username,
-      email,
-      password
-    });
+    const newUser = new User({ username, nickname, password });
 
     // encrypt password
     bcrypt.genSalt(10, (err, salt) => {
@@ -98,7 +94,8 @@ router.post("/signup", (req, res) => {
                 user: {
                   _id: user._id,
                   username: user.username,
-                  wpm: user.wpm
+                  nickname: user.nickname,
+                  wpm: parseInt(user.wpm)
                 }
               });
             }

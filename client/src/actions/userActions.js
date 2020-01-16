@@ -40,3 +40,51 @@ export const login = (username, password) => dispatch => {
       });
     });
 };
+
+// Register User
+export const register = (
+  username,
+  nickname,
+  password,
+  confirmPassword
+) => dispatch => {
+  // if password is not equal to the confirmed password, then alert the user
+  if (password !== confirmPassword) {
+    dispatch(
+      returnErrors(
+        { msg: "The passwords do not match.  Please try again." },
+        400,
+        "REGISTER_FAIL"
+      )
+    );
+    return;
+  }
+
+  // Headers
+  const config = {
+    headers: {
+      "Content-Type": "application/json"
+    }
+  };
+
+  // Request body
+  const body = JSON.stringify({ username, nickname, password });
+
+  axios
+    .post("http://localhost:5000/api/auth/register", body, config)
+    .then(res =>
+      dispatch({
+        type: REGISTER_SUCCESS,
+        payload: res.data
+      })
+    )
+    .catch(err => {
+      console.log(err);
+      dispatch(
+        returnErrors(err.response.data, err.response.status, "REGISTER_FAIL")
+      );
+      dispatch({
+        type: REGISTER_FAIL
+      });
+    });
+};
