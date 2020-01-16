@@ -1,12 +1,11 @@
 import {
-  USER_LOADED,
-  USER_LOADING,
   AUTH_ERROR,
   LOGIN_SUCCESS,
   LOGIN_FAIL,
   LOGOUT_SUCCESS,
   REGISTER_SUCCESS,
-  REGISTER_FAIL
+  REGISTER_FAIL,
+  GUEST_LOGIN
 } from "../actions/types";
 
 const initialState = {
@@ -32,6 +31,18 @@ export default function(state = initialState, action) {
         token: action.payload.token,
         id: action.payload.user._id,
         isGuest: false,
+        isAuthenticated: true
+      };
+    case GUEST_LOGIN:
+      localStorage.removeItem("token");
+      return {
+        ...state,
+        username: null,
+        nickname: action.payload.nickname,
+        wpm: 0,
+        token: null,
+        id: null,
+        isGuest: true,
         isAuthenticated: true
       };
     case AUTH_ERROR:

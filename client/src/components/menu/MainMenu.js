@@ -4,6 +4,7 @@ import Jumbotron from "react-bootstrap/Jumbotron";
 import Button from "react-bootstrap/Button";
 import LoginModal from "./LoginModal";
 import RegisterModal from "./RegisterModal";
+import GuestModal from "./GuestModal";
 
 import "../../css/verticalCenter.css";
 
@@ -16,7 +17,7 @@ export default class MainMenu extends Component {
           <h3>Join the race as...</h3>
           <LoginModal />
           <RegisterModal />
-          <Button variant="outline-secondary">Guest</Button>
+          <GuestModal />
         </Jumbotron>
       </div>
     );

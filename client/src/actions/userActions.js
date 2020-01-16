@@ -2,10 +2,11 @@ import {
   LOGIN_SUCCESS,
   LOGIN_FAIL,
   REGISTER_SUCCESS,
-  REGISTER_FAIL
+  REGISTER_FAIL,
+  GUEST_LOGIN
 } from "./types";
 import { returnErrors } from "./errorActions";
-import { joinGame, returnMenu } from "./routerActions";
+import { joinGame } from "./routerActions";
 import axios from "axios";
 
 // Login User
@@ -86,4 +87,12 @@ export const register = (
         type: REGISTER_FAIL
       });
     });
+};
+
+export const guestLogin = nickname => dispatch => {
+  dispatch({
+    type: GUEST_LOGIN,
+    payload: { nickname }
+  });
+  dispatch(joinGame());
 };
