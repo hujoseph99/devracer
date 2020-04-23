@@ -28,6 +28,8 @@
 	flex-direction: row;
 }
 
-.footer {
-	color: #f8f8f2;
+.icon-color {
+	margin-bottom: 0.5rem;
+	align-self: center;
+	color: #f8f8f2
 }
