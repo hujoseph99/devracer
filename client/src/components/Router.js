@@ -14,7 +14,12 @@ class Router extends Component {
 
   getRenderPage() {
     if (this.props.inGame) {
-      return <Game />;
+      return (
+        <div>
+          <AppNavbar />
+          <Game />
+        </div>
+      );
     } else if (this.props.inMenu) {
       return <MainMenu />;
     }
@@ -23,7 +28,6 @@ class Router extends Component {
   render() {
     return (
       <div>
-        <AppNavbar />
         {this.getRenderPage()}
       </div>
     );

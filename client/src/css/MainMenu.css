@@ -1,0 +1,33 @@
+.jumbotron {
+	background-color:#44475a !important; 
+}
+
+.header {
+	/* margin-top: 1rem; */
+	color: #8be9fd;
+}
+
+.debug-border {
+	border: 1px solid red;
+}
+
+.fullscreen {
+	position: fixed;
+	width: 100%;
+	height: 100%;
+	left: 0;
+	top: 0;
+	display: flex;
+	flex-direction: column;
+	align-items: stretch;
+	justify-content: space-between;
+}
+
+.horizontal {
+	/* display: flexbox; */
+	flex-direction: row;
+}
+
+.footer {
+	color: #f8f8f2;
+}
