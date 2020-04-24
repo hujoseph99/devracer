@@ -27,3 +27,4 @@ export const CLEAR_ERRORS = "CLEAR_ERRORS";
 // Router actions
 export const JOIN_GAME = "JOIN_GAME";
 export const RETURN_MENU = "RETURN_MENU";
+export const ENTER_PRACTICE = "ENTER_PRACTICE";

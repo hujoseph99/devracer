@@ -19,17 +19,35 @@
 	top: 0;
 	display: flex;
 	flex-direction: column;
-	align-items: stretch;
+	align-items: center;
 	justify-content: space-between;
 }
 
 .horizontal {
-	/* display: flexbox; */
 	flex-direction: row;
+	margin-bottom: 2rem;
 }
 
 .icon-color {
 	margin-bottom: 0.5rem;
 	align-self: center;
 	color: #f8f8f2
+}
+
+.btn-race, .btn-race:hover, .btn-race:active, .btn-race:visited {
+	color: #000000 !important;
+	background-color: #50fa7b !important;
+	margin-bottom: 2rem;
+}
+
+.btn-practice, .btn-practice:hover, .btn-practice:active, .btn-practice:visited {
+	color: #000000 !important;
+	background-color: #f1fa8c !important;
+	margin-bottom: 2rem;
+}
+
+.subtitle {
+	margin-bottom: 2rem;
+	color: #bd93f9;
+	/* margin-bottom: 2rem; */
 }

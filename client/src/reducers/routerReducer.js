@@ -1,8 +1,9 @@
-import { JOIN_GAME, RETURN_MENU } from "../actions/types";
+import { JOIN_GAME, RETURN_MENU, ENTER_PRACTICE } from "../actions/types";
 
 const initialState = {
   inGame: false,
-  inMenu: true
+  inMenu: true,
+  inPractice: false,
 };
 
 export default function(state = initialState, action) {
@@ -11,13 +12,22 @@ export default function(state = initialState, action) {
       return {
         ...state,
         inGame: true,
-        inMenu: false
+        inMenu: false,
+        inPractice: false
+      };
+    case ENTER_PRACTICE:
+      return {
+        ...state,
+        inGame: false,
+        inMenu: false,
+        inPractice: true
       };
     case RETURN_MENU:
       return {
         ...state,
         inGame: false,
-        inMenu: true
+        inMenu: true,
+        inPractice: false
       };
     default:
       return state;
