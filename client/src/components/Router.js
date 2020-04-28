@@ -6,6 +6,8 @@ import AppNavbar from "./navbar/AppNavbar";
 import Game from "./game/Game";
 import MainMenu from "./menu/MainMenu";
 
+import Login from "./menu/Login";
+
 class Router extends Component {
   static propTypes = {
     inGame: PropTypes.bool.isRequired,
@@ -21,7 +23,8 @@ class Router extends Component {
         </div>
       );
     } else if (this.props.inMenu) {
-      return <MainMenu />;
+      // return <MainMenu />;
+      return <Login />
     }
   }
 

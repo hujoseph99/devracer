@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
 
-// import LoginModal from "./LoginModal";
+import LoginModal from "./LoginModal";
 // import RegisterModal from "./RegisterModal";
 // import GuestModal from "./GuestModal";
 
@@ -17,9 +17,13 @@ import "../../css/MainMenu.css";
 
 class MainMenu extends Component {
   render() {
+    //TODO: Add login/register button to the top right
     return (
       <div className="fullscreen">
-        <h1 className="header">Typers</h1>
+        <div className="horizontal debug-border">
+          <span className="header">Typers</span>
+          <LoginModal />
+        </div>
         <div className="horizontal">
           <h1 className="subtitle">Choose your mode</h1>
           <Button size="lg" onClick={this.props.joinGame} className="btn-race">Race against others</Button>
