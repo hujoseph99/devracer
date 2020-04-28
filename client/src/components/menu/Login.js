@@ -8,11 +8,13 @@ import { clearErrors } from "../../actions/errorActions";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faBolt } from "@fortawesome/free-solid-svg-icons";
 
+import { ERROR_LOGIN_FAIL } from '../../actions/types';
+
 import "../../css/login.css";
 
 class Login extends Component {
 	state = {
-    show: false,
+		msg: "",
     username: "",
     password: ""
   };
@@ -20,22 +22,56 @@ class Login extends Component {
   static propTypes = {
     error: PropTypes.object.isRequired,
     login: PropTypes.func.isRequired,
-    clearErrors: PropTypes.func.isRequired
+		clearErrors: PropTypes.func.isRequired,
+	};
+	
+	componentDidUpdate(prevProps) {
+    const {error } = this.props;
+    if (error !== prevProps.error) {
+      if (error.id === ERROR_LOGIN_FAIL) {
+        this.setState({ msg: error.msg.msg });
+      } else {
+        this.setState({ msg: null });
+      }
+    }
+	}
+	
+	getErrorMessage = () => {
+		if (this.state.msg) {
+			return (
+				<div className="alert alert-danger mb-4 alert-fixed" role="alert">
+					{this.state.msg}
+				</div>
+			);
+		} else {
+			return null;
+		}
+	}
+
+	handleChange = e => {
+    this.setState({
+      [e.target.id]: e.target.value
+    });
+	};
+	
+	handleSubmit = e => {
+    e.preventDefault();
+    this.props.login(this.state.username, this.state.password);
   };
 
 	render() {
 		return (
 			<div className="fullscreen">
+				{this.getErrorMessage()}
 				<div className="card login-form-background">
 					<form className="login-form" autocomplete="off">
-
 						<FontAwesomeIcon icon={faBolt} size='5x' className="logo mb-5"/>
 
 						<h1 className="h3 font-weight-normal pink mb-3">Please sign in</h1>
-						<input type="text" id="username" class="form-control username" placeholder="Username" required autofocus />
-						<input type="password" id="password" class="form-control password mb-4" placeholder="Password" requireds />
+						<input type="text" id="username" class="form-control username" placeholder="Username" onChange={this.handleChange} required autofocus="true" />
+						<input type="password" id="password" class="form-control password mb-4" placeholder="Password" onChange={this.handleChange} required />
 
-						<button class="btn btn-lg btn-primary btn-block" type="submit">Sign In</button>
+						<button class="btn btn-lg btn-primary btn-block" onClick={this.handleSubmit}>Sign In</button>
 					</form>
 				</div>
 			</div>
@@ -44,8 +80,7 @@ class Login extends Component {
 }
 
 const mapStateToProps = state => ({
-  error: state.error,
-  isAuthenticated: state.user.isAuthenticated
+  error: state.error
 });
 
 export default connect(mapStateToProps, { login, clearErrors })(Login);

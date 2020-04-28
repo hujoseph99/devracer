@@ -8,7 +8,7 @@ import {
   ERROR_REGISTER_FAIL
 } from "./types";
 import { returnErrors } from "./errorActions";
-import { joinGame } from "./routerActions";
+import { returnMenu } from "./routerActions";
 import axios from "axios";
 
 // Login User
@@ -30,7 +30,7 @@ export const login = (username, password) => dispatch => {
         type: LOGIN_SUCCESS,
         payload: res.data
       });
-      dispatch(joinGame());
+      dispatch(returnMenu());
     })
     .catch(err => {
       dispatch(
@@ -78,7 +78,7 @@ export const register = (
         type: REGISTER_SUCCESS,
         payload: res.data
       });
-      dispatch(joinGame());
+      dispatch(returnMenu());
     })
     .catch(err => {
       console.log(err);
@@ -96,5 +96,5 @@ export const guestLogin = nickname => dispatch => {
     type: GUEST_LOGIN,
     payload: { nickname }
   });
-  dispatch(joinGame());
+  dispatch(returnMenu());
 };

@@ -10,8 +10,11 @@
 	justify-content: center;
 }
 
-h1 {
-	font-weight: bolder !important;
+.alert-fixed {
+	position:fixed !important;
+	top: 1em !important; 
+	width: 30%;
+	z-index:9999; 
 }
 
 .debug-border {
