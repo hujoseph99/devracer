@@ -3,7 +3,9 @@ import {
   LOGIN_FAIL,
   REGISTER_SUCCESS,
   REGISTER_FAIL,
-  GUEST_LOGIN
+  GUEST_LOGIN,
+  ERROR_LOGIN_FAIL,
+  ERROR_REGISTER_FAIL
 } from "./types";
 import { returnErrors } from "./errorActions";
 import { joinGame } from "./routerActions";
@@ -32,7 +34,7 @@ export const login = (username, password) => dispatch => {
     })
     .catch(err => {
       dispatch(
-        returnErrors(err.response.data, err.response.status, "LOGIN_FAIL")
+        returnErrors(err.response.data, err.response.status, ERROR_LOGIN_FAIL)
       );
       dispatch({
         type: LOGIN_FAIL
@@ -53,7 +55,7 @@ export const register = (
       returnErrors(
         { msg: "The passwords do not match.  Please try again." },
         400,
-        "REGISTER_FAIL"
+        ERROR_REGISTER_FAIL
       )
     );
     return;
@@ -81,7 +83,7 @@ export const register = (
     .catch(err => {
       console.log(err);
       dispatch(
-        returnErrors(err.response.data, err.response.status, "REGISTER_FAIL")
+        returnErrors(err.response.data, err.response.status, ERROR_REGISTER_FAIL)
       );
       dispatch({
         type: REGISTER_FAIL

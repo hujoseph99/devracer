@@ -28,3 +28,7 @@ export const CLEAR_ERRORS = "CLEAR_ERRORS";
 export const JOIN_GAME = "JOIN_GAME";
 export const RETURN_MENU = "RETURN_MENU";
 export const ENTER_PRACTICE = "ENTER_PRACTICE";
+
+// error types
+export const ERROR_REGISTER_FAIL = 1;
+export const ERROR_LOGIN_FAIL = 2;

@@ -1,15 +1,28 @@
 import React, { Component } from "react";
+import { connect } from "react-redux";
+import PropTypes from "prop-types";
+
+import { login } from "../../actions/userActions";
+import { clearErrors } from "../../actions/errorActions";
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faBolt } from "@fortawesome/free-solid-svg-icons";
 
 import "../../css/login.css";
 
-export default class Login extends Component {
-	handleChange = () => {
+class Login extends Component {
+	state = {
+    show: false,
+    username: "",
+    password: ""
+  };
 
-	}
-	
+  static propTypes = {
+    error: PropTypes.object.isRequired,
+    login: PropTypes.func.isRequired,
+    clearErrors: PropTypes.func.isRequired
+  };
+
 	render() {
 		return (
 			<div className="fullscreen">
@@ -26,24 +39,13 @@ export default class Login extends Component {
 					</form>
 				</div>
 			</div>
-			// <div>
-			// 	<form class="form-signin">
-			// 		<img class="mb-4" src="https://getbootstrap.com/docs/4.0/assets/brand/bootstrap-solid.svg" alt="" width="72" height="72" />
-			// 		<h1 class="h3 mb-3 font-weight-normal">Please sign in</h1>
-			// 		<label for="inputEmail" class="sr-only">Email address</label>
-			// 		<input type="email" id="inputEmail" class="form-control" placeholder="Email address" required="" autofocus="">
-			// 		<label for="inputPassword" class="sr-only">Password</label>
-			// 		<input type="password" id="inputPassword" class="form-control" placeholder="Password" required="">
-			// 		<div class="checkbox mb-3">
-			// 			<label>
-			// 				<input type="checkbox" value="remember-me">
-			// 			</label>
-			// 		</div>
-			// 		<button class="btn btn-lg btn-primary btn-block" type="submit">Sign in</button>
-			// 		<p class="mt-5 mb-3 text-muted">© 2017-2018</p>
-			// 	</form>
-			// </div>
 		);
 	}
-	
 }
+
+const mapStateToProps = state => ({
+  error: state.error,
+  isAuthenticated: state.user.isAuthenticated
+});
+
+export default connect(mapStateToProps, { login, clearErrors })(Login);
