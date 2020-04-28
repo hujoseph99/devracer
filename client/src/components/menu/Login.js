@@ -11,6 +11,8 @@ import { faBolt } from "@fortawesome/free-solid-svg-icons";
 import { ERROR_LOGIN_FAIL } from '../../actions/types';
 
 import "../../css/login.css";
+import "../../css/colors.css"
+import "../../css/forms.css";
 
 class Login extends Component {
 	state = {
@@ -63,13 +65,13 @@ class Login extends Component {
 		return (
 			<div className="fullscreen">
 				{this.getErrorMessage()}
-				<div className="card login-form-background">
-					<form className="login-form" autocomplete="off">
-						<FontAwesomeIcon icon={faBolt} size='5x' className="logo mb-5"/>
+				<div className="card form-background login-form-background-dimensions">
+					<form className="login-form-dimensions" autocomplete="off">
+						<FontAwesomeIcon icon={faBolt} size='5x' className="yellow mb-5"/>
 
 						<h1 className="h3 font-weight-normal pink mb-3">Please sign in</h1>
-						<input type="text" id="username" class="form-control username" placeholder="Username" onChange={this.handleChange} required autofocus="true" />
-						<input type="password" id="password" class="form-control password mb-4" placeholder="Password" onChange={this.handleChange} required />
+						<input type="text" id="username" className="form-control topInput" placeholder="Username" onChange={this.handleChange} required autofocus="true" />
+						<input type="password" id="password" className="form-control bottomInput mb-4" placeholder="Password" onChange={this.handleChange} required />
 
 						<button class="btn btn-lg btn-primary btn-block" onClick={this.handleSubmit}>Sign In</button>
 					</form>

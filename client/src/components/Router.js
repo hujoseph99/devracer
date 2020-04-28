@@ -4,9 +4,10 @@ import PropTypes from "prop-types";
 
 import AppNavbar from "./navbar/AppNavbar";
 import Game from "./game/Game";
-import MainMenu from "./menu/MainMenu";
 
+import MainMenu from "./menu/MainMenu";
 import Login from "./menu/Login";
+import Register from "./menu/Register";
 
 class Router extends Component {
   static propTypes = {
