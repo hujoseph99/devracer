@@ -15,7 +15,7 @@ import {
 } from "../types/pageTypes";
 
 const initialState = {
-  pageType: REGISTER_PAGE
+  pageType: MAIN_MENU
 };
 
 export default function(state = initialState, action) {

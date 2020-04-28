@@ -94,7 +94,7 @@ class Register extends Component {
 
 							<button class="btn btn-lg btn-primary btn-block mb-4" onClick={this.handleSubmit}>Register</button>
 						</form>
-						<button class="registerText" onClick={this.handleLoginClick}>Return to login</button>
+						<button class="formFooterText" onClick={this.handleLoginClick}>Return to login</button>
 					</div>
 				</div>
 			</div>

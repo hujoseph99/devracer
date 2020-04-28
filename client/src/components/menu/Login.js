@@ -84,7 +84,7 @@ class Login extends Component {
 
 							<button class="btn btn-lg btn-primary btn-block mb-4" onClick={this.handleSubmit}>Sign In</button>
 						</form>
-						<button class="registerText" onClick={this.handleRegisterClick}>Click here to register</button>
+						<button class="formFooterText" onClick={this.handleRegisterClick}>Click here to register</button>
 					</div>
 				</div>
 			</div>

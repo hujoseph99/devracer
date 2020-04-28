@@ -49,6 +49,14 @@ input {
 	justify-content: center;
 }
 
+.formFooterText {
+	color: #8e8e8e !important;
+	background:none;
+	border:none;
+	margin:0;
+	padding:0;
+}
+
 
 textarea:hover, 
 input:hover, 
