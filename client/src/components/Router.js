@@ -19,8 +19,6 @@ import {
 
 class Router extends Component {
   static propTypes = {
-    inGame: PropTypes.bool.isRequired,
-    inMenu: PropTypes.bool.isRequired,
     pageType: PropTypes.number.isRequired
   };
 

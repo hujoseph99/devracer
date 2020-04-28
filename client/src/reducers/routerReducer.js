@@ -15,10 +15,7 @@ import {
 } from "../types/pageTypes";
 
 const initialState = {
-  inGame: false,
-  inMenu: true,
-  inPractice: false,
-  pageType: LOGIN_PAGE
+  pageType: REGISTER_PAGE
 };
 
 export default function(state = initialState, action) {
