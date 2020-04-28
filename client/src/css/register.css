@@ -1,9 +1,9 @@
-.login-form-dimensions {
+.register-form-dimensions {
 	width: 90%;
-	max-width: 17rem;
+	max-width: 20rem;
 }
 
-.login-form-background-dimensions {
+.register-form-background-dimensions {
 	width: 23em;
-	height: 30em;
+	height: 33em;
 }
