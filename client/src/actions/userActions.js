@@ -3,10 +3,13 @@ import {
   LOGIN_FAIL,
   REGISTER_SUCCESS,
   REGISTER_FAIL,
-  GUEST_LOGIN,
+  GUEST_LOGIN
+} from "./types";
+import {
   ERROR_LOGIN_FAIL,
   ERROR_REGISTER_FAIL
-} from "./types";
+} from "../types/errorTypes";
+
 import { returnErrors } from "./errorActions";
 import { returnMenu } from "./routerActions";
 import axios from "axios";

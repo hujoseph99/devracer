@@ -4,11 +4,12 @@ import PropTypes from "prop-types";
 
 import { login } from "../../actions/userActions";
 import { clearErrors } from "../../actions/errorActions";
+import { goToRegisterMenu } from "../../actions/routerActions";
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faBolt } from "@fortawesome/free-solid-svg-icons";
 
-import { ERROR_LOGIN_FAIL } from '../../actions/types';
+import { ERROR_LOGIN_FAIL } from '../../types/errorTypes';
 
 import "../../css/login.css";
 import "../../css/colors.css"
@@ -25,6 +26,7 @@ class Login extends Component {
     error: PropTypes.object.isRequired,
     login: PropTypes.func.isRequired,
 		clearErrors: PropTypes.func.isRequired,
+		goToRegisterMenu: PropTypes.func.isRequired
 	};
 	
 	componentDidUpdate(prevProps) {
@@ -59,22 +61,31 @@ class Login extends Component {
 	handleSubmit = e => {
     e.preventDefault();
     this.props.login(this.state.username, this.state.password);
-  };
+	};
+	
+	handleRegisterClick = e => {
+		e.preventDefault();
+		this.props.clearErrors();
+		this.props.goToRegisterMenu();
+	}
 
 	render() {
 		return (
 			<div className="fullscreen">
 				{this.getErrorMessage()}
 				<div className="card form-background login-form-background-dimensions">
-					<form className="login-form-dimensions" autocomplete="off">
-						<FontAwesomeIcon icon={faBolt} size='5x' className="yellow mb-5"/>
+					<div className="login-form-dimensions">
+						<form autocomplete="off">
+							<FontAwesomeIcon icon={faBolt} size='5x' className="yellow mb-4"/>
 
-						<h1 className="h3 font-weight-normal pink mb-3">Please sign in</h1>
-						<input type="text" id="username" className="form-control topInput" placeholder="Username" onChange={this.handleChange} required autofocus="true" />
-						<input type="password" id="password" className="form-control bottomInput mb-4" placeholder="Password" onChange={this.handleChange} required />
+							<h1 className="h3 font-weight-normal pink mb-3">Please sign in</h1>
+							<input type="text" id="username" className="form-control topInput" placeholder="Username" onChange={this.handleChange} required autofocus="true" />
+							<input type="password" id="password" className="form-control bottomInput mb-4" placeholder="Password" onChange={this.handleChange} required />
 
-						<button class="btn btn-lg btn-primary btn-block" onClick={this.handleSubmit}>Sign In</button>
-					</form>
+							<button class="btn btn-lg btn-primary btn-block mb-4" onClick={this.handleSubmit}>Sign In</button>
+						</form>
+						<button class="registerText" onClick={this.handleRegisterClick}>Click here to register</button>
+					</div>
 				</div>
 			</div>
 		);
@@ -85,4 +96,4 @@ const mapStateToProps = state => ({
   error: state.error
 });
 
-export default connect(mapStateToProps, { login, clearErrors })(Login);
+export default connect(mapStateToProps, { login, clearErrors, goToRegisterMenu })(Login);
