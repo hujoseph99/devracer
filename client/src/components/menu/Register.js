@@ -18,6 +18,7 @@ import "../../css/forms.css";
 class Register extends Component {
 	state = {
 		msg: "",
+		email: "",
 		username: "",
 		nickname: "",
 		password: "",
@@ -87,10 +88,11 @@ class Register extends Component {
 							<FontAwesomeIcon icon={faBolt} size='5x' className="yellow mb-4"/>
 
 							<h1 className="h3 font-weight-normal pink mb-3">Register</h1>
-							<input type="text" id="username" className="form-control topInput" placeholder="Username" onChange={this.handleChange} required autofocus="true" />
+							<input type="text" id="email" className="form-control topInput" placeholder="Email" onChange={this.handleChange} required autofocus="true" />
+							<input type="text" id="username" className="form-control middleInput" placeholder="Username" onChange={this.handleChange} required />
 							<input type="text" id="nickname" className="form-control middleInput" placeholder="Nickname" onChange={this.handleChange} required />
 							<input type="password" id="password" className="form-control middleInput" placeholder="Password" onChange={this.handleChange} required />
-							<input type="password" id="confirmPassword" className="form-control bottomInput mb-4" placeholder="Password" onChange={this.handleChange} required />
+							<input type="password" id="confirmPassword" className="form-control bottomInput mb-4" placeholder="Confirm Password" onChange={this.handleChange} required />
 
 							<button class="btn btn-lg btn-primary btn-block mb-4" onClick={this.handleSubmit}>Register</button>
 						</form>
