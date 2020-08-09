@@ -8,7 +8,7 @@ import (
 
 	"github.com/dgrijalva/jwt-go"
 	"github.com/gorilla/mux"
-	"github.com/hujoseph99/typing_backend/db"
+	"github.com/hujoseph99/typingBackend/db"
 )
 
 // API is a struct that will hold a database connecct along with a reference

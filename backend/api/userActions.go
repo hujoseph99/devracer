@@ -7,7 +7,7 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/hujoseph99/typing_backend/db"
+	"github.com/hujoseph99/typingBackend/db"
 	"golang.org/x/crypto/bcrypt"
 )
 
