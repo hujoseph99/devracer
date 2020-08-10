@@ -33,21 +33,25 @@ func NewAPI(ctx context.Context) (*API, error) {
 
 // SetupRouter sets up the router and attaches handler functions to it
 func (api *API) SetupRouter() {
-	api.Router.
-		Methods("GET").
-		Path("/api/race").
-		HandlerFunc(api.getRandomRaceSnippet)
+	// api.Router.
+	// 	Methods("GET").
+	// 	Path("/api/race").
+	// 	HandlerFunc(api.getRandomRaceSnippet)
+
+	// api.Router.
+	// 	Methods("POST").
+	// 	Path("/api/user/register").
+	// 	HandlerFunc(api.registerUser)
+
+	// api.Router.
+	// 	Methods("POST").
+	// 	Path("/api/user/login").
+	// 	HandlerFunc(api.loginUser)
 
 	api.Router.
-		Methods("POST").
-		Path("/api/user/register").
-		HandlerFunc(api.registerUser)
-
-	api.Router.
-		Methods("POST").
-		Path("/api/user/login").
-		HandlerFunc(api.loginUser)
-
+		Methods("get").
+		Path("/api/user/test").
+		HandlerFunc(api.testFunctions)
 }
 
 // errorMessage is a wrapper for a message to help with returning an error
@@ -76,20 +80,20 @@ type UserReturnToClient struct {
 
 // NewUserReturnToClient will create a new user struct that is meant to be returned
 // to clients
-func NewUserReturnToClient(user *db.User) (*UserReturnToClient, error) {
-	if user == nil {
-		return nil, fmt.Errorf("The given user is invalid")
-	}
+// func NewUserReturnToClient(user *db.UserModel) (*UserReturnToClient, error) {
+// 	if user == nil {
+// 		return nil, fmt.Errorf("The given user is invalid")
+// 	}
 
-	res := &UserReturnToClient{
-		Username:     user.Username,
-		Nickname:     user.Nickname,
-		Wpm:          user.Wpm,
-		RegisterDate: user.RegisterDate,
-	}
+// 	res := &UserReturnToClient{
+// 		Username:     user.Username,
+// 		Nickname:     user.Nickname,
+// 		Wpm:          user.Wpm,
+// 		RegisterDate: user.RegisterDate,
+// 	}
 
-	return res, nil
-}
+// 	return res, nil
+// }
 
 // JWTExpireTime will be the amount of time before the JWT expires
 const JWTExpireTime = time.Minute * 15

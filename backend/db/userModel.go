@@ -4,15 +4,23 @@ import (
 	"time"
 )
 
+// emulated enum to represent id types
+const (
+	RegularID  = iota
+	GoogleID   = iota
+	GithubID   = iota
+	FacebookID = iota
+)
+
 // UserModel is a model for user data that will be used for authentication
 type UserModel struct {
 	ID           string    `bson:"_id,omitempty" json:"_id,omitempty"`
 	Username     string    `bson:"username" json:"username"`
 	Password     string    `bson:"password" json:"password"`
 	Salt         string    `bson:"salt" json:"salt"`
-	GoogleID     string    `bson:"googleID,omitempty" json:"googleID,omitempty"`
-	GithubID     string    `bson:"githubID,omitempty" json:"githubID,omitempty"`
-	FacebookID   string    `bson:"facebookID,omitempty" json:"facebookID,omitempty"`
+	GoogleID     string    `bson:"googleID" json:"googleID"`
+	GithubID     string    `bson:"githubID" json:"githubID"`
+	FacebookID   string    `bson:"facebookID" json:"facebookID"`
 	RegisterDate time.Time `bson:"registerDate" json:"registerDate"`
 }
 

@@ -26,6 +26,38 @@ func (c *Client) addDocumentToCollection(ctx context.Context,
 
 	log.Printf("Inserted: %v\n", id)
 	return res, nil
+}
+
+// getBsonId gets a bson.M object for
+func getBsonId(id string, idType int) (bson.M, error) {
+	var idKey string
+	var idValue interface{}
+
+	if idType == RegularID {
+		idKey = "_id"
+	} else if idType == GoogleID {
+		idKey = "googleID"
+	} else if idType == GithubID {
+		idKey = "githubID"
+	} else {
+		idKey = "facebookID"
+	}
+
+	if idType == RegularID {
+		objID, err := primitive.ObjectIDFromHex(id)
+
+		if err != nil {
+			return nil, err
+		}
+
+		idValue = objID
+	} else {
+		idValue = idKey
+	}
+
+	// TODO: have to write a test to see if this works -- might not work for regularId
+	// cause it requires an primite.objectId
+	return bson.M{idKey: idValue}, nil
 
 }
 
@@ -33,15 +65,20 @@ func (c *Client) addDocumentToCollection(ctx context.Context,
 // If it is successful, then the error will be nil, otherwise it will be a valid
 // error.
 func (c *Client) deleteFromCollectionByID(ctx context.Context,
-	collection *mongo.Collection, id string) error {
+	collection *mongo.Collection, id string, idType int) error {
 
-	objID, err := primitive.ObjectIDFromHex(id)
+	// objID, err := primitive.ObjectIDFromHex(id)
 
+	// if err != nil {
+	// 	return err
+	// }
+
+	bsonID, err := getBsonId(id, idType)
 	if err != nil {
 		return err
 	}
 
-	del, err := collection.DeleteOne(ctx, bson.M{"_id": objID})
+	del, err := collection.DeleteOne(ctx, bsonID)
 	if err != nil {
 		return err
 	}

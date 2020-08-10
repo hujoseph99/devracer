@@ -24,7 +24,7 @@ func (c *Client) AddRaceSnippet(ctx context.Context, snippet *RaceSnippet) (stri
 func (c *Client) DeleteRaceSnippetByID(ctx context.Context, id string) error {
 	collection := c.client.Database(DatabaseTypers).Collection(CollectionsRaceSnippets)
 
-	err := c.deleteFromCollectionByID(ctx, collection, id)
+	err := c.deleteFromCollectionByID(ctx, collection, id, RegularID)
 
 	return err
 }

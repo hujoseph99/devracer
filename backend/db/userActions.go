@@ -17,17 +17,16 @@ func (c *Client) AddUser(ctx context.Context, user *UserModel) (string, error) {
 		return "", err
 	}
 
-	// add id to user model
 	user.ID = id
-	return id, err
+	return id, nil
 }
 
 // DeleteUserByID will delete a user by the given id.  If it is successful, then
 // it will return a nil error, otherwise it will return an error.
-func (c *Client) DeleteUserByID(ctx context.Context, id string) error {
+func (c *Client) DeleteUserByID(ctx context.Context, id string, idType int) error {
 	collection := c.client.Database(DatabaseTypers).Collection(CollectionsUser)
 
-	err := c.deleteFromCollectionByID(ctx, collection, id)
+	err := c.deleteFromCollectionByID(ctx, collection, id, idType)
 	return err
 }
 
