@@ -2,25 +2,28 @@ package db
 
 import (
 	"context"
-
-	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
-// AddUser adds a given user to a mongo client.  If it is successful, then it will
-// return the id in the form of a string.  We are assuming that the password is
-// already hashed and salted (if it is meant to be).
-func (c *Client) AddUser(ctx context.Context, user *UserModel) error {
+// AddUser adds a given user to a mongo client.  If it is successful, then it
+// will return the id in the form of a string and add it to the user model.  We
+// are assuming that the password is already hashed and salted (if it is meant
+// to be).
+func (c *Client) AddUser(ctx context.Context, user *UserModel) (string, error) {
 	collection := c.client.Database(DatabaseTypers).Collection(CollectionsUser)
 
 	id, err := c.addDocumentToCollection(ctx, collection, user)
-	if err == nil {
-		user.ID, err = primitive.ObjectIDFromHex(id)
+
+	if err != nil {
+		return "", err
 	}
-	return err
+
+	// add id to user model
+	user.ID = id
+	return id, err
 }
 
-// DeleteUserByID will delete a user by the given id.  If it is successful, then it
-// will return a nil error, otherwise it will return an error.
+// DeleteUserByID will delete a user by the given id.  If it is successful, then
+// it will return a nil error, otherwise it will return an error.
 func (c *Client) DeleteUserByID(ctx context.Context, id string) error {
 	collection := c.client.Database(DatabaseTypers).Collection(CollectionsUser)
 
