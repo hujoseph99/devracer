@@ -152,7 +152,8 @@ func (myAPI *API) testFunctions(w http.ResponseWriter, r *http.Request) {
 
 	// user := db.NewUser("foo", "foo", "foo", "", "", "", time.Now())
 
-	err := myAPI.Database.DeleteUserByID(ctx, "5f31c93db84cff71f892b48d", db.RegularID)
+	// res, err := myAPI.Database.AddUser(ctx, user)
+	err := myAPI.Database.DeleteUserByID(ctx, "5f31cfb510b81ac6b98666e2", db.RegularID)
 
 	if err != nil {
 		msg := map[string]string{
