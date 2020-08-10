@@ -10,7 +10,7 @@ import (
 func (c *Client) GetPreferences(ctx context.Context, id string) (*PreferencesModel, error) {
 	collection := c.client.Database(DatabaseTypers).Collection(CollectionsPreferences)
 
-	var pref PreferencesModel
+	pref := PreferencesModel{}
 	err := c.getDocumentFromCollectionByID(ctx, collection, id, &pref)
 
 	if err != nil {
@@ -23,10 +23,23 @@ func (c *Client) GetPreferences(ctx context.Context, id string) (*PreferencesMod
 func (c *Client) UpdatePreferences(ctx context.Context, id string, pref *PreferencesModel) error {
 	collection := c.client.Database(DatabaseTypers).Collection(CollectionsPreferences)
 
-	result := collection.FindOneAndUpdate(ctx, bson.M{"id": pref.ID}, pref)
+	result := collection.FindOneAndUpdate(ctx, bson.M{"id": pref.ID}, bson.M{"$set": pref})
 
 	if result.Err() != nil {
 		return result.Err()
 	}
+	return nil
+}
+
+// AddPreferences adds a given pref to a mongo client.  Will return the error if there is an error.
+func (c *Client) AddPreferences(ctx context.Context, pref *PreferencesModel) error {
+	collection := c.client.Database(DatabaseTypers).Collection(CollectionsUser)
+
+	_, err := c.addDocumentToCollection(ctx, collection, pref)
+
+	if err != nil {
+		return err
+	}
+
 	return nil
 }
