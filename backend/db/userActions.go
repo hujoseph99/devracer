@@ -7,7 +7,7 @@ import (
 // AddUser adds a given user to a mongo client.  If it is successful, then it will
 // return the id in the form of a string.  We are assuming that the password is
 // already hashed and salted (if it is meant to be).
-func (c *Client) AddUser(ctx context.Context, user *User) error {
+func (c *Client) AddUser(ctx context.Context, user *UserModel) error {
 	collection := c.client.Database(DatabaseTypers).Collection(CollectionsUser)
 
 	id, err := c.addDocumentToCollection(ctx, collection, user)
@@ -28,10 +28,10 @@ func (c *Client) DeleteUserByID(ctx context.Context, id string) error {
 
 // FindUserByID finds a user given the id and then returns the user if it is
 // successful.
-func (c *Client) FindUserByID(ctx context.Context, id string) (*User, error) {
+func (c *Client) FindUserByID(ctx context.Context, id string) (*UserModel, error) {
 	collection := c.client.Database(DatabaseTypers).Collection(CollectionsUser)
 
-	var user User
+	var user UserModel
 	err := c.getDocumentFromCollectionByID(ctx, collection, id, &user)
 	if err != nil {
 		return nil, err
@@ -40,13 +40,13 @@ func (c *Client) FindUserByID(ctx context.Context, id string) (*User, error) {
 }
 
 // FindUserByUsername will find a user by their username in the db
-func (c *Client) FindUserByUsername(ctx context.Context, username string) (*User, error) {
+func (c *Client) FindUserByUsername(ctx context.Context, username string) (*UserModel, error) {
 	collection := c.client.Database(DatabaseTypers).Collection(CollectionsUser)
 
 	params := make(map[string]string)
 	params["username"] = username
 
-	var user User
+	var user UserModel
 	err := c.getDocumentFromCollection(ctx, collection, params, &user)
 	if err != nil {
 		return nil, err
@@ -54,18 +54,17 @@ func (c *Client) FindUserByUsername(ctx context.Context, username string) (*User
 	return &user, nil
 }
 
-// FindUserByEmail will find a user by their email in the db
-func (c *Client) FindUserByEmail(ctx context.Context, email string) (*User, error) {
-	collection := c.client.Database(DatabaseTypers).Collection(CollectionsUser)
+// // FindUserByEmail will find a user by their email in the db
+// func (c *Client) FindUserByEmail(ctx context.Context, email string) (*UserModel, error) {
+// 	collection := c.client.Database(DatabaseTypers).Collection(CollectionsUser)
 
-	params := make(map[string]string)
-	params["email"] = email
+// 	params := make(map[string]string)
+// 	params["email"] = email
 
-	var user User
-	err := c.getDocumentFromCollection(ctx, collection, params, &user)
-	if err != nil {
-		return nil, err
-	}
-	return &user, nil
-
-}
+// 	var user UserModel
+// 	err := c.getDocumentFromCollection(ctx, collection, params, &user)
+// 	if err != nil {
+// 		return nil, err
+// 	}
+// 	return &user, nil
+// }
