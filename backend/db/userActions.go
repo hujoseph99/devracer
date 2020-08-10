@@ -2,6 +2,8 @@ package db
 
 import (
 	"context"
+
+	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
 // AddUser adds a given user to a mongo client.  If it is successful, then it will
@@ -12,7 +14,7 @@ func (c *Client) AddUser(ctx context.Context, user *UserModel) error {
 
 	id, err := c.addDocumentToCollection(ctx, collection, user)
 	if err == nil {
-		user.ID = id
+		user.ID, err = primitive.ObjectIDFromHex(id)
 	}
 	return err
 }
