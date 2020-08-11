@@ -26,22 +26,15 @@ func (c *Client) addDocumentToCollection(ctx context.Context,
 
 	log.Printf("Inserted: %v\n", id)
 	return res, nil
-
 }
 
 // deleteFromCollectionByID will delete a document from the given collection by ID.
 // If it is successful, then the error will be nil, otherwise it will be a valid
 // error.
 func (c *Client) deleteFromCollectionByID(ctx context.Context,
-	collection *mongo.Collection, id string) error {
+	collection *mongo.Collection, id primitive.ObjectID) error {
 
-	objID, err := primitive.ObjectIDFromHex(id)
-
-	if err != nil {
-		return err
-	}
-
-	del, err := collection.DeleteOne(ctx, bson.M{"_id": objID})
+	del, err := collection.DeleteOne(ctx, bson.M{"_id": id})
 	if err != nil {
 		return err
 	}
@@ -56,14 +49,9 @@ func (c *Client) deleteFromCollectionByID(ctx context.Context,
 // getDocumentFromCollectionByID will get a document from a given collection
 // matches the given id and will populate it into the given model.
 func (c *Client) getDocumentFromCollectionByID(ctx context.Context,
-	collection *mongo.Collection, id string, model interface{}) error {
+	collection *mongo.Collection, id primitive.ObjectID, model interface{}) error {
 
-	objID, err := primitive.ObjectIDFromHex(id)
-	if err != nil {
-		return err
-	}
-
-	err = collection.FindOne(ctx, bson.M{"_id": objID}).Decode(model)
+	err := collection.FindOne(ctx, bson.M{"_id": id}).Decode(model)
 	if err != nil {
 		return err
 	}

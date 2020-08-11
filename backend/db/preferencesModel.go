@@ -1,15 +1,19 @@
 package db
 
+import (
+	"go.mongodb.org/mongo-driver/bson/primitive"
+)
+
 // PreferencesModel is a model for storing preferences
 type PreferencesModel struct {
-	ID          string `bson:"userid" json:"userid"`
-	DisplayName string `bson:"displayName" json:"displayName"`
-	Email       string `bson:"email" json:"email"`
-	Theme       string `bson:"theme" json:"theme"`
+	ID          primitive.ObjectID `bson:"_id" json:"_id"`
+	DisplayName string             `bson:"displayName" json:"displayName"`
+	Email       string             `bson:"email" json:"email"`
+	Theme       string             `bson:"theme" json:"theme"`
 }
 
 // NewPreferences is the constructor for PreferencesModel - it creates a new PreferencesModel object
-func NewPreferences(id string, displayName string, email string, theme string) *PreferencesModel {
+func NewPreferences(id primitive.ObjectID, displayName string, email string, theme string) *PreferencesModel {
 
 	res := &PreferencesModel{
 		ID:          id,
@@ -18,4 +22,17 @@ func NewPreferences(id string, displayName string, email string, theme string) *
 		Theme:       theme,
 	}
 	return res
+}
+
+// Equals returns true if the values in the struct are equal.
+func (p *PreferencesModel) Equals(com *PreferencesModel) bool {
+
+	if p.ID.String() == com.ID.String() &&
+		p.DisplayName == com.DisplayName &&
+		p.Email == com.Email &&
+		p.Theme == com.Theme {
+		return true
+	}
+	return false
+
 }

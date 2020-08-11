@@ -7,7 +7,7 @@ const DatabaseTypers = "typers"
 const CollectionsUser = "users"
 
 // CollectionsPreferences is the name of the perferences collection
-const CollectionsPreferences = "perferences"
+const CollectionsPreferences = "preferences"
 
 // CollectionsRaceSnippets is the name of the race snippets collection
 const CollectionsRaceSnippets = "racesnippets"

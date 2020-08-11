@@ -1,8 +1,6 @@
 package db
 
-import (
-	"go.mongodb.org/mongo-driver/bson/primitive"
-)
+import "go.mongodb.org/mongo-driver/bson/primitive"
 
 // RaceSnippet is a model for a mongodb racesnippet
 type RaceSnippet struct {

@@ -6,6 +6,7 @@ import (
 	"time"
 
 	"go.mongodb.org/mongo-driver/bson"
+	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
@@ -21,7 +22,7 @@ func (c *Client) AddRaceSnippet(ctx context.Context, snippet *RaceSnippet) (stri
 
 // DeleteRaceSnippetByID will delete a race snippet by the id given.  If it is successful,
 // then it will return a nil error, otherwise it will return an error.
-func (c *Client) DeleteRaceSnippetByID(ctx context.Context, id string) error {
+func (c *Client) DeleteRaceSnippetByID(ctx context.Context, id primitive.ObjectID) error {
 	collection := c.client.Database(DatabaseTypers).Collection(CollectionsRaceSnippets)
 
 	err := c.deleteFromCollectionByID(ctx, collection, id)
@@ -31,7 +32,7 @@ func (c *Client) DeleteRaceSnippetByID(ctx context.Context, id string) error {
 
 // GetRaceSnippetByID gets a race snippet by ID and then returns the RaceSnippet if it is
 // successful.
-func (c *Client) GetRaceSnippetByID(ctx context.Context, id string) (*RaceSnippet, error) {
+func (c *Client) GetRaceSnippetByID(ctx context.Context, id primitive.ObjectID) (*RaceSnippet, error) {
 	collection := c.client.Database(DatabaseTypers).Collection(CollectionsRaceSnippets)
 
 	var raceSnippet RaceSnippet
