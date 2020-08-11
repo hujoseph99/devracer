@@ -67,7 +67,26 @@ func TestAddAndDeleteOAuthUser(t *testing.T) {
 }
 
 func TestFindUserByID(t *testing.T) {
+	testUser := NewUser("foo", "foo", "foo", "", "", "", time.Now())
 
+	id, err := client.AddUser(context.Background(), testUser)
+	if err != nil {
+		t.Fatal("Document was not added")
+	}
+
+	foundUser, err := client.FindUserByID(context.Background(), id, RegularID)
+
+	// checking username and password is good enough for me
+	if err != nil || foundUser.ID != id || foundUser.Username != testUser.Username ||
+		foundUser.Password != testUser.Password {
+
+		t.Fatal("Document was not found correctly")
+	}
+
+	err = client.DeleteUserByID(context.Background(), id, RegularID)
+	if err != nil {
+		t.Fatal("Document was not deleted")
+	}
 }
 
 func TestMain(m *testing.M) {

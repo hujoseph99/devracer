@@ -29,7 +29,7 @@ func (c *Client) addDocumentToCollection(ctx context.Context,
 }
 
 // getBsonId gets a bson.M object for
-func getBsonId(id string, idType int) (bson.M, error) {
+func getBsonID(id string, idType int) (bson.M, error) {
 	var idKey string
 
 	if idType == RegularID {
@@ -48,9 +48,8 @@ func getBsonId(id string, idType int) (bson.M, error) {
 			return nil, err
 		}
 		return bson.M{idKey: objID}, nil
-	} else {
-		return bson.M{idKey: id}, nil
 	}
+	return bson.M{idKey: id}, nil
 }
 
 // deleteFromCollectionByID will delete a document from the given collection by ID.
@@ -59,7 +58,7 @@ func getBsonId(id string, idType int) (bson.M, error) {
 func (c *Client) deleteFromCollectionByID(ctx context.Context,
 	collection *mongo.Collection, id string, idType int) error {
 
-	bsonID, err := getBsonId(id, idType)
+	bsonID, err := getBsonID(id, idType)
 	if err != nil {
 		return err
 	}
@@ -79,14 +78,14 @@ func (c *Client) deleteFromCollectionByID(ctx context.Context,
 // getDocumentFromCollectionByID will get a document from a given collection
 // matches the given id and will populate it into the given model.
 func (c *Client) getDocumentFromCollectionByID(ctx context.Context,
-	collection *mongo.Collection, id string, model interface{}) error {
+	collection *mongo.Collection, id string, idType int, model interface{}) error {
 
-	objID, err := primitive.ObjectIDFromHex(id)
+	bsonID, err := getBsonID(id, idType)
 	if err != nil {
 		return err
 	}
 
-	err = collection.FindOne(ctx, bson.M{"_id": objID}).Decode(model)
+	err = collection.FindOne(ctx, bsonID).Decode(model)
 	if err != nil {
 		return err
 	}

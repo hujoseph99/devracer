@@ -31,11 +31,11 @@ func (c *Client) DeleteRaceSnippetByID(ctx context.Context, id string) error {
 
 // GetRaceSnippetByID gets a race snippet by ID and then returns the RaceSnippet if it is
 // successful.
-func (c *Client) GetRaceSnippetByID(ctx context.Context, id string) (*RaceSnippet, error) {
+func (c *Client) GetRaceSnippetByID(ctx context.Context, id string, idType int) (*RaceSnippet, error) {
 	collection := c.client.Database(DatabaseTypers).Collection(CollectionsRaceSnippets)
 
 	var raceSnippet RaceSnippet
-	err := c.getDocumentFromCollectionByID(ctx, collection, id, &raceSnippet)
+	err := c.getDocumentFromCollectionByID(ctx, collection, id, idType, &raceSnippet)
 	if err != nil {
 		return nil, err
 	}

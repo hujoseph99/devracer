@@ -32,11 +32,11 @@ func (c *Client) DeleteUserByID(ctx context.Context, id string, idType int) erro
 
 // FindUserByID finds a user given the id and then returns the user if it is
 // successful.
-func (c *Client) FindUserByID(ctx context.Context, id string) (*UserModel, error) {
+func (c *Client) FindUserByID(ctx context.Context, id string, idType int) (*UserModel, error) {
 	collection := c.client.Database(DatabaseTypers).Collection(CollectionsUser)
 
 	var user UserModel
-	err := c.getDocumentFromCollectionByID(ctx, collection, id, &user)
+	err := c.getDocumentFromCollectionByID(ctx, collection, id, idType, &user)
 	if err != nil {
 		return nil, err
 	}
@@ -44,19 +44,19 @@ func (c *Client) FindUserByID(ctx context.Context, id string) (*UserModel, error
 }
 
 // FindUserByUsername will find a user by their username in the db
-func (c *Client) FindUserByUsername(ctx context.Context, username string) (*UserModel, error) {
-	collection := c.client.Database(DatabaseTypers).Collection(CollectionsUser)
+// func (c *Client) FindUserByUsername(ctx context.Context, username string) (*UserModel, error) {
+// 	collection := c.client.Database(DatabaseTypers).Collection(CollectionsUser)
 
-	params := make(map[string]string)
-	params["username"] = username
+// 	params := make(map[string]string)
+// 	params["username"] = username
 
-	var user UserModel
-	err := c.getDocumentFromCollection(ctx, collection, params, &user)
-	if err != nil {
-		return nil, err
-	}
-	return &user, nil
-}
+// 	var user UserModel
+// 	err := c.getDocumentFromCollection(ctx, collection, params, &user)
+// 	if err != nil {
+// 		return nil, err
+// 	}
+// 	return &user, nil
+// }
 
 // // FindUserByEmail will find a user by their email in the db
 // func (c *Client) FindUserByEmail(ctx context.Context, email string) (*UserModel, error) {
