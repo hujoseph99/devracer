@@ -12,12 +12,23 @@ import (
 )
 
 // AddRaceSnippet adds a given RaceSnippet to a mongo client.  If it is successful
-// then it will return the id in the form of a string
-func (c *Client) AddRaceSnippet(ctx context.Context, snippet *RaceSnippet) (string, error) {
+// then it will add the id to the given snippet.  Otherwise, it will return an
+// error.
+func (c *Client) AddRaceSnippet(ctx context.Context, snippet *RaceSnippet) error {
 	collection := c.client.Database(DatabaseTypers).Collection(CollectionsRaceSnippets)
 
 	id, err := c.addDocumentToCollection(ctx, collection, snippet)
-	return id, err
+	if err != nil {
+		return err
+	}
+
+	snippetID, err := primitive.ObjectIDFromHex(id)
+	if err != nil {
+		return err
+	}
+
+	snippet.ID = snippetID
+	return nil
 }
 
 // DeleteRaceSnippetByID will delete a race snippet by the id given.  If it is successful,
