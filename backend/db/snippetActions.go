@@ -6,6 +6,7 @@ import (
 	"time"
 
 	"go.mongodb.org/mongo-driver/bson"
+	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
@@ -21,7 +22,12 @@ func (c *Client) AddRaceSnippet(ctx context.Context, snippet *RaceSnippet) error
 		return err
 	}
 
-	snippet.ID = *id
+	snippetID, err := primitive.ObjectIDFromHex(id)
+	if err != nil {
+		return err
+	}
+
+	snippet.ID = snippetID
 	return nil
 }
 
@@ -30,7 +36,7 @@ func (c *Client) AddRaceSnippet(ctx context.Context, snippet *RaceSnippet) error
 func (c *Client) DeleteRaceSnippetByID(ctx context.Context, id string) error {
 	collection := c.client.Database(DatabaseTypers).Collection(CollectionsRaceSnippets)
 
-	err := c.deleteFromCollectionByID(ctx, collection, id, RegularID)
+	err := c.deleteFromCollectionByID(ctx, collection, id)
 
 	return err
 }
@@ -41,7 +47,7 @@ func (c *Client) GetRaceSnippetByID(ctx context.Context, id string) (*RaceSnippe
 	collection := c.client.Database(DatabaseTypers).Collection(CollectionsRaceSnippets)
 
 	var raceSnippet RaceSnippet
-	err := c.getDocumentFromCollectionByID(ctx, collection, id, RegularID, &raceSnippet)
+	err := c.getDocumentFromCollectionByID(ctx, collection, id, &raceSnippet)
 	if err != nil {
 		return nil, err
 	}

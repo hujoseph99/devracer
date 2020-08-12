@@ -2,7 +2,35 @@ package db
 
 import (
 	"context"
+	"fmt"
+
+	"go.mongodb.org/mongo-driver/bson"
+	"go.mongodb.org/mongo-driver/bson/primitive"
 )
+
+// getBsonId gets a bson.M object for
+func getBsonID(id string, idType int) (bson.M, error) {
+	var idKey string
+
+	if idType == RegularID {
+		idKey = "_id"
+	} else if idType == GoogleID {
+		idKey = "googleID"
+	} else if idType == GithubID {
+		idKey = "githubID"
+	} else if idType == FacebookID {
+		idKey = "facebookID"
+	}
+
+	if idType == RegularID {
+		objID, err := primitive.ObjectIDFromHex(id)
+		if err != nil {
+			return nil, err
+		}
+		return bson.M{idKey: objID}, nil
+	}
+	return bson.M{idKey: id}, nil
+}
 
 // AddUser adds a given user to a mongo client.  If it is successful, then it
 // will add it to the given user object and return a nil error.  We are assuming
@@ -16,7 +44,12 @@ func (c *Client) AddUser(ctx context.Context, user *UserModel) error {
 		return err
 	}
 
-	user.ID = *id
+	userID, err := primitive.ObjectIDFromHex(id)
+	if err != nil {
+		return err
+	}
+
+	user.ID = userID
 	return nil
 }
 
@@ -25,8 +58,19 @@ func (c *Client) AddUser(ctx context.Context, user *UserModel) error {
 func (c *Client) DeleteUserByID(ctx context.Context, id string, idType int) error {
 	collection := c.client.Database(DatabaseTypers).Collection(CollectionsUser)
 
-	err := c.deleteFromCollectionByID(ctx, collection, id, idType)
-	return err
+	bsonID, err := getBsonID(id, idType)
+	if err != nil {
+		return err
+	}
+
+	del, err := collection.DeleteOne(ctx, bsonID)
+	if err != nil {
+		return err
+	} else if del.DeletedCount == 0 {
+		return fmt.Errorf("ERROR: The document was not found")
+	}
+
+	return nil
 }
 
 // FindUserByID finds a user given the id and then returns the user if it is
@@ -34,11 +78,14 @@ func (c *Client) DeleteUserByID(ctx context.Context, id string, idType int) erro
 func (c *Client) FindUserByID(ctx context.Context, id string, idType int) (*UserModel, error) {
 	collection := c.client.Database(DatabaseTypers).Collection(CollectionsUser)
 
-	var user UserModel
-	err := c.getDocumentFromCollectionByID(ctx, collection, id, idType, &user)
+	bsonID, err := getBsonID(id, idType)
 	if err != nil {
 		return nil, err
 	}
+
+	var user UserModel
+	err = collection.FindOne(ctx, bsonID).Decode(&user)
+
 	return &user, nil
 }
 

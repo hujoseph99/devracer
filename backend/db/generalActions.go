@@ -13,59 +13,32 @@ import (
 // addDocumentToCollection will add a document to the given collection.  If it is
 // then it will return the id in the form of a string.
 func (c *Client) addDocumentToCollection(ctx context.Context,
-	collection *mongo.Collection, doc interface{}) (*primitive.ObjectID, error) {
+	collection *mongo.Collection, doc interface{}) (string, error) {
 
 	insertResult, err := collection.InsertOne(ctx, doc)
 	if err != nil {
-		return nil, err
+		return "", err
 	}
 
 	// should not ever fail because gotten directly from insert command
 	id, _ := insertResult.InsertedID.(primitive.ObjectID)
+	res := id.Hex()
 
 	log.Printf("Inserted: %v\n", id)
-	return &id, nil
-}
-
-// getBsonId gets a bson.M object for
-func getBsonID(id string, idType int) (bson.M, error) {
-	var idKey string
-
-	if idType == RegularID {
-		idKey = "_id"
-	} else if idType == GoogleID {
-		idKey = "googleID"
-	} else if idType == GithubID {
-		idKey = "githubID"
-	} else if idType == FacebookID {
-		idKey = "facebookID"
-	}
-
-	if idType == RegularID {
-		objID, err := primitive.ObjectIDFromHex(id)
-		if err != nil {
-			return nil, err
-		}
-		return bson.M{idKey: objID}, nil
-	}
-	return bson.M{idKey: id}, nil
+	return res, nil
 }
 
 // deleteFromCollectionByID will delete a document from the given collection by ID.
 // If it is successful, then the error will be nil, otherwise it will be a valid
 // error.
 func (c *Client) deleteFromCollectionByID(ctx context.Context,
-	collection *mongo.Collection, id string, idType int) error {
+	collection *mongo.Collection, id string) error {
 
-	bsonID, err := getBsonID(id, idType)
+	del, err := collection.DeleteOne(ctx, bson.M{"_id": id})
 	if err != nil {
 		return err
 	}
 
-	del, err := collection.DeleteOne(ctx, bsonID)
-	if err != nil {
-		return err
-	}
 	if del.DeletedCount == 0 {
 		return fmt.Errorf("ERROR: Could not delete the document")
 	}
@@ -77,14 +50,9 @@ func (c *Client) deleteFromCollectionByID(ctx context.Context,
 // getDocumentFromCollectionByID will get a document from a given collection
 // matches the given id and will populate it into the given model.
 func (c *Client) getDocumentFromCollectionByID(ctx context.Context,
-	collection *mongo.Collection, id string, idType int, model interface{}) error {
+	collection *mongo.Collection, id string, model interface{}) error {
 
-	bsonID, err := getBsonID(id, idType)
-	if err != nil {
-		return err
-	}
-
-	err = collection.FindOne(ctx, bsonID).Decode(model)
+	err := collection.FindOne(ctx, bson.M{"_id": id}).Decode(model)
 	if err != nil {
 		return err
 	}
