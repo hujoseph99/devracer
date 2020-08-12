@@ -16,7 +16,7 @@ const (
 
 // UserModel is a model for user data that will be used for authentication
 type UserModel struct {
-	ID           primitive.ObjectID `bson:"_id,omitempty" json:"_id,omitempty"`
+	ID           primitive.ObjectID `bson:"_id" json:"_id"`
 	Username     string             `bson:"username" json:"username"`
 	Password     string             `bson:"password" json:"password"`
 	Salt         string             `bson:"salt" json:"salt"`
