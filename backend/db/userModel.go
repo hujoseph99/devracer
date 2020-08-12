@@ -2,6 +2,8 @@ package db
 
 import (
 	"time"
+
+	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
 // emulated enum to represent id types
@@ -14,14 +16,14 @@ const (
 
 // UserModel is a model for user data that will be used for authentication
 type UserModel struct {
-	ID           string    `bson:"_id,omitempty" json:"_id,omitempty"`
-	Username     string    `bson:"username" json:"username"`
-	Password     string    `bson:"password" json:"password"`
-	Salt         string    `bson:"salt" json:"salt"`
-	GoogleID     string    `bson:"googleID" json:"googleID"`
-	GithubID     string    `bson:"githubID" json:"githubID"`
-	FacebookID   string    `bson:"facebookID" json:"facebookID"`
-	RegisterDate time.Time `bson:"registerDate" json:"registerDate"`
+	ID           primitive.ObjectID `bson:"_id,omitempty" json:"_id,omitempty"`
+	Username     string             `bson:"username" json:"username"`
+	Password     string             `bson:"password" json:"password"`
+	Salt         string             `bson:"salt" json:"salt"`
+	GoogleID     string             `bson:"googleID" json:"googleID"`
+	GithubID     string             `bson:"githubID" json:"githubID"`
+	FacebookID   string             `bson:"facebookID" json:"facebookID"`
+	RegisterDate time.Time          `bson:"registerDate" json:"registerDate"`
 }
 
 // NewUser is the constructor for User - it creates a new User object

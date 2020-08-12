@@ -26,12 +26,14 @@ func TestAddAndDelete(t *testing.T) {
 	collection := client.client.Database(DatabaseTypers).Collection(CollectionsUser)
 
 	startingNum := getNumDocuments(t, collection)
-	id, err := client.AddUser(context.Background(), testUser)
+	err := client.AddUser(context.Background(), testUser)
 	changedNum := getNumDocuments(t, collection)
 
 	if err != nil || changedNum != startingNum+1 {
 		t.Fatal("Document was not added")
 	}
+
+	id := testUser.ID.Hex()
 
 	err = client.DeleteUserByID(context.Background(), id, RegularID)
 	changedNum = getNumDocuments(t, collection)
@@ -48,7 +50,7 @@ func TestAddAndDeleteOAuthUser(t *testing.T) {
 	collection := client.client.Database(DatabaseTypers).Collection(CollectionsUser)
 
 	startingNum := getNumDocuments(t, collection)
-	_, err := client.AddUser(context.Background(), testUser)
+	err := client.AddUser(context.Background(), testUser)
 	changedNum := getNumDocuments(t, collection)
 
 	if err != nil || changedNum != startingNum+1 {
@@ -69,15 +71,17 @@ func TestAddAndDeleteOAuthUser(t *testing.T) {
 func TestFindUserByID(t *testing.T) {
 	testUser := NewUser("foo", "foo", "foo", "", "", "", time.Now())
 
-	id, err := client.AddUser(context.Background(), testUser)
+	err := client.AddUser(context.Background(), testUser)
 	if err != nil {
 		t.Fatal("Document was not added")
 	}
 
+	id := testUser.ID.Hex()
+
 	foundUser, err := client.FindUserByID(context.Background(), id, RegularID)
 
 	// checking username and password is good enough for me
-	if err != nil || foundUser.ID != id || foundUser.Username != testUser.Username ||
+	if err != nil || foundUser.ID.Hex() != id || foundUser.Username != testUser.Username ||
 		foundUser.Password != testUser.Password {
 
 		t.Fatal("Document was not found correctly")

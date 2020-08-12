@@ -11,12 +11,18 @@ import (
 )
 
 // AddRaceSnippet adds a given RaceSnippet to a mongo client.  If it is successful
-// then it will return the id in the form of a string
-func (c *Client) AddRaceSnippet(ctx context.Context, snippet *RaceSnippet) (string, error) {
+// then it will add the id to the given snippet.  Otherwise, it will return an
+// error.
+func (c *Client) AddRaceSnippet(ctx context.Context, snippet *RaceSnippet) error {
 	collection := c.client.Database(DatabaseTypers).Collection(CollectionsRaceSnippets)
 
 	id, err := c.addDocumentToCollection(ctx, collection, snippet)
-	return id, err
+	if err != nil {
+		return err
+	}
+
+	snippet.ID = *id
+	return nil
 }
 
 // DeleteRaceSnippetByID will delete a race snippet by the id given.  If it is successful,
@@ -31,11 +37,11 @@ func (c *Client) DeleteRaceSnippetByID(ctx context.Context, id string) error {
 
 // GetRaceSnippetByID gets a race snippet by ID and then returns the RaceSnippet if it is
 // successful.
-func (c *Client) GetRaceSnippetByID(ctx context.Context, id string, idType int) (*RaceSnippet, error) {
+func (c *Client) GetRaceSnippetByID(ctx context.Context, id string) (*RaceSnippet, error) {
 	collection := c.client.Database(DatabaseTypers).Collection(CollectionsRaceSnippets)
 
 	var raceSnippet RaceSnippet
-	err := c.getDocumentFromCollectionByID(ctx, collection, id, idType, &raceSnippet)
+	err := c.getDocumentFromCollectionByID(ctx, collection, id, RegularID, &raceSnippet)
 	if err != nil {
 		return nil, err
 	}

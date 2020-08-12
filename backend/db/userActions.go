@@ -5,20 +5,19 @@ import (
 )
 
 // AddUser adds a given user to a mongo client.  If it is successful, then it
-// will return the id in the form of a string and add it to the user model.  We
-// are assuming that the password is already hashed and salted (if it is meant
-// to be).
-func (c *Client) AddUser(ctx context.Context, user *UserModel) (string, error) {
+// will add it to the given user object and return a nil error.  We are assuming
+// that the password is already hashed and salted.
+func (c *Client) AddUser(ctx context.Context, user *UserModel) error {
 	collection := c.client.Database(DatabaseTypers).Collection(CollectionsUser)
 
 	id, err := c.addDocumentToCollection(ctx, collection, user)
 
 	if err != nil {
-		return "", err
+		return err
 	}
 
-	user.ID = id
-	return id, nil
+	user.ID = *id
+	return nil
 }
 
 // DeleteUserByID will delete a user by the given id.  If it is successful, then
