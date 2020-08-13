@@ -65,7 +65,7 @@ func TestAddAndDeleteOAuthUser(t *testing.T) {
 	}
 }
 
-func TestFindUserByID(t *testing.T) {
+func TestGetUserByID(t *testing.T) {
 	testUser := NewUser("foo", "foo", "foo", "", "", "", time.Now())
 
 	err := client.AddUser(context.Background(), testUser)
@@ -75,7 +75,7 @@ func TestFindUserByID(t *testing.T) {
 
 	id := testUser.ID.Hex()
 
-	foundUser, err := client.FindUserByID(context.Background(), id, RegularID)
+	foundUser, err := client.GetUserByID(context.Background(), id, RegularID)
 
 	// checking username and password is good enough for me
 	if err != nil || foundUser.ID.Hex() != id || foundUser.Username != testUser.Username ||

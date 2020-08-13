@@ -36,7 +36,7 @@ func TestPreferences(t *testing.T) {
 	pref := NewPreferences(userid, "", "", "")
 
 	var getAndCheckPreferences = func() {
-		checkPref, err := client.GetPreferences(context.TODO(), userid)
+		checkPref, err := client.GetPreferencesByID(context.TODO(), userid)
 		if err != nil {
 			t.Error("Could not do GetPreferences " + err.Error())
 		}

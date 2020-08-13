@@ -75,7 +75,7 @@ func (c *Client) DeleteUserByID(ctx context.Context, id string, idType int) erro
 
 // FindUserByID finds a user given the id and then returns the user if it is
 // successful.
-func (c *Client) FindUserByID(ctx context.Context, id string, idType int) (*UserModel, error) {
+func (c *Client) GetUserByID(ctx context.Context, id string, idType int) (*UserModel, error) {
 	collection := c.client.Database(DatabaseTypers).Collection(CollectionsUser)
 
 	bsonID, err := getBsonID(id, idType)

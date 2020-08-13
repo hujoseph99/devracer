@@ -8,7 +8,7 @@ import (
 )
 
 // GetPreferences returns the preferences for a user.
-func (c *Client) GetPreferences(ctx context.Context, id primitive.ObjectID) (*PreferencesModel, error) {
+func (c *Client) GetPreferencesByID(ctx context.Context, id primitive.ObjectID) (*PreferencesModel, error) {
 	collection := c.client.Database(DatabaseTypers).Collection(CollectionsPreferences)
 
 	pref := PreferencesModel{}
