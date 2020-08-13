@@ -28,7 +28,6 @@ func (c *Client) AddProfile(ctx context.Context, profile *ProfileModel) error {
 // DeleteProfileByID will delete a profile by the given id.  If it is successful, then
 // it will return a nil error, otherwise it will return an error.
 func (c *Client) DeleteProfileByID(ctx context.Context, id primitive.ObjectID) error {
-
 	collection := c.client.Database(DatabaseTypers).Collection(CollectionProfiles)
 
 	err := c.deleteFromCollectionByID(ctx, collection, id)
@@ -36,4 +35,17 @@ func (c *Client) DeleteProfileByID(ctx context.Context, id primitive.ObjectID) e
 		return err
 	}
 	return nil
+}
+
+// GetProfileByID will get a profile from the database by the given id
+func (c *Client) GetProfileByID(ctx context.Context, id primitive.ObjectID) (*ProfileModel, error) {
+	collection := c.client.Database(DatabaseTypers).Collection(CollectionProfiles)
+
+	var profileModel ProfileModel
+	err := c.getDocumentFromCollectionByID(ctx, collection, id, &profileModel)
+	if err != nil {
+		return nil, err
+	}
+
+	return &profileModel, nil
 }
