@@ -11,11 +11,11 @@ import (
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
-// AddRaceSnippet adds a given RaceSnippet to a mongo client.  If it is successful
+// AddSnippet adds a given snippet to a mongo client.  If it is successful
 // then it will add the id to the given snippet.  Otherwise, it will return an
 // error.
-func (c *Client) AddRaceSnippet(ctx context.Context, snippet *RaceSnippet) error {
-	collection := c.client.Database(DatabaseTypers).Collection(CollectionsRaceSnippets)
+func (c *Client) AddSnippet(ctx context.Context, snippet *Snippet) error {
+	collection := c.client.Database(DatabaseTypers).Collection(CollectionsSnippets)
 
 	id, err := c.addDocumentToCollection(ctx, collection, snippet)
 	if err != nil {
@@ -31,33 +31,34 @@ func (c *Client) AddRaceSnippet(ctx context.Context, snippet *RaceSnippet) error
 	return nil
 }
 
-// DeleteRaceSnippetByID will delete a race snippet by the id given.  If it is successful,
+// DeleteSnippetByID will delete a snippet by the id given.  If it is successful,
 // then it will return a nil error, otherwise it will return an error.
-func (c *Client) DeleteRaceSnippetByID(ctx context.Context, id primitive.ObjectID) error {
-	collection := c.client.Database(DatabaseTypers).Collection(CollectionsRaceSnippets)
+func (c *Client) DeleteSnippetByID(ctx context.Context, id primitive.ObjectID) error {
+	collection := c.client.Database(DatabaseTypers).Collection(CollectionsSnippets)
 
 	err := c.deleteFromCollectionByID(ctx, collection, id)
 
 	return err
 }
 
-// GetRaceSnippetByID gets a race snippet by ID and then returns the RaceSnippet if it is
+// GetSnippetByID gets a race snippet by ID and then returns the RaceSnippet if it is
 // successful.
-func (c *Client) GetRaceSnippetByID(ctx context.Context, id primitive.ObjectID) (*RaceSnippet, error) {
-	collection := c.client.Database(DatabaseTypers).Collection(CollectionsRaceSnippets)
+func (c *Client) GetSnippetByID(ctx context.Context, id primitive.ObjectID) (*Snippet, error) {
+	collection := c.client.Database(DatabaseTypers).Collection(CollectionsSnippets)
 
-	var raceSnippet RaceSnippet
-	err := c.getDocumentFromCollectionByID(ctx, collection, id, &raceSnippet)
+	var snippet Snippet
+	err := c.getDocumentFromCollectionByID(ctx, collection, id, &snippet)
 	if err != nil {
 		return nil, err
 	}
-	return &raceSnippet, nil
+	return &snippet, nil
 }
 
-// GetRandomRaceSnippet gets a random race snippet if one can be found.  Otherwise,
+// GetRandomSnippet gets a random race snippet if one can be found.  Otherwise,
 // it will return an error.
-func (c *Client) GetRandomRaceSnippet(ctx context.Context) (*RaceSnippet, error) {
-	collection := c.client.Database(DatabaseTypers).Collection(CollectionsRaceSnippets)
+func (c *Client) GetRandomSnippet(ctx context.Context) (*Snippet, error) {
+	collection := c.client.Database(DatabaseTypers).Collection(CollectionsSnippets)
+
 	randSnippet := bson.D{{Key: "$sample", Value: bson.D{{Key: "size", Value: 1}}}}
 	opts := options.Aggregate().SetMaxTime(2 * time.Second)
 	cursor, err := collection.Aggregate(ctx, mongo.Pipeline{randSnippet}, opts)
@@ -72,7 +73,7 @@ func (c *Client) GetRandomRaceSnippet(ctx context.Context) (*RaceSnippet, error)
 	} else if len(res) == 0 {
 		return nil, fmt.Errorf("No races were found")
 	}
-	var snippet RaceSnippet
+	var snippet Snippet
 	bsonBytes, _ := bson.Marshal(res[0])
 	bson.Unmarshal(bsonBytes, &snippet)
 	return &snippet, nil

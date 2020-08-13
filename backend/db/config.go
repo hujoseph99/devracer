@@ -14,3 +14,5 @@ const CollectionProfiles = "profiles"
 
 // CollectionsRaceSnippets is the name of the race snippets collection
 const CollectionsRaceSnippets = "racesnippets"
+
+const CollectionsSnippets = "snippets"
