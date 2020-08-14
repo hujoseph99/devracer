@@ -6,7 +6,7 @@ import (
 
 // PreferencesModel is a model for storing preferences
 type PreferencesModel struct {
-	ID          primitive.ObjectID `bson:"_id" json:"_id"`
+	ID          primitive.ObjectID `bson:"_id,omitempty" json:"_id,omitempty"`
 	DisplayName string             `bson:"displayName" json:"displayName"`
 	Email       string             `bson:"email" json:"email"`
 	Theme       string             `bson:"theme" json:"theme"`

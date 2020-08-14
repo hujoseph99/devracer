@@ -6,7 +6,7 @@ import (
 
 // ProfileModel is a model for user profile data
 type ProfileModel struct {
-	ID                primitive.ObjectID `bson:"_id" json:"_id"`
+	ID                primitive.ObjectID `bson:"_id,omitempty" json:"_id,omitempty"`
 	TotalWordsTyped   int                `bson:"totalWordsTyped" json:"totalWordsTyped"`
 	RacesCompleted    int                `bson:"racesCompleted" json:"racesCompleted"`
 	RacesWon          int                `bson:"racesWon" json:"racesWon"`
