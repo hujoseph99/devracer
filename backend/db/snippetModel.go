@@ -16,7 +16,7 @@ const (
 
 // Snippet is a model for a mongodb
 type Snippet struct {
-	ID          primitive.ObjectID `bson:"_id" json:"_id"`
+	ID          primitive.ObjectID `bson:"_id,omitempty" json:"_id,omitempty"`
 	Snippet     string             `bson:"snippet" json:"snippet"`
 	Language    int                `bson:"language" json:"snippetId"`
 	UsageCount  int                `bson:"usageCount" json:"usageCount"`
