@@ -22,12 +22,7 @@ func (c *Client) AddSnippet(ctx context.Context, snippet *Snippet) error {
 		return err
 	}
 
-	snippetID, err := primitive.ObjectIDFromHex(id)
-	if err != nil {
-		return err
-	}
-
-	snippet.ID = snippetID
+	snippet.ID = id
 	return nil
 }
 

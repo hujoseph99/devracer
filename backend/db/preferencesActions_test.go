@@ -2,13 +2,11 @@ package db
 
 import (
 	"context"
-	"os"
+	"reflect"
 	"testing"
 
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
-
-var client *Client
 
 // func TestBasic(t *testing.T) {
 // 	user := NewUser("a", "pass", "salt", "", "", "", time.Now())
@@ -41,7 +39,7 @@ func TestPreferences(t *testing.T) {
 			t.Error("Could not do GetPreferences " + err.Error())
 		}
 
-		if !pref.Equals(checkPref) {
+		if !reflect.DeepEqual(pref, checkPref) {
 			t.Error("GetPreferences does not return the same values")
 		}
 	}
@@ -57,15 +55,4 @@ func TestPreferences(t *testing.T) {
 	getAndCheckPreferences()
 
 	client.DeletePreferencesByID(context.TODO(), userid)
-}
-
-func TestMain(m *testing.M) {
-	var err error
-	client, err = ConnectToDB(context.TODO())
-
-	if err != nil {
-		os.Exit(1)
-	}
-
-	os.Exit(m.Run())
 }

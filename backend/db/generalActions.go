@@ -13,19 +13,18 @@ import (
 // addDocumentToCollection will add a document to the given collection.  If it is
 // then it will return the id in the form of a string.
 func (c *Client) addDocumentToCollection(ctx context.Context,
-	collection *mongo.Collection, doc interface{}) (string, error) {
+	collection *mongo.Collection, doc interface{}) (primitive.ObjectID, error) {
 
 	insertResult, err := collection.InsertOne(ctx, doc)
 	if err != nil {
-		return "", err
+		return primitive.NilObjectID, err
 	}
 
 	// should not ever fail because gotten directly from insert command
 	id, _ := insertResult.InsertedID.(primitive.ObjectID)
-	res := id.Hex()
 
 	log.Printf("Inserted: %v\n", id)
-	return res, nil
+	return id, nil
 }
 
 // deleteFromCollectionByID will delete a document from the given collection by ID.

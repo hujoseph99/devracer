@@ -24,12 +24,26 @@ type RaceParticipantModel struct {
 	WordsIncorrect      int    `bson:"wordsIncorrect" json:"wordsIncorrect"`
 }
 
-// NewRaceHistoryModel returns a new NewRaceSnippet.
-func NewRaceHistoryModel(snippetID string, raceParticipants []RaceParticipantModel, date *time.Time) *RaceHistoryModel {
+// NewRaceHistory returns a new RaceHistoryModel.
+func NewRaceHistory(snippetID string, raceParticipants []RaceParticipantModel, date time.Time) *RaceHistoryModel {
 	res := &RaceHistoryModel{
 		SnippetID:        snippetID,
 		RaceParticipants: raceParticipants,
-		Date:             *date,
+		Date:             date,
+	}
+
+	return res
+}
+
+// NewRaceParticipant returns a new NewRaceSnippet.
+func NewRaceParticipant(playerID string, wpm int, time int, charactersCorrect int, charactersIncorrect int, wordsIncorrect int) *RaceParticipantModel {
+	res := &RaceParticipantModel{
+		PlayerID:            playerID,
+		Wpm:                 wpm,
+		Time:                time,
+		CharactersCorrect:   charactersCorrect,
+		CharactersIncorrect: charactersIncorrect,
+		WordsIncorrect:      wordsIncorrect,
 	}
 
 	return res

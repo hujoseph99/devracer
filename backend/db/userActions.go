@@ -44,12 +44,7 @@ func (c *Client) AddUser(ctx context.Context, user *UserModel) error {
 		return err
 	}
 
-	userID, err := primitive.ObjectIDFromHex(id)
-	if err != nil {
-		return err
-	}
-
-	user.ID = userID
+	user.ID = id
 	return nil
 }
 
@@ -73,7 +68,7 @@ func (c *Client) DeleteUserByID(ctx context.Context, id string, idType int) erro
 	return nil
 }
 
-// FindUserByID finds a user given the id and then returns the user if it is
+// GetUserByID finds a user given the id and then returns the user if it is
 // successful.
 func (c *Client) GetUserByID(ctx context.Context, id string, idType int) (*UserModel, error) {
 	collection := c.client.Database(DatabaseTypers).Collection(CollectionsUser)

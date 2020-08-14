@@ -16,12 +16,7 @@ func (c *Client) AddProfile(ctx context.Context, profile *ProfileModel) error {
 		return err
 	}
 
-	profileID, err := primitive.ObjectIDFromHex(id)
-	if err != nil {
-		return err
-	}
-
-	profile.ID = profileID
+	profile.ID = id
 	return nil
 }
 

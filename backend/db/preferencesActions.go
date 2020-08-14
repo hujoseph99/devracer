@@ -7,7 +7,7 @@ import (
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
-// GetPreferences returns the preferences for a user.
+// GetPreferencesByID returns the preferences for a user.
 func (c *Client) GetPreferencesByID(ctx context.Context, id primitive.ObjectID) (*PreferencesModel, error) {
 	collection := c.client.Database(DatabaseTypers).Collection(CollectionsPreferences)
 
