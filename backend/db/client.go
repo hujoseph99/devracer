@@ -22,7 +22,7 @@ func ConnectToDB(ctx context.Context) (*Client, error) {
 	}
 
 	// set client options -- get URI
-	clientOptions := options.Client().ApplyURI(MongoURI)
+	clientOptions := options.Client().ApplyURI(getMongoURI())
 
 	// Connet to MongoDB
 	client, err := mongo.Connect(ctx, clientOptions)

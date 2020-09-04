@@ -6,4 +6,4 @@ config
 
 build
 typingBackend
-credentials.go
+secrets.go
