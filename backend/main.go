@@ -15,7 +15,7 @@ func main() {
 		log.Fatal(err)
 	}
 	myAPI.SetupRouter()
-	http.ListenAndServe(":5000", myAPI.Router)
+	http.ListenAndServe(":8080", myAPI.Router)
 
 	// ctx := context.Background()
 
