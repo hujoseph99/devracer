@@ -3,6 +3,8 @@ node_modules
 .prettierignore
 config
 *.swp
+.vscode
+typing.code-workspace
 
 build
 typingBackend
