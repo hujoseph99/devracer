@@ -5,6 +5,8 @@ import (
 	"log"
 	"net/http"
 
+	"github.com/hujoseph99/typingBackend/auth"
+
 	"github.com/hujoseph99/typingBackend/api"
 )
 
@@ -15,6 +17,7 @@ func main() {
 		log.Fatal(err)
 	}
 	myAPI.SetupRouter()
+	auth.RegisterAuthEndpoints(myAPI)
 	http.ListenAndServe(":8080", myAPI.Router)
 
 	// ctx := context.Background()
