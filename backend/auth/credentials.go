@@ -1,13 +1,17 @@
 package auth
 
+import (
+	"github.com/hujoseph99/typingBackend/secret"
+)
+
 func getSecretStateString() string {
-	return secretStateString
+	return secret.SecretStateString
 }
 
 func getGithubClientID() string {
-	return githubClientID
+	return secret.GithubClientID
 }
 
 func getGithubClientSecret() string {
-	return githubClientSecret
+	return secret.GithubClientSecret
 }
