@@ -1,0 +1,9 @@
+version: "3.9"
+services:
+  frontend:
+    image: typing-frontend
+    ports:
+      - "3000:3000"
+    volumes:
+      - /Users/josephhu/Documents/Joseph/coding/projects/typing/frontend:/app
+    build: ./frontend
