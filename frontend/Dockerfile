@@ -1,11 +1,9 @@
 FROM node:14.16.0-alpine3.10
 
-WORKDIR /app
+WORKDIR /go/src/app
 
-ENV PATH /app/node_modules/.bin:$PATH
+COPY . .
 
-COPY . ./
+RUN go get
 
-RUN npm install
-
-CMD ["npm", "start"]
+CMD ["main"]
