@@ -5,7 +5,7 @@ import (
 	"encoding/json"
 	"net/http"
 
-	"github.com/hujoseph99/typingBackend/db"
+	"github.com/hujoseph99/typing/backend/db"
 )
 
 // const defaultErrorMessage = "An error has occurred. Please try again."

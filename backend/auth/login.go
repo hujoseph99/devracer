@@ -5,7 +5,7 @@ import (
 	"io/ioutil"
 	"net/http"
 
-	"github.com/hujoseph99/typingBackend/api"
+	"github.com/hujoseph99/typing/backend/api"
 	"golang.org/x/oauth2"
 	"golang.org/x/oauth2/github"
 )

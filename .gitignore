@@ -7,5 +7,3 @@ config
 typing.code-workspace
 
 build
-typingBackend
-secrets.go

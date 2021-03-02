@@ -5,8 +5,8 @@ import (
 	"log"
 	"net/http"
 
-	"github.com/hujoseph99/typingBackend/api"
-	"github.com/hujoseph99/typingBackend/auth"
+	"github.com/hujoseph99/typing/backend/api"
+	"github.com/hujoseph99/typing/backend/auth"
 )
 
 func main() {

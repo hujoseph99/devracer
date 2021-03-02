@@ -1,7 +1,7 @@
 package auth
 
 import (
-	"github.com/hujoseph99/typingBackend/secret"
+	"github.com/hujoseph99/typing/backend/secret"
 )
 
 func getSecretStateString() string {

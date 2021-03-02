@@ -1,4 +1,4 @@
-module github.com/hujoseph99/typingBackend
+module github.com/hujoseph99/typing/backend
 
 go 1.14
 
