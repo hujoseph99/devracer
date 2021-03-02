@@ -5,5 +5,11 @@ services:
     ports:
       - "3000:3000"
     volumes:
-      - /Users/josephhu/Documents/Joseph/coding/projects/typing/frontend:/app
+      - /Users/josephhu/coding/projects/typing/frontend:/app
     build: ./frontend
+  backend:
+    image: typing-backend
+    volumes:
+      - /Users/josephhu/coding/projects/typing/backend:/go/src/hujoseph99/typing
+    build: ./backend
+
