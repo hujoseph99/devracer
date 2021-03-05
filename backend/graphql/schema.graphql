@@ -1,0 +1,7 @@
+interface World {
+	message: String
+}
+
+type Query {
+	hello: World
+}
