@@ -7,6 +7,7 @@ import (
 
 	"github.com/hujoseph99/typing/backend/api"
 	"github.com/hujoseph99/typing/backend/auth"
+	"github.com/hujoseph99/typing/backend/graphql"
 )
 
 func main() {
@@ -17,6 +18,7 @@ func main() {
 	}
 	myAPI.SetupRouter()
 	auth.RegisterAuthEndpoints(myAPI)
+	graphql.RegisterEndpoints(myAPI)
 	http.ListenAndServe(":8080", myAPI.Router)
 
 	// ctx := context.Background()

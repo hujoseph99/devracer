@@ -4,6 +4,10 @@ import (
 	"github.com/graphql-go/graphql"
 )
 
+type world struct {
+	message string
+}
+
 var worldType = graphql.NewObject(
 	graphql.ObjectConfig{
 		Name: "World",
