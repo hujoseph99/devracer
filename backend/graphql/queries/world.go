@@ -18,5 +18,5 @@ var worldType = graphql.NewObject(
 					return nil, nil
 				},
 			},
-		}},
-)
+		},
+	})
