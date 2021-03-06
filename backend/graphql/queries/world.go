@@ -15,7 +15,7 @@ var worldType = graphql.NewObject(
 			"message": &graphql.Field{
 				Type: graphql.String,
 				Resolve: func(p graphql.ResolveParams) (interface{}, error) {
-					world, ok := p.Source.(world)
+					world, ok := p.Source.(*world)
 					if ok {
 						return world.message, nil
 					}

@@ -42,7 +42,6 @@ func RegisterEndpoints(api *api.API) {
 	})
 
 	api.Router.
-		Methods("GET").
 		Path("/graphql").
 		Handler(graphiqlHandler)
 }

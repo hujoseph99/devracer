@@ -4,6 +4,7 @@ import (
 	"github.com/graphql-go/graphql"
 )
 
+// RootQuery is the root query object for our graphql schema
 var RootQuery = graphql.NewObject(
 	graphql.ObjectConfig{
 		Name: "RootQuery",
