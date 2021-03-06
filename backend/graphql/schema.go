@@ -9,24 +9,6 @@ import (
 	"github.com/hujoseph99/typing/backend/graphql/queries"
 )
 
-// func executeQuery(query string, schema graphql.Schema) *graphql.Result {
-// 	result := graphql.Do(graphql.Params{
-// 		Schema:        schema,
-// 		RequestString: query,
-// 	})
-// 	if len(result.Errors) > 0 {
-// 		fmt.Printf("wrong result, unexpected errors: %v", result.Errors)
-// 	}
-// 	return result
-// }
-
-// func handleGraphql(w http.ResponseWriter, r *http.Request) {
-// 	w.Header().Set("Content-Type", "application/json")
-
-// 	result := executeQuery(r.URL.Query().Get("query"), schema)
-// 	json.NewEncoder(w).Encode(result)
-// }
-
 // RegisterEndpoints registers the endpoints for graphql
 func RegisterEndpoints(api *api.API) {
 	schemaConfig := graphql.SchemaConfig{Query: queries.RootQuery}
