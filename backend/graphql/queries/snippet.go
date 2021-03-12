@@ -1,4 +1,4 @@
-package graphql
+package queries
 
 import "github.com/graphql-go/graphql"
 
