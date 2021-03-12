@@ -2,7 +2,7 @@ package queries
 
 import "github.com/graphql-go/graphql"
 
-var newPracticeRace = graphql.NewObject(
+var newPracticeRaceType = graphql.NewObject(
 	graphql.ObjectConfig{
 		Name: "NewPracticeRace",
 		Fields: graphql.Fields{

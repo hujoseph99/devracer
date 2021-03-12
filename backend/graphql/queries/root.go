@@ -18,5 +18,21 @@ var RootQuery = graphql.NewObject(
 					return newWorld, nil
 				},
 			},
+			"practiceRace": &graphql.Field{
+				Type: newPracticeRaceType,
+				Resolve: func(p graphql.ResolveParams) (interface{}, error) {
+					snippetID, ok := p.Args["snippetId"]
+					if !ok {
+						// return random snippet
+					}
+
+					snippetIDString, ok := snippetID.(string)
+					if !ok {
+						// not a string
+					}
+
+					// get snippet by id
+				},
+			},
 		},
 	})
