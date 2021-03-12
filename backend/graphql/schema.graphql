@@ -1,7 +1,58 @@
-interface World {
-	message: String
+interface Node {
+	id: ID!
+}
+
+# type PageInfo {
+# 	startCursor: ID
+# 	endCursor: ID
+# 	hasNextPage: Boolean
+# 	hasPrevPage: Boolean
+# 	nodesCount: Int
+# 	pagesCount: Int
+# }
+
+type Snippet implements Node {
+	id: ID!
+	raceContent: String
+	wordCount: Int
+}
+
+type Score implements Node {
+	id: ID!
+	wpm: Float
+	percent: Float
+	lettersCorrect: Int
+	lettersWrong: Int
+	wordsCorrect: Int
+	wordsWrong: Int
+	time: Float
+}
+
+type Race implements Node {
+	id: ID!
+	snippet: Snippet
+	users: [User]
+	timeLimit: Int
+}
+
+type NewPracticeRace {
+	snippet: Snippet
+	timeLimit: Int
 }
 
 type Query {
-	hello: World
+	practiceRace(snippetId: ID): NewPracticeRace
+} 
+
+type Mutation {
+	practiceRace(race: Race): Race
 }
+
+# type LoginCredentials {
+# 	username: String!
+# 	password: String!
+# }
+
+# type Mutation {
+# 	login(credentials: LoginCredentials)
+# }
