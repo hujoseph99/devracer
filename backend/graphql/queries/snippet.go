@@ -2,7 +2,7 @@ package queries
 
 import "github.com/graphql-go/graphql"
 
-var snippet = graphql.NewObject(
+var snippetType = graphql.NewObject(
 	graphql.ObjectConfig{
 		Name: "Snippet",
 		Fields: graphql.Fields{

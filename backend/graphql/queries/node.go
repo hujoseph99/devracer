@@ -4,7 +4,7 @@ import (
 	"github.com/graphql-go/graphql"
 )
 
-var node = graphql.NewInterface(
+var nodeType = graphql.NewInterface(
 	graphql.InterfaceConfig{
 		Name: "Node",
 		Fields: graphql.Fields{
