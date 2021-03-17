@@ -12,25 +12,25 @@ const (
 	LanguageJavascript = iota
 	LanguagePython     = iota
 	LanguageGo         = iota
+	LanguageEnglish    = iota
 )
 
 // Snippet is a model for a mongodb
 type Snippet struct {
-	ID          primitive.ObjectID `bson:"_id,omitempty" json:"_id,omitempty"`
-	Snippet     string             `bson:"snippet" json:"snippet"`
-	Language    int                `bson:"language" json:"snippetId"`
-	UsageCount  int                `bson:"usageCount" json:"usageCount"`
-	DateCreated time.Time          `bson:"dateCreated" json:"dateCreated"`
+	ID          primitive.ObjectID `bson:"_id,omitempty"`
+	RaceContent string             `bson:"snippet"`
+	TokenCount  int                `bson:"-"`
+	Language    int                `bson:"language"`
+	DateCreated time.Time          `bson:"dateCreated"`
+	// UsageCount  int                `bson:"usageCount" json:"usageCount"`
 }
 
 // NewSnippet is the constructor for Snippet - it creates a snippet object
-func NewSnippet(snippet string, language int, usageCount int,
-	dateCreated time.Time) *Snippet {
-
+func NewSnippet(raceContent string, language int, dateCreated time.Time) *Snippet {
 	res := &Snippet{
-		Snippet:     snippet,
+		RaceContent: raceContent,
+		TokenCount:  len(raceContent),
 		Language:    language,
-		UsageCount:  usageCount,
 		DateCreated: dateCreated,
 	}
 

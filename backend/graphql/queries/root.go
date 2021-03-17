@@ -32,6 +32,7 @@ var RootQuery = graphql.NewObject(
 					}
 
 					// get snippet by id
+					return snippetIDString, nil
 				},
 			},
 		},
