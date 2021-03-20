@@ -66,10 +66,12 @@ func (c *Client) GetRandomSnippet(ctx context.Context) (*Snippet, error) {
 	if err != nil {
 		return nil, err
 	} else if len(res) == 0 {
-		return nil, fmt.Errorf("No races were found")
+		return nil, fmt.Errorf("no races were found")
 	}
 	var snippet Snippet
 	bsonBytes, _ := bson.Marshal(res[0])
 	bson.Unmarshal(bsonBytes, &snippet)
+
+	snippet.TokenCount = len(snippet.RaceContent)
 	return &snippet, nil
 }

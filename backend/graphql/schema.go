@@ -1,7 +1,9 @@
 package graphql
 
 import (
+	"context"
 	"log"
+	"net/http"
 
 	"github.com/graphql-go/graphql"
 	"github.com/graphql-go/handler"
@@ -17,13 +19,16 @@ func RegisterEndpoints(api *api.API) {
 		log.Fatal("Schema was unable to be started up")
 	}
 
-	graphiqlHandler := handler.New(&handler.Config{
+	graphqlHandler := handler.New(&handler.Config{
 		Schema:   &schema,
 		Pretty:   true,
 		GraphiQL: true,
 	})
 
+	// passes the database conntext through the context in each graphql request
 	api.Router.
-		Path("/graphql").
-		Handler(graphiqlHandler)
+		HandleFunc("/graphql", func(w http.ResponseWriter, r *http.Request) {
+			ctx := context.WithValue(r.Context(), queries.ContextKey(queries.DatabaseContextKey), api.Database)
+			graphqlHandler.ContextHandler(ctx, w, r)
+		})
 }

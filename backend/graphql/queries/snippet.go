@@ -12,7 +12,7 @@ var snippetType = graphql.NewObject(
 			"raceContent": &graphql.Field{
 				Type: graphql.String,
 			},
-			"wordCount": &graphql.Field{
+			"tokenCount": &graphql.Field{
 				Type: graphql.Int,
 			},
 		},

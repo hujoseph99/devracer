@@ -26,7 +26,7 @@ var RootQuery = graphql.NewObject(
 			"practiceRace": &graphql.Field{
 				Type: newPracticeRaceType,
 				Resolve: func(p graphql.ResolveParams) (interface{}, error) {
-					client, ok := p.Context.Value("client").(db.Client)
+					client, ok := p.Context.Value(ContextKey(DatabaseContextKey)).(*db.Client)
 					if !ok {
 						return nil, fmt.Errorf("cannot get get DB context")
 					}
