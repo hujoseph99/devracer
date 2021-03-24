@@ -1,12 +1,13 @@
 import React from 'react';
-import { CssBaseline, MuiThemeProvider, Typography } from '@material-ui/core';
+import { CssBaseline, MuiThemeProvider } from '@material-ui/core';
 import { theme } from './theme';
+import { RaceTextField } from './features/race-text-field/RaceTextField';
 
 const App = (): JSX.Element => {
   return (
     <MuiThemeProvider theme={theme}>
       <CssBaseline />
-      <Typography variant='h1'>Hi</Typography>
+      <RaceTextField />
     </MuiThemeProvider>
   )
 };
