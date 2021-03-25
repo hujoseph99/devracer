@@ -8,7 +8,7 @@ import (
 
 func getTestSnippet(t *testing.T) *Snippet {
 	snippet := "func main() {\n\tfmt.Println(\"Hello World\")\n}"
-	res := NewSnippet(snippet, LanguageGo, 10, time.Now())
+	res := NewSnippet(snippet, LanguageGo, time.Now())
 
 	return res
 }
@@ -47,7 +47,7 @@ func TestGetSnippetByID(t *testing.T) {
 	// checking username and password is good enough for me
 	if err != nil || foundSnippet.ID.Hex() != testSnippet.ID.Hex() ||
 		foundSnippet.Language != testSnippet.Language ||
-		foundSnippet.Snippet != testSnippet.Snippet {
+		foundSnippet.RaceContent != testSnippet.RaceContent {
 
 		t.Fatal("Document was not found correctly")
 	}

@@ -79,7 +79,7 @@ func (c *Client) GetUserByID(ctx context.Context, id string, idType int) (*UserM
 	}
 
 	var user UserModel
-	err = collection.FindOne(ctx, bsonID).Decode(&user)
+	_ = collection.FindOne(ctx, bsonID).Decode(&user)
 
 	return &user, nil
 }
