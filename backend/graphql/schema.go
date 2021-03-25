@@ -11,6 +11,20 @@ import (
 	"github.com/hujoseph99/typing/backend/graphql/queries"
 )
 
+// CORS Middleware, have to change this in the future to be more secure
+func CorsMiddleware(next http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Access-Control-Allow-Origin", "*")
+		w.Header().Set("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept")
+		w.Header().Set("Access-Control-Allow-Methods", "GET, POST, OPTIONS")
+		if r.Method == "OPTIONS" {
+			w.WriteHeader((http.StatusOK))
+			return
+		}
+		next.ServeHTTP(w, r)
+	})
+}
+
 // RegisterEndpoints registers the endpoints for graphql
 func RegisterEndpoints(api *api.API) {
 	schemaConfig := graphql.SchemaConfig{Query: queries.RootQuery}
@@ -25,10 +39,10 @@ func RegisterEndpoints(api *api.API) {
 		GraphiQL: true,
 	})
 
-	// passes the database conntext through the context in each graphql request
-	api.Router.
-		HandleFunc("/graphql", func(w http.ResponseWriter, r *http.Request) {
+	api.Router.Handle(
+		"/graphql",
+		CorsMiddleware(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 			ctx := context.WithValue(r.Context(), queries.ContextKey(queries.DatabaseContextKey), api.Database)
 			graphqlHandler.ContextHandler(ctx, w, r)
-		})
+		})))
 }
