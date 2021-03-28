@@ -1,11 +1,19 @@
 import { Paper, Typography } from '@material-ui/core';
-import React from 'react'
-import { theme } from '../../theme';
+import React, { useEffect } from 'react'
+import { useDispatch, useSelector } from 'react-redux';
+import { fetchNewPracticeRace, selectSnippet } from './raceTextFieldSlice';
 
 export const RaceTextField = (): JSX.Element => {
+	const dispatch = useDispatch();
+	const snippet = useSelector(selectSnippet);
+
+	useEffect(() => {
+		dispatch(fetchNewPracticeRace());
+	}, [dispatch])
+
 	return (
 		<Paper variant='outlined'>
-			<Typography color='secondary'>Lorem ipsum dolor sit amet consectetur adipisicing elit. Minus inventore reprehenderit consequatur consequuntur repellendus in nam commodi, odit vitae fuga!</Typography>
+			<Typography color='secondary'>{snippet.raceContent}</Typography>
 		</Paper>
 	);
 };

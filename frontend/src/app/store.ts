@@ -3,7 +3,7 @@ import RaceTextFieldReducer from '../features/race-text-field/raceTextFieldSlice
 
 export const store = configureStore({
   reducer: {
-    RaceTextField: RaceTextFieldReducer,
+    raceTextField: RaceTextFieldReducer,
   },
 });
 
