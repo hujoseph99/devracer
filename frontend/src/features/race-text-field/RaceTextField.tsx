@@ -1,6 +1,10 @@
 import React, { useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux';
-// import { MonacoEditor } from './MonacoEditor';
+
+import AceEditor from "react-ace";
+import "ace-builds/src-noconflict/mode-java";
+import "ace-builds/src-noconflict/theme-monokai";
+
 import { fetchNewPracticeRace, selectSnippet } from './raceTextFieldSlice';
 
 export const RaceTextField = (): JSX.Element => {
@@ -13,6 +17,10 @@ export const RaceTextField = (): JSX.Element => {
 
 	return (
 		// <MonacoEditor value={snippet.raceContent} />
-		<div></div>
+		<AceEditor
+			mode="javascript"
+			theme="monokai"
+			value={snippet.raceContent}
+		/>
 	)
 };
