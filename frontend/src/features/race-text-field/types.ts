@@ -8,13 +8,14 @@ interface RaceSnippet {
 	language: language;
 }
 
-export interface NewPracticeRace {
+export interface Race {
 	snippet: RaceSnippet;
 	timeLimit: number;
+	typedSoFar: string;
 }
 
 export interface RaceFieldState {
-	practiceRace: NewPracticeRace;
+	race: Race;
 	status: status;
 }
 

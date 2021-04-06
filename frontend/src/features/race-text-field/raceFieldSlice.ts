@@ -4,14 +4,14 @@ import { RootState } from "../../app/store";
 import axios from 'axios'
 
 import { newPracticeRaceGQL } from "./graphql";
-import { NewPracticeRace, NewPracticeRaceGQLResponse, RaceFieldState } from './types'
+import { Race, NewPracticeRaceGQLResponse, RaceFieldState } from './types'
 import { mapGQLPracticeRaceToNewPracticeRace } from "./utils";
 
 // redux prefix for this slice
 const RACE_FIELD = 'raceField';
 
 // fetches a new practice race from the backend using graphql
-export const fetchNewPracticeRace = createAsyncThunk<NewPracticeRace>(
+export const fetchNewPracticeRace = createAsyncThunk<Race>(
 	`${RACE_FIELD}/fetchNewPracticeRace`, 
 	async () => {
 		const response = await axios.post<NewPracticeRaceGQLResponse>(
@@ -23,13 +23,14 @@ export const fetchNewPracticeRace = createAsyncThunk<NewPracticeRace>(
 );
 
 const initialState: RaceFieldState = {
-	practiceRace: {
+	race: {
 		snippet: {
 			id: '0',
 			raceContent: '',
 			tokenCount: 0,
 			language: 'plain_text',
 		},
+		typedSoFar: '',
 		timeLimit: 0
 	},
 	status: 'idle'
@@ -42,7 +43,7 @@ const raceFieldSlice = createSlice({
 	extraReducers: builder => {
 		builder.addCase(fetchNewPracticeRace.fulfilled, (state, action) => {
 			state.status = 'succeeded';
-			state.practiceRace = action.payload;
+			state.race = action.payload;
 		});
 		builder.addCase(fetchNewPracticeRace.rejected, (state, action) => {
 			console.log(action);
@@ -52,4 +53,4 @@ const raceFieldSlice = createSlice({
 
 export default raceFieldSlice.reducer;
 
-export const selectSnippet = (state: RootState) => state.raceField.practiceRace.snippet;
+export const selectSnippet = (state: RootState) => state.raceField.race.snippet;

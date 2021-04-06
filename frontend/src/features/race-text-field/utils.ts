@@ -1,4 +1,4 @@
-import { language, NewPracticeRace, NewPracticeRaceGQLResponse } from "./types";
+import { language, Race, NewPracticeRaceGQLResponse } from "./types";
 
 // maps an int from the backend to a language
 const mapNumberToLanguage = (language: number): language => {
@@ -18,7 +18,7 @@ const mapNumberToLanguage = (language: number): language => {
 
 // maps the graphql response into our own NewPracticeRace type. The only real change
 // that we are making is to map the language to something usable on our end
-export const mapGQLPracticeRaceToNewPracticeRace = (res: NewPracticeRaceGQLResponse): NewPracticeRace => {
+export const mapGQLPracticeRaceToNewPracticeRace = (res: NewPracticeRaceGQLResponse): Race => {
 	let practiceRace = res.data.practiceRace;
 	let snippet = practiceRace.snippet
 	return {
@@ -28,6 +28,7 @@ export const mapGQLPracticeRaceToNewPracticeRace = (res: NewPracticeRaceGQLRespo
 			tokenCount: snippet.tokenCount,
 			language: mapNumberToLanguage(snippet.language)
 		},
+		typedSoFar: '',
 		timeLimit: practiceRace.timeLimit
 	};
 }
