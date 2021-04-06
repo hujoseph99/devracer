@@ -13,7 +13,7 @@ export interface NewPracticeRace {
 	timeLimit: number;
 }
 
-export interface RaceTextFieldState {
+export interface RaceFieldState {
 	practiceRace: NewPracticeRace;
 	status: status;
 }

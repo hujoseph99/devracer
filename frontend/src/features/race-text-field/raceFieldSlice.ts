@@ -4,15 +4,15 @@ import { RootState } from "../../app/store";
 import axios from 'axios'
 
 import { newPracticeRaceGQL } from "./graphql";
-import { NewPracticeRace, NewPracticeRaceGQLResponse, RaceTextFieldState } from './types'
+import { NewPracticeRace, NewPracticeRaceGQLResponse, RaceFieldState } from './types'
 import { mapGQLPracticeRaceToNewPracticeRace } from "./utils";
 
 // redux prefix for this slice
-const RACE_TEXT_FIELD = 'raceTextField';
+const RACE_FIELD = 'raceField';
 
 // fetches a new practice race from the backend using graphql
 export const fetchNewPracticeRace = createAsyncThunk<NewPracticeRace>(
-	`${RACE_TEXT_FIELD}/fetchNewPracticeRace`, 
+	`${RACE_FIELD}/fetchNewPracticeRace`, 
 	async () => {
 		const response = await axios.post<NewPracticeRaceGQLResponse>(
 			'http://localhost:8080/graphql', 
@@ -22,7 +22,7 @@ export const fetchNewPracticeRace = createAsyncThunk<NewPracticeRace>(
 	}
 );
 
-const initialState: RaceTextFieldState = {
+const initialState: RaceFieldState = {
 	practiceRace: {
 		snippet: {
 			id: '0',
@@ -35,8 +35,8 @@ const initialState: RaceTextFieldState = {
 	status: 'idle'
 }
 
-const raceTextFieldSlice = createSlice({
-	name: 'raceTextField',
+const raceFieldSlice = createSlice({
+	name: RACE_FIELD,
 	initialState,
 	reducers: {},
 	extraReducers: builder => {
@@ -50,6 +50,6 @@ const raceTextFieldSlice = createSlice({
 	}
 })
 
-export default raceTextFieldSlice.reducer;
+export default raceFieldSlice.reducer;
 
-export const selectSnippet = (state: RootState) => state.raceTextField.practiceRace.snippet;
+export const selectSnippet = (state: RootState) => state.raceField.practiceRace.snippet;

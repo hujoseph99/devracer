@@ -1,9 +1,9 @@
 import { configureStore, ThunkAction, Action } from '@reduxjs/toolkit';
-import RaceTextFieldReducer from '../features/race-text-field/raceTextFieldSlice'
+import raceFieldReducer from '../features/race-text-field/raceFieldSlice'
 
 export const store = configureStore({
   reducer: {
-    raceTextField: RaceTextFieldReducer,
+    raceField: raceFieldReducer,
   },
 });
 
