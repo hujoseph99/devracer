@@ -8,11 +8,11 @@ import (
 
 // Emulated enum for the different languages that we support
 const (
-	LanguageCPP        = iota
-	LanguageJavascript = iota
-	LanguagePython     = iota
-	LanguageGo         = iota
-	LanguageEnglish    = iota
+	LanguageEnglish    = iota // 0
+	LanguageCPP        = iota // 1
+	LanguageGo         = iota // 2
+	LanguageJavascript = iota // 3
+	LanguagePython     = iota // 4
 )
 
 // Snippet is a model for a mongodb

@@ -15,6 +15,9 @@ var snippetType = graphql.NewObject(
 			"tokenCount": &graphql.Field{
 				Type: graphql.Int,
 			},
+			"language": &graphql.Field{
+				Type: graphql.Int,
+			},
 		},
 	},
 )

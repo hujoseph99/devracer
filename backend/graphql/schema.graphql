@@ -15,6 +15,7 @@ type Snippet implements Node {
 	id: ID!
 	raceContent: String
 	wordCount: Int
+	language: Int
 }
 
 type Score implements Node {
