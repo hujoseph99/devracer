@@ -1,8 +1,11 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { RootState } from "../../app/store";
+
 import axios from 'axios'
-import { NewPracticeRace, NewPracticeRaceGQLResponse, RaceTextFieldState } from './types'
+
 import { newPracticeRaceGQL } from "./graphql";
+import { NewPracticeRace, NewPracticeRaceGQLResponse, RaceTextFieldState } from './types'
+import { mapGQLPracticeRaceToNewPracticeRace } from "./utils";
 
 // redux prefix for this slice
 const RACE_TEXT_FIELD = 'raceTextField';
@@ -15,7 +18,7 @@ export const fetchNewPracticeRace = createAsyncThunk<NewPracticeRace>(
 			'http://localhost:8080/graphql', 
 			{ query: newPracticeRaceGQL }
 		);
-		return response.data.data.practiceRace;
+		return mapGQLPracticeRaceToNewPracticeRace(response.data);
 	}
 );
 
@@ -24,7 +27,8 @@ const initialState: RaceTextFieldState = {
 		snippet: {
 			id: '0',
 			raceContent: '',
-			tokenCount: 0
+			tokenCount: 0,
+			language: 'plain_text',
 		},
 		timeLimit: 0
 	},

@@ -14,8 +14,7 @@ export const RaceTextField = (): JSX.Element => {
 
 	return (
 		<AceEditor
-			mode="javascript"
-			theme="monokai"
+			mode={snippet.language}
 			value={snippet.raceContent}
 		/>
 	)

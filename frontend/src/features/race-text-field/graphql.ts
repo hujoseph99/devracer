@@ -6,6 +6,7 @@ export const newPracticeRaceGQL = `
         id
         raceContent
         tokenCount
+        language
       }
       timeLimit
     }
