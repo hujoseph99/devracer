@@ -1,6 +1,6 @@
 import React from 'react';
 
-import AceEditorComponent, { IEditorProps } from "react-ace";
+import AceEditorComponent, { IAceEditorProps } from "react-ace";
 
 // all currently supported languages
 import "ace-builds/src-noconflict/mode-c_cpp";
@@ -13,7 +13,7 @@ import "ace-builds/src-noconflict/mode-plain_text";
 import "ace-builds/src-noconflict/theme-dracula";
 
 // just a simple implementation for now
-interface AceEditorProps extends IEditorProps {
+interface AceEditorProps extends IAceEditorProps {
 	value?: string
 }
 
@@ -22,6 +22,7 @@ export const AceEditor = ({ value = "", ...props }: AceEditorProps): JSX.Element
 		<AceEditorComponent 
 			value={value}
 			theme="dracula"
+			showGutter={false}
 			{...props}
 		/>
 	);

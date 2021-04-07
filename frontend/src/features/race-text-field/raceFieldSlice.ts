@@ -1,4 +1,4 @@
-import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
+import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { RootState } from "../../app/store";
 
 import axios from 'axios'
@@ -39,12 +39,20 @@ const initialState: RaceFieldState = {
 const raceFieldSlice = createSlice({
 	name: RACE_FIELD,
 	initialState,
-	reducers: {},
+	reducers: {
+		// action payload should just contain the string that the user has typed
+		// so far
+		typedSoFarChanged: (state, action: PayloadAction<string>) => {
+			state.race.typedSoFar = action.payload;
+		}
+	},
 	extraReducers: builder => {
 		builder.addCase(fetchNewPracticeRace.fulfilled, (state, action) => {
 			state.status = 'succeeded';
 			state.race = action.payload;
 		});
+		// TODO: Add some error handling here, have to figure out what to do in the
+		// case of an error
 		builder.addCase(fetchNewPracticeRace.rejected, (state, action) => {
 			console.log(action);
 		})
@@ -53,4 +61,7 @@ const raceFieldSlice = createSlice({
 
 export default raceFieldSlice.reducer;
 
+export const { typedSoFarChanged } = raceFieldSlice.actions;
+
 export const selectSnippet = (state: RootState) => state.raceField.race.snippet;
+export const selectTypedSoFar = (state: RootState) => state.raceField.race.typedSoFar;
