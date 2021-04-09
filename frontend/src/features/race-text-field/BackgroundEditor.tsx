@@ -1,12 +1,12 @@
+import React from 'react';
+import { useSelector } from 'react-redux';
+
 import { Ace } from 'ace-builds';
-import React, { createRef, useEffect, useRef } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
 
 import { AceEditor } from './AceEditor';
 import { selectSnippet } from './raceFieldSlice';
 
 export const BackgroundEditor = (): JSX.Element => {
-	const dispatch = useDispatch();
 	const snippet = useSelector(selectSnippet);
 	let editor: Ace.Editor | null = null
 
