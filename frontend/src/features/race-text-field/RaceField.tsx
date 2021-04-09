@@ -1,7 +1,10 @@
 import React, { useEffect } from 'react'
 import { useDispatch } from 'react-redux';
 
+import { Box } from '@material-ui/core';
+
 import { BackgroundEditor } from './BackgroundEditor';
+import { ForegroundEditor } from './ForegroundEditor';
 import { fetchNewPracticeRace } from './raceFieldSlice';
 
 export const RaceField = (): JSX.Element => {
@@ -12,6 +15,9 @@ export const RaceField = (): JSX.Element => {
 	}, [dispatch])
 
 	return (
-		<BackgroundEditor />
+		<Box>
+			<BackgroundEditor />
+			<ForegroundEditor />
+		</Box>
 	)
 };

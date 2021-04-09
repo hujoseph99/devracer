@@ -2,6 +2,8 @@ import React from 'react';
 
 import AceEditorComponent, { IAceEditorProps } from "react-ace";
 
+import "./editor.css"
+
 // all currently supported languages
 import "ace-builds/src-noconflict/mode-c_cpp";
 import "ace-builds/src-noconflict/mode-javascript";
@@ -20,9 +22,11 @@ interface AceEditorProps extends IAceEditorProps {
 export const AceEditor = ({ value = "", ...props }: AceEditorProps): JSX.Element => {
 	return (
 		<AceEditorComponent 
+			className="aceEditor"
 			value={value}
 			theme="dracula"
 			showGutter={false}
+			highlightActiveLine={false}
 			{...props}
 		/>
 	);
