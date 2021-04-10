@@ -11,15 +11,11 @@ import "./editor.css"
 export const ForegroundEditor = (): JSX.Element => {
 	const snippet = useSelector(selectSnippet);
 
-	const handleLoad = (editor: Ace.Editor) => {
-	}
-
 	return (
 		<AceEditor  
 			className="foregroundEditor"
 			mode={snippet.language}
 			value={snippet.raceContent}
 		/>
-	)
-
+	);
 }
