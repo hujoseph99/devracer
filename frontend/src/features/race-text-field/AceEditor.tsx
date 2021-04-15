@@ -17,12 +17,13 @@ import "ace-builds/src-noconflict/theme-dracula";
 // just a simple implementation for now
 interface AceEditorProps extends IAceEditorProps {
 	value?: string
+	className? : string
 }
 
-export const AceEditor = ({ value = "", ...props }: AceEditorProps): JSX.Element => {
+export const AceEditor = ({ value = "", className = "", ...props }: AceEditorProps): JSX.Element => {
 	return (
 		<AceEditorComponent 
-			className="aceEditor"
+			className={"aceEditor " + className}
 			value={value}
 			theme="dracula"
 			showGutter={false}

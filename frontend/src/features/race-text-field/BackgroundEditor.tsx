@@ -27,6 +27,7 @@ export const BackgroundEditor = (): JSX.Element => {
 	return (
 		<AceEditor 
 			mode='plain_text'
+			className='backgroundEditor'
 			value={snippet.raceContent}
 			readOnly={true}
 			onLoad={handleLoad}

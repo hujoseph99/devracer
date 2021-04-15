@@ -5,3 +5,7 @@
 .foregroundEditor {
 	background-color: transparent;
 }
+
+.backgroundEditor .ace_line {
+	color: #808080;
+}
