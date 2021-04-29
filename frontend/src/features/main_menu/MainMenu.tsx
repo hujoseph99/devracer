@@ -3,6 +3,7 @@ import { useHistory } from 'react-router';
 import Typist from 'react-typist';
 
 import { Box, Button, Container, Grid, makeStyles, Theme, Typography } from '@material-ui/core';
+
 import PersonIcon from '@material-ui/icons/Person';
 import KeyboardIcon from '@material-ui/icons/Keyboard';
 import { blurb } from './constants';
@@ -26,7 +27,7 @@ export const MainMenu = (): JSX.Element => {
 	return (
 		<Container maxWidth='sm'>
 			<Grid container>
-				<Navbar isHome={true} />
+				<Navbar isHome />
 				<Grid item xs={12}>
 					<Typist>
 						<Box mt='5vh' display='flex' width='100%' justifyContent='center' alignItems='center'>
