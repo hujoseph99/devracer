@@ -6,6 +6,7 @@ import { Box, Button, Container, Grid, makeStyles, Theme, Typography } from '@ma
 import PersonIcon from '@material-ui/icons/Person';
 import KeyboardIcon from '@material-ui/icons/Keyboard';
 import { blurb } from './constants';
+import { Navbar } from '../navbar/Navbar';
 
 const useStyles = makeStyles<Theme>(theme => ({
 	titleIcon: {
@@ -25,6 +26,7 @@ export const MainMenu = (): JSX.Element => {
 	return (
 		<Container maxWidth='sm'>
 			<Grid container>
+				<Navbar isHome={true} />
 				<Grid item xs={12}>
 					<Typist>
 						<Box mt='5vh' display='flex' width='100%' justifyContent='center' alignItems='center'>
