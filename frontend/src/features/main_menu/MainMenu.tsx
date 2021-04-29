@@ -11,12 +11,6 @@ const useStyles = makeStyles<Theme>(theme => ({
 	titleIcon: {
 		fontSize: theme.typography.h2.fontSize,
 		marginRight: 10
-	},
-	button: {
-		marginTop: "3vh",
-	},
-	test: {
-		color: 'white'
 	}
 }));
 
