@@ -12,6 +12,15 @@ export const theme = responsiveFontSizes(createMuiTheme({
 				'sans-serif',
 			].join(','),
 		},
+		h4: {
+			fontFamily: [
+				'"Proxima Nova"',
+				'"Helvetica"',
+				'-apple-system',
+				'Arial',
+				'sans-serif',
+			].join(','),
+		},
 		fontFamily: [
 			'"Helvetica Neue"',
 			'-apple-system',

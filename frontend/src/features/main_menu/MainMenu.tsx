@@ -12,6 +12,9 @@ const useStyles = makeStyles<Theme>(theme => ({
 		fontSize: theme.typography.h2.fontSize,
 		marginRight: 10
 	},
+	button: {
+		marginTop: "3vh",
+	},
 	test: {
 		color: 'white'
 	}
@@ -29,21 +32,33 @@ export const MainMenu = (): JSX.Element => {
 		<Container maxWidth='sm'>
 			<Grid container>
 				<Grid item xs={12}>
-			<Typist>
+					<Typist>
 						<Box mt='5vh' display='flex' width='100%' justifyContent='center' alignItems='center'>
-					<KeyboardIcon className={classes.titleIcon} color='primary' />
-					<Typist.Delay ms={1000} />
-					<Typography component='span' variant='h3' color='primary'> 
-						CodeRacers
-					</Typography>
-				</Box>
-			</Typist>
+							<KeyboardIcon className={classes.titleIcon} color='primary' />
+							<Typist.Delay ms={1000} />
+							<Typography component='span' variant='h3' color='primary'> 
+								CodeRacers
+							</Typography>
+						</Box>
+					</Typist>
 				</Grid>
 			</Grid>
 			<Grid container item xs={12}>
 				<Typography variant='body1' color='primary' align='center'>
 						{blurb}
 				</Typography>
+			</Grid>
+			<Grid item xs={12}>
+				<Box mt='5vh' display='flex' width='100%' justifyContent='center' alignItems='center'>
+					<Typography component='span' variant='h4' color='primary'> 
+						Modes
+					</Typography>
+				</Box>
+			</Grid>
+			<Grid item xs={12} spacing={3}>
+				<Box display='flex' width='100%' justifyContent='center' mt="3vh">
+					<Button variant='contained' size='large' endIcon={<PersonIcon />} onClick={onPracticeClick}>Practice</Button>
+				</Box>
 			</Grid>
 		</Container>
 	);
