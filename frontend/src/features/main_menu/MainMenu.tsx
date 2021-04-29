@@ -2,19 +2,20 @@ import React from 'react';
 import { useHistory } from 'react-router';
 import Typist from 'react-typist';
 
-import { Box, Button, makeStyles, Typography } from '@material-ui/core';
+import { Box, Button, Container, Grid, makeStyles, Theme, Typography } from '@material-ui/core';
 import PersonIcon from '@material-ui/icons/Person';
 import KeyboardIcon from '@material-ui/icons/Keyboard';
+import { blurb } from './constants';
 
-const useStyles = makeStyles({
+const useStyles = makeStyles<Theme>(theme => ({
 	titleIcon: {
-		fontSize: "4em",
+		fontSize: theme.typography.h2.fontSize,
 		marginRight: 10
 	},
 	test: {
 		color: 'white'
 	}
-});
+}));
 
 export const MainMenu = (): JSX.Element => {
 	const history = useHistory();
@@ -25,9 +26,11 @@ export const MainMenu = (): JSX.Element => {
 	}
 
 	return (
-		<Box display='flex' flexDirection='column' justifyContent='center' alignItems='center'>
+		<Container maxWidth='sm'>
+			<Grid container>
+				<Grid item xs={12}>
 			<Typist>
-				<Box mt={10} display='flex' justifyContent='center' alignContent='center'>
+						<Box mt='5vh' display='flex' width='100%' justifyContent='center' alignItems='center'>
 					<KeyboardIcon className={classes.titleIcon} color='primary' />
 					<Typist.Delay ms={1000} />
 					<Typography component='span' variant='h3' color='primary'> 
@@ -35,16 +38,13 @@ export const MainMenu = (): JSX.Element => {
 					</Typography>
 				</Box>
 			</Typist>
-			<Box width='60%' mt={3}>
-				<Typography color='primary'>
-					CodeRacers is an online typing game inspired by TypeRacer. Type the most popular snippets from supported languages and increase your coding speed!
+				</Grid>
+			</Grid>
+			<Grid container item xs={12}>
+				<Typography variant='body1' color='primary' align='center'>
+						{blurb}
 				</Typography>
-			</Box>
-			<Box mt={5}>
-				<Button variant='contained' endIcon={<PersonIcon />} onClick={onPracticeClick}>
-					Practice
-				</Button>
-			</Box>
-		</Box>
+			</Grid>
+		</Container>
 	);
 }
