@@ -42,24 +42,27 @@ export const MainMenu = (): JSX.Element => {
 						</Box>
 					</Typist>
 				</Grid>
-			</Grid>
-			<Grid container item xs={12}>
-				<Typography variant='body1' color='primary' align='center'>
-						{blurb}
-				</Typography>
-			</Grid>
-			<Grid item xs={12}>
-				<Box mt='5vh' display='flex' width='100%' justifyContent='center' alignItems='center'>
-					<Typography component='span' variant='h4' color='primary'> 
-						Modes
+				<Grid container item xs={12}>
+					<Typography variant='body1' color='primary' align='center'>
+							{blurb}
 					</Typography>
-				</Box>
+				</Grid>
+				<Grid item xs={12}>
+					<Box mt='5vh' display='flex' width='100%' justifyContent='center' alignItems='center'>
+						<Typography component='span' variant='h4' color='primary'> 
+							Modes
+						</Typography>
+					</Box>
+				</Grid>
+				<Grid item xs={12} spacing={3}>
+					<Box display='flex' width='100%' justifyContent='center' mt="3vh">
+						<Button variant='contained' size='large' endIcon={<PersonIcon />} onClick={onPracticeClick}>Practice</Button>
+					</Box>
+				</Grid>
 			</Grid>
-			<Grid item xs={12} spacing={3}>
-				<Box display='flex' width='100%' justifyContent='center' mt="3vh">
-					<Button variant='contained' size='large' endIcon={<PersonIcon />} onClick={onPracticeClick}>Practice</Button>
-				</Box>
-			</Grid>
+			<Box display='flex' width='100%' mt="5vh" justifyContent='center'>
+				<Typography color='primary' align='center'>Made with &#10084;&#65039; by Joseph and David</Typography>
+			</Box>
 		</Container>
 	);
 }
