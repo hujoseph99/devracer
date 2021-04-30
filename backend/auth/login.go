@@ -1,6 +1,4 @@
-
-const routePrefix = "/auth/"
-const githubUserURI = "https://api.github.com/user"
+package auth
 
 // var (
 // 	githubOAuthConfig *oauth2.Config
