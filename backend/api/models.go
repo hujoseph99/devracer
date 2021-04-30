@@ -8,20 +8,6 @@ import (
 	"github.com/dgrijalva/jwt-go"
 )
 
-// errorMessage is a wrapper for a message to help with returning an error
-// message along with an error status code
-type errorMessage struct {
-	Message string `json:"message"`
-}
-
-// newErrorMessage will return a new errorMessage given a message
-func newErrorMessage(msg string) *errorMessage {
-	res := &errorMessage{
-		Message: msg,
-	}
-	return res
-}
-
 // UserReturnToClient is a struct that will be used to return data back to the client.
 // It will exclude sensitive data such as emails and passwords that the db typically
 // returns.

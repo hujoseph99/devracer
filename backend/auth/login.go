@@ -1,89 +1,68 @@
 package auth
 
-// var (
-// 	githubOAuthConfig *oauth2.Config
-// )
+import (
+	"context"
+	"encoding/json"
+	"fmt"
+	"net/http"
 
-// func init() {
-// 	githubOAuthConfig = &oauth2.Config{
-// 		RedirectURL:  "http://localhost:8080/auth/githubCallback",
-// 		ClientID:     getGithubClientID(),
-// 		ClientSecret: getGithubClientSecret(),
-// 		Scopes:       []string{"read:user"},
-// 		Endpoint:     github.Endpoint,
-// 	}
-// }
+	"github.com/hujoseph99/typing/backend/common/api"
+	"github.com/hujoseph99/typing/backend/db"
+	"golang.org/x/crypto/bcrypt"
+)
 
-// // RegisterAuthEndpoints adds the endpoints for the auth package to a given
-// // 	api client
-// func RegisterAuthEndpoints(api *api.API) {
-// 	const routePrefix = "/auth"
+func decodeUserBody(w http.ResponseWriter, r *http.Request) (*db.UserModel, error) {
+	decoder := json.NewDecoder(r.Body)
+	var user db.UserModel
+	err := decoder.Decode(&user)
+	if err != nil {
+		return nil, err
+	} else if user.Username == "" || user.Password == "" {
+		return nil, fmt.Errorf("invalid username or password")
+	}
+	return &user, nil
+}
 
-// 	api.Router.
-// 		Methods("GET").
-// 		Path(routePrefix + "/githubLogin").
-// 		HandlerFunc(handleGithubLogin)
+/*
+ * Expects an object like:
+ * {
+ *  	username,
+ *		password
+ * }
+ */
+func HandleLogin(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "appliaction/json")
+	ctx := context.TODO()
 
-// 	api.Router.
-// 		Methods("GET").
-// 		Path(routePrefix + "/githubCallback").
-// 		HandlerFunc(handleGithubCallback)
-// }
+	user, err := decodeUserBody(w, r)
+	if err != nil {
+		api.DefaultError(w, r, http.StatusBadRequest, "Invalid request.")
+		return
+	}
 
-// func handleGithubLogin(w http.ResponseWriter, r *http.Request) {
-// 	// TODO: Add error handling
-// 	oauthStateString, err := generateStateOAuthCookie(w)
-// 	if err != nil {
-// 		w.WriteHeader(http.StatusInternalServerError)
-// 		return
-// 	}
-// 	url := githubOAuthConfig.AuthCodeURL(oauthStateString)
-// 	http.Redirect(w, r, url, http.StatusTemporaryRedirect)
-// }
+	existingUser, err := db.FindUserByUsername(ctx, user.Username)
+	if err != nil || existingUser == nil {
+		api.DefaultError(w, r, http.StatusUnauthorized, "The username and password was not found. Please try again.")
+		return
+	}
 
-// func handleGithubCallback(w http.ResponseWriter, r *http.Request) {
-// 	content, err := getUserInfo(r)
-// 	if err != nil {
-// 		fmt.Println(err.Error())
-// 		http.Redirect(w, r, "/", http.StatusTemporaryRedirect)
-// 		return
-// 	}
-// 	fmt.Fprintf(w, "Content: %s\n", content)
-// }
+	byteHash := []byte(existingUser.Password)
+	bytePassword := []byte(user.Password)
+	err = bcrypt.CompareHashAndPassword(byteHash, bytePassword)
+	if err != nil {
+		api.DefaultError(w, r, http.StatusUnauthorized, "The username and password is incorrect. Please try again.")
+	}
 
-// func getUserInfo(r *http.Request) ([]byte, error) {
-// 	oauthState, err := r.Cookie(oauthCookieName)
-// 	if err != nil {
-// 		return nil, err
-// 	}
+	jwtPayload := newJwtPayload(existingUser.ID)
+	token, err := jwtPayload.convertToJwt()
+	if err != nil {
+		api.DefaultError(w, r, http.StatusInternalServerError, "An error has occurred. Please try again.")
+		return
+	}
 
-// 	state := r.FormValue("state")
-// 	code := r.FormValue("code")
+	jsonToken := map[string]string{
+		"token": token,
+	}
 
-// 	if state != oauthState.Value {
-// 		return nil, fmt.Errorf("invalid github oauth state")
-// 	}
-
-// 	token, err := githubOAuthConfig.Exchange(oauth2.NoContext, code)
-// 	if err != nil {
-// 		return nil, fmt.Errorf("code exchange failed: %s", err.Error())
-// 	}
-
-// 	client := &http.Client{}
-// 	req, err := http.NewRequest("GET", githubUserURI, nil)
-// 	if err != nil {
-// 		return nil, err
-// 	}
-// 	req.Header.Add("Authorization", "token "+token.AccessToken)
-// 	res, err := client.Do(req)
-// 	if err != nil {
-// 		return nil, fmt.Errorf("failed getting user info: %s", err.Error())
-// 	}
-// 	defer res.Body.Close()
-
-// 	contents, err := ioutil.ReadAll(res.Body)
-// 	if err != nil {
-// 		return nil, fmt.Errorf("failed reading response body: %s", err.Error())
-// 	}
-// 	return contents, nil
-// }
+	json.NewEncoder(w).Encode(jsonToken)
+}
