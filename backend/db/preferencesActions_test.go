@@ -26,7 +26,6 @@ import (
 
 func TestPreferences(t *testing.T) {
 	userid, err := primitive.ObjectIDFromHex("111111111111111111111111")
-
 	if err != nil {
 		t.Error("Could not do ObjectIDFromHex " + err.Error())
 	}
@@ -34,7 +33,7 @@ func TestPreferences(t *testing.T) {
 	pref := NewPreferences(userid, "", "", "")
 
 	var getAndCheckPreferences = func() {
-		checkPref, err := client.GetPreferencesByID(context.TODO(), userid)
+		checkPref, err := GetPreferencesByID(context.TODO(), userid)
 		if err != nil {
 			t.Error("Could not do GetPreferences " + err.Error())
 		}
@@ -44,15 +43,15 @@ func TestPreferences(t *testing.T) {
 		}
 	}
 
-	client.AddPreferences(context.TODO(), pref)
+	AddPreferences(context.TODO(), pref)
 	getAndCheckPreferences()
 
 	pref.Theme = "dark"
-	err = client.UpdatePreferences(context.TODO(), userid, pref)
+	err = UpdatePreferences(context.TODO(), userid, pref)
 	if err != nil {
 		t.Error("Could not do UpdatePreferences" + err.Error())
 	}
 	getAndCheckPreferences()
 
-	client.DeletePreferencesByID(context.TODO(), userid)
+	DeletePreferencesByID(context.TODO(), userid)
 }

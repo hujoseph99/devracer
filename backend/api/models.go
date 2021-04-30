@@ -1,58 +1,12 @@
 package api
 
 import (
-	"context"
 	"fmt"
 	"reflect"
 	"time"
 
 	"github.com/dgrijalva/jwt-go"
-	"github.com/gorilla/mux"
-	"github.com/hujoseph99/typing/backend/db"
 )
-
-// API is a struct that will hold a database connecct along with a reference
-// to the router
-type API struct {
-	Router   *mux.Router
-	Database *db.Client
-}
-
-// NewAPI creates a new api struct that the user can use
-func NewAPI(ctx context.Context) (*API, error) {
-	newDB, err := db.ConnectToDB(ctx)
-	if err != nil {
-		return nil, err
-	}
-	retval := &API{
-		Router:   mux.NewRouter(),
-		Database: newDB,
-	}
-	return retval, nil
-}
-
-// SetupRouter sets up the router and attaches handler functions to it
-func (api *API) SetupRouter() {
-	// api.Router.
-	// 	Methods("GET").
-	// 	Path("/api/race").
-	// 	HandlerFunc(api.getRandomRaceSnippet)
-
-	// api.Router.
-	// 	Methods("POST").
-	// 	Path("/api/user/register").
-	// 	HandlerFunc(api.registerUser)
-
-	// api.Router.
-	// 	Methods("POST").
-	// 	Path("/api/user/login").
-	// 	HandlerFunc(api.loginUser)
-
-	api.Router.
-		Methods("get").
-		Path("/api/user/test").
-		HandlerFunc(api.testFunctions)
-}
 
 // errorMessage is a wrapper for a message to help with returning an error
 // message along with an error status code

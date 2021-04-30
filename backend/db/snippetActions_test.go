@@ -16,17 +16,17 @@ func getTestSnippet(t *testing.T) *Snippet {
 func TestSnippetAddAndDelete(t *testing.T) {
 	testSnippet := getTestSnippet(t)
 
-	collection := client.client.Database(DatabaseTypers).Collection(CollectionsSnippets)
+	collection := db.Database(DatabaseTypers).Collection(CollectionsSnippets)
 
 	startingNum := getNumDocuments(t, collection)
-	err := client.AddSnippet(context.Background(), testSnippet)
+	err := AddSnippet(context.Background(), testSnippet)
 	changedNum := getNumDocuments(t, collection)
 
 	if err != nil || changedNum != startingNum+1 {
 		t.Fatal("Document was not added")
 	}
 
-	err = client.DeleteSnippetByID(context.Background(), testSnippet.ID)
+	err = DeleteSnippetByID(context.Background(), testSnippet.ID)
 	changedNum = getNumDocuments(t, collection)
 
 	if err != nil || changedNum != startingNum {
@@ -37,12 +37,12 @@ func TestSnippetAddAndDelete(t *testing.T) {
 func TestGetSnippetByID(t *testing.T) {
 	testSnippet := getTestSnippet(t)
 
-	err := client.AddSnippet(context.Background(), testSnippet)
+	err := AddSnippet(context.Background(), testSnippet)
 	if err != nil {
 		t.Fatal("Document was not added")
 	}
 
-	foundSnippet, err := client.GetSnippetByID(context.Background(), testSnippet.ID)
+	foundSnippet, err := GetSnippetByID(context.Background(), testSnippet.ID)
 
 	// checking username and password is good enough for me
 	if err != nil || foundSnippet.ID.Hex() != testSnippet.ID.Hex() ||
@@ -52,14 +52,14 @@ func TestGetSnippetByID(t *testing.T) {
 		t.Fatal("Document was not found correctly")
 	}
 
-	err = client.DeleteSnippetByID(context.Background(), testSnippet.ID)
+	err = DeleteSnippetByID(context.Background(), testSnippet.ID)
 	if err != nil {
 		t.Fatal("Document was not deleted")
 	}
 }
 
 func TestGetRandomSnippet(t *testing.T) {
-	_, err := client.GetRandomSnippet(context.Background())
+	_, err := GetRandomSnippet(context.Background())
 	if err != nil {
 		t.Fatal("Random document was not found")
 	}
