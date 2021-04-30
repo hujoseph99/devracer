@@ -1,13 +1,12 @@
 package graphql
 
 import (
-	"context"
 	"log"
 	"net/http"
 
+	"github.com/gorilla/mux"
 	"github.com/graphql-go/graphql"
 	"github.com/graphql-go/handler"
-	"github.com/hujoseph99/typing/backend/api"
 	"github.com/hujoseph99/typing/backend/graphql/queries"
 )
 
@@ -26,7 +25,7 @@ func CorsMiddleware(next http.Handler) http.Handler {
 }
 
 // RegisterEndpoints registers the endpoints for graphql
-func RegisterEndpoints(api *api.API) {
+func RegisterEndpoints(router *mux.Router) {
 	schemaConfig := graphql.SchemaConfig{Query: queries.RootQuery}
 	schema, err := graphql.NewSchema(schemaConfig)
 	if err != nil {
@@ -39,10 +38,9 @@ func RegisterEndpoints(api *api.API) {
 		GraphiQL: true,
 	})
 
-	api.Router.Handle(
+	router.Handle(
 		"/graphql",
 		CorsMiddleware(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-			ctx := context.WithValue(r.Context(), queries.ContextKey(queries.DatabaseContextKey), api.Database)
-			graphqlHandler.ContextHandler(ctx, w, r)
+			graphqlHandler.ServeHTTP(w, r)
 		})))
 }

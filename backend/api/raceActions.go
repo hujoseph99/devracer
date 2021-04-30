@@ -4,13 +4,15 @@ import (
 	"context"
 	"encoding/json"
 	"net/http"
+
+	"github.com/hujoseph99/typing/backend/db"
 )
 
 // getRanomRaceSnippet will get a random race snippet from the db and return
 // it to the client in JSON format
-func (api *API) getRandomSnippet(w http.ResponseWriter, r *http.Request) {
+func getRandomSnippet(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
-	snippet, err := api.Database.GetRandomSnippet(context.TODO())
+	snippet, err := db.GetRandomSnippet(context.TODO())
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
 		return

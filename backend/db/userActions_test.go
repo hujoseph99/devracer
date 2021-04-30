@@ -20,10 +20,10 @@ func getNumDocuments(t *testing.T, collection *mongo.Collection) int64 {
 func TestAddAndDelete(t *testing.T) {
 	testUser := NewUser("foo", "foo", "foo", "", "", "", time.Now())
 
-	collection := client.client.Database(DatabaseTypers).Collection(CollectionsUser)
+	collection := db.Database(DatabaseTypers).Collection(CollectionsUser)
 
 	startingNum := getNumDocuments(t, collection)
-	err := client.AddUser(context.Background(), testUser)
+	err := AddUser(context.Background(), testUser)
 	changedNum := getNumDocuments(t, collection)
 
 	if err != nil || changedNum != startingNum+1 {
@@ -32,7 +32,7 @@ func TestAddAndDelete(t *testing.T) {
 
 	id := testUser.ID.Hex()
 
-	err = client.DeleteUserByID(context.Background(), id, RegularID)
+	err = DeleteUserByID(context.Background(), id, RegularID)
 	changedNum = getNumDocuments(t, collection)
 
 	if err != nil || changedNum != startingNum {
@@ -44,17 +44,17 @@ func TestAddAndDeleteOAuthUser(t *testing.T) {
 	oauthID := "googleID"
 	testUser := NewUser("foo", "foo", "foo", oauthID, "", "", time.Now())
 
-	collection := client.client.Database(DatabaseTypers).Collection(CollectionsUser)
+	collection := db.Database(DatabaseTypers).Collection(CollectionsUser)
 
 	startingNum := getNumDocuments(t, collection)
-	err := client.AddUser(context.Background(), testUser)
+	err := AddUser(context.Background(), testUser)
 	changedNum := getNumDocuments(t, collection)
 
 	if err != nil || changedNum != startingNum+1 {
 		t.Fatal("Document was not added")
 	}
 
-	err = client.DeleteUserByID(context.Background(), oauthID, GoogleID)
+	err = DeleteUserByID(context.Background(), oauthID, GoogleID)
 	if err != nil {
 		t.Fatal("Document was not deleted")
 	}
@@ -68,14 +68,14 @@ func TestAddAndDeleteOAuthUser(t *testing.T) {
 func TestGetUserByID(t *testing.T) {
 	testUser := NewUser("foo", "foo", "foo", "", "", "", time.Now())
 
-	err := client.AddUser(context.Background(), testUser)
+	err := AddUser(context.Background(), testUser)
 	if err != nil {
 		t.Fatal("Document was not added")
 	}
 
 	id := testUser.ID.Hex()
 
-	foundUser, err := client.GetUserByID(context.Background(), id, RegularID)
+	foundUser, err := GetUserByID(context.Background(), id, RegularID)
 
 	// checking username and password is good enough for me
 	if err != nil || foundUser.ID.Hex() != id || foundUser.Username != testUser.Username ||
@@ -84,7 +84,7 @@ func TestGetUserByID(t *testing.T) {
 		t.Fatal("Document was not found correctly")
 	}
 
-	err = client.DeleteUserByID(context.Background(), id, RegularID)
+	err = DeleteUserByID(context.Background(), id, RegularID)
 	if err != nil {
 		t.Fatal("Document was not deleted")
 	}

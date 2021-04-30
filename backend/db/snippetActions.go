@@ -14,10 +14,10 @@ import (
 // AddSnippet adds a given snippet to a mongo client.  If it is successful
 // then it will add the id to the given snippet.  Otherwise, it will return an
 // error.
-func (c *Client) AddSnippet(ctx context.Context, snippet *Snippet) error {
-	collection := c.client.Database(DatabaseTypers).Collection(CollectionsSnippets)
+func AddSnippet(ctx context.Context, snippet *Snippet) error {
+	collection := db.Database(DatabaseTypers).Collection(CollectionsSnippets)
 
-	id, err := c.addDocumentToCollection(ctx, collection, snippet)
+	id, err := addDocumentToCollection(ctx, collection, snippet)
 	if err != nil {
 		return err
 	}
@@ -28,21 +28,19 @@ func (c *Client) AddSnippet(ctx context.Context, snippet *Snippet) error {
 
 // DeleteSnippetByID will delete a snippet by the id given.  If it is successful,
 // then it will return a nil error, otherwise it will return an error.
-func (c *Client) DeleteSnippetByID(ctx context.Context, id primitive.ObjectID) error {
-	collection := c.client.Database(DatabaseTypers).Collection(CollectionsSnippets)
+func DeleteSnippetByID(ctx context.Context, id primitive.ObjectID) error {
+	collection := db.Database(DatabaseTypers).Collection(CollectionsSnippets)
 
-	err := c.deleteFromCollectionByID(ctx, collection, id)
-
-	return err
+	return deleteFromCollectionByID(ctx, collection, id)
 }
 
 // GetSnippetByID gets a race snippet by ID and then returns the RaceSnippet if it is
 // successful.
-func (c *Client) GetSnippetByID(ctx context.Context, id primitive.ObjectID) (*Snippet, error) {
-	collection := c.client.Database(DatabaseTypers).Collection(CollectionsSnippets)
+func GetSnippetByID(ctx context.Context, id primitive.ObjectID) (*Snippet, error) {
+	collection := db.Database(DatabaseTypers).Collection(CollectionsSnippets)
 
 	var snippet Snippet
-	err := c.getDocumentFromCollectionByID(ctx, collection, id, &snippet)
+	err := getDocumentFromCollectionByID(ctx, collection, id, &snippet)
 	if err != nil {
 		return nil, err
 	}
@@ -51,8 +49,8 @@ func (c *Client) GetSnippetByID(ctx context.Context, id primitive.ObjectID) (*Sn
 
 // GetRandomSnippet gets a random race snippet if one can be found.  Otherwise,
 // it will return an error.
-func (c *Client) GetRandomSnippet(ctx context.Context) (*Snippet, error) {
-	collection := c.client.Database(DatabaseTypers).Collection(CollectionsSnippets)
+func GetRandomSnippet(ctx context.Context) (*Snippet, error) {
+	collection := db.Database(DatabaseTypers).Collection(CollectionsSnippets)
 
 	randSnippet := bson.D{{Key: "$sample", Value: bson.D{{Key: "size", Value: 1}}}}
 	opts := options.Aggregate().SetMaxTime(2 * time.Second)

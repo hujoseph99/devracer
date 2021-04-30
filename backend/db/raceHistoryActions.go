@@ -8,11 +8,11 @@ import (
 )
 
 // GetRaceHistoryByID returns a race history.
-func (c *Client) GetRaceHistoryByID(ctx context.Context, id primitive.ObjectID) (*RaceHistoryModel, error) {
-	collection := c.client.Database(DatabaseTypers).Collection(CollectionsRaceHistory)
+func GetRaceHistoryByID(ctx context.Context, id primitive.ObjectID) (*RaceHistoryModel, error) {
+	collection := db.Database(DatabaseTypers).Collection(CollectionsRaceHistory)
 
 	raceHistory := RaceHistoryModel{}
-	err := c.getDocumentFromCollectionByID(ctx, collection, id, &raceHistory)
+	err := getDocumentFromCollectionByID(ctx, collection, id, &raceHistory)
 
 	if err != nil {
 		return nil, err
@@ -21,8 +21,8 @@ func (c *Client) GetRaceHistoryByID(ctx context.Context, id primitive.ObjectID) 
 }
 
 // UpdateRaceHistory updates a race history.
-func (c *Client) UpdateRaceHistory(ctx context.Context, id primitive.ObjectID, raceHistory *RaceHistoryModel) error {
-	collection := c.client.Database(DatabaseTypers).Collection(CollectionsRaceHistory)
+func UpdateRaceHistory(ctx context.Context, id primitive.ObjectID, raceHistory *RaceHistoryModel) error {
+	collection := db.Database(DatabaseTypers).Collection(CollectionsRaceHistory)
 
 	result := collection.FindOneAndUpdate(ctx, bson.M{"_id": id}, bson.M{"$set": raceHistory})
 
@@ -33,10 +33,10 @@ func (c *Client) UpdateRaceHistory(ctx context.Context, id primitive.ObjectID, r
 }
 
 // AddRaceHistory adds a race history to a mongo client.  Will return the error if there is an error.
-func (c *Client) AddRaceHistory(ctx context.Context, raceHistory *RaceHistoryModel) error {
-	collection := c.client.Database(DatabaseTypers).Collection(CollectionsRaceHistory)
+func AddRaceHistory(ctx context.Context, raceHistory *RaceHistoryModel) error {
+	collection := db.Database(DatabaseTypers).Collection(CollectionsRaceHistory)
 
-	id, err := c.addDocumentToCollection(ctx, collection, raceHistory)
+	id, err := addDocumentToCollection(ctx, collection, raceHistory)
 
 	if err != nil {
 		return err
@@ -49,9 +49,9 @@ func (c *Client) AddRaceHistory(ctx context.Context, raceHistory *RaceHistoryMod
 
 // DeleteRaceHistoryByID will delete a race history by the given id.  If it is successful, then
 // it will return a nil error, otherwise it will return an error.
-func (c *Client) DeleteRaceHistoryByID(ctx context.Context, id primitive.ObjectID) error {
-	collection := c.client.Database(DatabaseTypers).Collection(CollectionsRaceHistory)
+func DeleteRaceHistoryByID(ctx context.Context, id primitive.ObjectID) error {
+	collection := db.Database(DatabaseTypers).Collection(CollectionsRaceHistory)
 
-	err := c.deleteFromCollectionByID(ctx, collection, id)
+	err := deleteFromCollectionByID(ctx, collection, id)
 	return err
 }
