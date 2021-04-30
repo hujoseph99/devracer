@@ -12,7 +12,7 @@ import (
 
 // addDocumentToCollection will add a document to the given collection.  If it is
 // then it will return the id in the form of a string.
-func (c *Client) addDocumentToCollection(ctx context.Context,
+func addDocumentToCollection(ctx context.Context,
 	collection *mongo.Collection, doc interface{}) (primitive.ObjectID, error) {
 
 	insertResult, err := collection.InsertOne(ctx, doc)
@@ -30,7 +30,7 @@ func (c *Client) addDocumentToCollection(ctx context.Context,
 // deleteFromCollectionByID will delete a document from the given collection by ID.
 // If it is successful, then the error will be nil, otherwise it will be a valid
 // error.
-func (c *Client) deleteFromCollectionByID(ctx context.Context,
+func deleteFromCollectionByID(ctx context.Context,
 	collection *mongo.Collection, id primitive.ObjectID) error {
 
 	del, err := collection.DeleteOne(ctx, bson.M{"_id": id})
@@ -47,7 +47,7 @@ func (c *Client) deleteFromCollectionByID(ctx context.Context,
 
 // getDocumentFromCollectionByID will get a document from a given collection
 // matches the given id and will populate it into the given model.
-func (c *Client) getDocumentFromCollectionByID(ctx context.Context,
+func getDocumentFromCollectionByID(ctx context.Context,
 	collection *mongo.Collection, id primitive.ObjectID, model interface{}) error {
 
 	err := collection.FindOne(ctx, bson.M{"_id": id}).Decode(model)
@@ -61,7 +61,7 @@ func (c *Client) getDocumentFromCollectionByID(ctx context.Context,
 // matches any of the given params if first param indicates the field name
 // and the second param indicates the value of the param that is being searched for.
 // The document will be populated into the given model (if it did not error).
-func (c *Client) getDocumentFromCollection(ctx context.Context,
+func getDocumentFromCollection(ctx context.Context,
 	collection *mongo.Collection, params map[string]string,
 	model interface{}) error {
 

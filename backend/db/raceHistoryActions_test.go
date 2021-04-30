@@ -13,7 +13,7 @@ func TestRaceHistory(t *testing.T) {
 	raceHistory := NewRaceHistory("111111111111111111", raceParticipants, time.Now().UTC().Round(time.Millisecond))
 
 	var getAndCheckRaceHistory = func() {
-		checkRaceHistory, err := client.GetRaceHistoryByID(context.TODO(), raceHistory.ID)
+		checkRaceHistory, err := GetRaceHistoryByID(context.TODO(), raceHistory.ID)
 		if err != nil {
 			t.Fatal("Could not do GetRaceHistory " + err.Error())
 		}
@@ -23,15 +23,15 @@ func TestRaceHistory(t *testing.T) {
 		}
 	}
 
-	client.AddRaceHistory(context.TODO(), raceHistory)
+	AddRaceHistory(context.TODO(), raceHistory)
 	getAndCheckRaceHistory()
 
 	raceHistory.SnippetID = "changedsnippet"
-	err := client.UpdateRaceHistory(context.TODO(), raceHistory.ID, raceHistory)
+	err := UpdateRaceHistory(context.TODO(), raceHistory.ID, raceHistory)
 	if err != nil {
 		t.Fatal("Could not do UpdateRaceHistory" + err.Error())
 	}
 	getAndCheckRaceHistory()
 
-	client.DeleteRaceHistoryByID(context.TODO(), raceHistory.ID)
+	DeleteRaceHistoryByID(context.TODO(), raceHistory.ID)
 }

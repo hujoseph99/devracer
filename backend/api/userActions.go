@@ -1,13 +1,5 @@
 package api
 
-import (
-	"context"
-	"encoding/json"
-	"net/http"
-
-	"github.com/hujoseph99/typing/backend/db"
-)
-
 // const defaultErrorMessage = "An error has occurred. Please try again."
 
 // // hashAndSalt encrypts a password for us
@@ -146,26 +138,3 @@ import (
 
 // 	returnUserToClient(w, r, existingUser)
 // }
-
-func (myAPI *API) testFunctions(w http.ResponseWriter, r *http.Request) {
-	ctx := context.TODO()
-
-	// user := db.NewUser("foo", "foo", "foo", "", "", "", time.Now())
-
-	// res, err := myAPI.Database.AddUser(ctx, user)
-	err := myAPI.Database.DeleteUserByID(ctx, "5f31cfb510b81ac6b98666e2", db.RegularID)
-
-	if err != nil {
-		msg := map[string]string{
-			"msg": "error",
-		}
-		json.NewEncoder(w).Encode(msg)
-		return
-	}
-
-	msg := map[string]string{
-		"msg": "yay",
-	}
-
-	json.NewEncoder(w).Encode(msg)
-}

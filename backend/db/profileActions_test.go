@@ -21,17 +21,17 @@ func getTestProfile(t *testing.T) *ProfileModel {
 func TestProfileAddAndDelete(t *testing.T) {
 	testProfile := getTestProfile(t)
 
-	collection := client.client.Database(DatabaseTypers).Collection(CollectionProfiles)
+	collection := db.Database(DatabaseTypers).Collection(CollectionProfiles)
 
 	startingNum := getNumDocuments(t, collection)
-	err := client.AddProfile(context.Background(), testProfile)
+	err := AddProfile(context.Background(), testProfile)
 	changedNum := getNumDocuments(t, collection)
 
 	if err != nil || changedNum != startingNum+1 {
 		t.Fatal("Document was not added")
 	}
 
-	err = client.DeleteProfileByID(context.Background(), testProfile.ID)
+	err = DeleteProfileByID(context.Background(), testProfile.ID)
 	changedNum = getNumDocuments(t, collection)
 
 	if err != nil || changedNum != startingNum {
@@ -42,12 +42,12 @@ func TestProfileAddAndDelete(t *testing.T) {
 func TestGetProfileByID(t *testing.T) {
 	testProfile := getTestProfile(t)
 
-	err := client.AddProfile(context.Background(), testProfile)
+	err := AddProfile(context.Background(), testProfile)
 	if err != nil {
 		t.Fatal("Document was not added")
 	}
 
-	foundProfile, err := client.GetProfileByID(context.Background(), testProfile.ID)
+	foundProfile, err := GetProfileByID(context.Background(), testProfile.ID)
 
 	// checking username and password is good enough for me
 	if err != nil || foundProfile.ID.Hex() != testProfile.ID.Hex() ||
@@ -57,7 +57,7 @@ func TestGetProfileByID(t *testing.T) {
 		t.Fatal("Document was not found correctly")
 	}
 
-	err = client.DeleteProfileByID(context.Background(), testProfile.ID)
+	err = DeleteProfileByID(context.Background(), testProfile.ID)
 	if err != nil {
 		t.Fatal("Document was not deleted")
 	}

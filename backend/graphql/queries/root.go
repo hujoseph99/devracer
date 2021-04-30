@@ -26,15 +26,10 @@ var RootQuery = graphql.NewObject(
 			"practiceRace": &graphql.Field{
 				Type: newPracticeRaceType,
 				Resolve: func(p graphql.ResolveParams) (interface{}, error) {
-					client, ok := p.Context.Value(ContextKey(DatabaseContextKey)).(*db.Client)
-					if !ok {
-						return nil, fmt.Errorf("cannot get get DB context")
-					}
-
 					snippetID, ok := p.Args["snippetId"]
 					if !ok {
 						// could not extract snippet id, return random snippet
-						snippet, err := client.GetRandomSnippet(p.Context)
+						snippet, err := db.GetRandomSnippet(p.Context)
 						if err != nil {
 							return nil, fmt.Errorf("cannot get random snippet")
 						}
@@ -50,7 +45,7 @@ var RootQuery = graphql.NewObject(
 					if err != nil {
 						return nil, fmt.Errorf("given invalid id, id is: %v", snippetID)
 					}
-					snippet, err := client.GetSnippetByID(p.Context, objectID)
+					snippet, err := db.GetSnippetByID(p.Context, objectID)
 					if err != nil {
 						return nil, fmt.Errorf("cannot get the snippet by id")
 					}
