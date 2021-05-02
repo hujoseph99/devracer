@@ -11,12 +11,12 @@ import (
 )
 
 type jwtPayload struct {
-	userid string `json:"userid"`
+	UserId string `json:"userid"`
 }
 
 func newJwtPayload(id primitive.ObjectID) *jwtPayload {
 	res := &jwtPayload{
-		userid: id.String(),
+		UserId: id.String(),
 	}
 	return res
 }
