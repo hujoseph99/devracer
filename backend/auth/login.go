@@ -67,114 +67,48 @@ func HandleLogin(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(jsonToken)
 }
 
-// // registerUser will register a user through an http request.
-// // We assume that we will get a request with a JSON body that will contain
-// // an email, username, nickname, and password
-// func (myAPI *API) registerUser(w http.ResponseWriter, r *http.Request) {
-// 	w.Header().Set("Content-Type", "application/json")
-// 	ctx := context.TODO()
-
-// 	user, err := decodeUserBody(w, r)
-// 	if err != nil {
-// 		defaultError(w, r, http.StatusBadRequest, "Invalid request.")
-// 		return
-// 	}
-
-// 	// check if username already exists
-// 	existingUser, err := myAPI.Database.FindUserByUsername(ctx, user.Username)
-// 	if err == nil || existingUser != nil {
-// 		defaultError(w, r, http.StatusUnauthorized, "The username is already in use. Please try again.")
-// 		return
-// 	}
-
-// 	// Check if the email already exists
-// 	existingUser, err = myAPI.Database.FindUserByEmail(ctx, user.Email)
-// 	if err == nil || existingUser != nil {
-// 		defaultError(w, r, http.StatusUnauthorized, "The email is already in use. Please try again.")
-// 		return
-// 	}
-
-// 	// Fill in the rest of the fields with default data
-// 	user.Wpm = 0
-// 	user.RegisterDate = time.Now()
-
-// 	// hash and salt the password
-// 	bytePassword := []byte(user.Password)
-// 	hashed, err := hashAndSalt(bytePassword)
-// 	if err != nil {
-// 		defaultError(w, r, http.StatusBadRequest, defaultErrorMessage)
-// 		return
-// 	}
-// 	user.Password = hashed
-
-// 	// add user to db
-// 	err = myAPI.Database.AddUser(ctx, user)
-// 	if err != nil {
-// 		defaultError(w, r, http.StatusBadRequest, defaultErrorMessage)
-// 		return
-// 	}
-
-// 	returnUserToClient(w, r, user)
-// }
-
 /*
  * Expects an object like:
  * {
  *  	username,
+ *		nickname,
  *		password,
  *		email
  * }
  */
 func HandleRegister(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json")
+	ctx := context.TODO()
 
+	model, err := decodeRegisterRequest(w, r)
+	if err != nil {
+		api.DefaultError(w, r, http.StatusBadRequest, "Invalid request")
+	}
+
+	err = model.validateRegisterRequest(w, r, ctx)
+	if err != nil {
+		return
+	}
+
+	// 	// Fill in the rest of the fields with default data
+	// 	user.Wpm = 0
+	// 	user.RegisterDate = time.Now()
+
+	// 	// hash and salt the password
+	// 	bytePassword := []byte(user.Password)
+	// 	hashed, err := hashAndSalt(bytePassword)
+	// 	if err != nil {
+	// 		defaultError(w, r, http.StatusBadRequest, defaultErrorMessage)
+	// 		return
+	// 	}
+	// 	user.Password = hashed
+
+	// 	// add user to db
+	// 	err = myAPI.Database.AddUser(ctx, user)
+	// 	if err != nil {
+	// 		defaultError(w, r, http.StatusBadRequest, defaultErrorMessage)
+	// 		return
+	// 	}
+
+	// 	returnUserToClient(w, r, user)
 }
-
-// // registerUser will register a user through an http request.
-// // We assume that we will get a request with a JSON body that will contain
-// // an email, username, nickname, and password
-// func (myAPI *API) registerUser(w http.ResponseWriter, r *http.Request) {
-// 	w.Header().Set("Content-Type", "application/json")
-// 	ctx := context.TODO()
-
-// 	user, err := decodeUserBody(w, r)
-// 	if err != nil {
-// 		defaultError(w, r, http.StatusBadRequest, "Invalid request.")
-// 		return
-// 	}
-
-// 	// check if username already exists
-// 	existingUser, err := myAPI.Database.FindUserByUsername(ctx, user.Username)
-// 	if err == nil || existingUser != nil {
-// 		defaultError(w, r, http.StatusUnauthorized, "The username is already in use. Please try again.")
-// 		return
-// 	}
-
-// 	// Check if the email already exists
-// 	existingUser, err = myAPI.Database.FindUserByEmail(ctx, user.Email)
-// 	if err == nil || existingUser != nil {
-// 		defaultError(w, r, http.StatusUnauthorized, "The email is already in use. Please try again.")
-// 		return
-// 	}
-
-// 	// Fill in the rest of the fields with default data
-// 	user.Wpm = 0
-// 	user.RegisterDate = time.Now()
-
-// 	// hash and salt the password
-// 	bytePassword := []byte(user.Password)
-// 	hashed, err := hashAndSalt(bytePassword)
-// 	if err != nil {
-// 		defaultError(w, r, http.StatusBadRequest, defaultErrorMessage)
-// 		return
-// 	}
-// 	user.Password = hashed
-
-// 	// add user to db
-// 	err = myAPI.Database.AddUser(ctx, user)
-// 	if err != nil {
-// 		defaultError(w, r, http.StatusBadRequest, defaultErrorMessage)
-// 		return
-// 	}
-
-// 	returnUserToClient(w, r, user)
-// }

@@ -13,5 +13,6 @@ func main() {
 
 	db.InitDatabase()
 	graphql.RegisterEndpoints(router)
+	InitRouter(router)
 	http.ListenAndServe(":8080", router)
 }

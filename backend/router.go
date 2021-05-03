@@ -7,4 +7,5 @@ import (
 
 func InitRouter(router *mux.Router) {
 	router.HandleFunc("/auth/login", auth.HandleLogin)
+	router.HandleFunc("/auth/register", auth.HandleRegister)
 }
