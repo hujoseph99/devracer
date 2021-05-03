@@ -30,7 +30,7 @@ func TestPreferences(t *testing.T) {
 		t.Error("Could not do ObjectIDFromHex " + err.Error())
 	}
 
-	pref := NewPreferences(userid, "", "", "")
+	pref := NewPreferences(userid, "")
 
 	var getAndCheckPreferences = func() {
 		checkPref, err := GetPreferencesByID(context.TODO(), userid)
@@ -46,7 +46,7 @@ func TestPreferences(t *testing.T) {
 	AddPreferences(context.TODO(), pref)
 	getAndCheckPreferences()
 
-	pref.Theme = "dark"
+	pref.DisplayName = "different"
 	err = UpdatePreferences(context.TODO(), userid, pref)
 	if err != nil {
 		t.Error("Could not do UpdatePreferences" + err.Error())
