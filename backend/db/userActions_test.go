@@ -18,7 +18,7 @@ func getNumDocuments(t *testing.T, collection *mongo.Collection) int64 {
 }
 
 func TestAddAndDelete(t *testing.T) {
-	testUser := NewUser("foo", "foo", "foo@foo.com", "foo", "", "", "", time.Now())
+	testUser := NewUser("foo", "foo", "foo@foo.com", "", "", "", time.Now())
 
 	collection := db.Database(DatabaseTypers).Collection(CollectionsUser)
 
@@ -42,7 +42,7 @@ func TestAddAndDelete(t *testing.T) {
 
 func TestAddAndDeleteOAuthUser(t *testing.T) {
 	oauthID := "googleID"
-	testUser := NewUser("foo", "foo", "foo@foo.com", "foo", oauthID, "", "", time.Now())
+	testUser := NewUser("foo", "foo", "foo@foo.com", oauthID, "", "", time.Now())
 
 	collection := db.Database(DatabaseTypers).Collection(CollectionsUser)
 
@@ -66,7 +66,7 @@ func TestAddAndDeleteOAuthUser(t *testing.T) {
 }
 
 func TestGetUserByID(t *testing.T) {
-	testUser := NewUser("foo", "foo", "foo@foo.com", "foo", "", "", "", time.Now())
+	testUser := NewUser("foo", "foo", "foo@foo.com", "", "", "", time.Now())
 
 	err := AddUser(context.Background(), testUser)
 	if err != nil {
@@ -91,7 +91,7 @@ func TestGetUserByID(t *testing.T) {
 }
 
 func TestFindUserByUsername(t *testing.T) {
-	testUser := NewUser("username", "foo", "foo@foo.com", "foo", "", "", "", time.Now())
+	testUser := NewUser("username", "foo", "foo@foo.com", "", "", "", time.Now())
 
 	err := AddUser(context.Background(), testUser)
 	if err != nil {
@@ -115,7 +115,7 @@ func TestFindUserByUsername(t *testing.T) {
 }
 
 func TestFindUserByEmail(t *testing.T) {
-	testUser := NewUser("username", "foo", "email@email.com", "foo", "", "", "", time.Now())
+	testUser := NewUser("username", "foo", "email@email.com", "", "", "", time.Now())
 
 	err := AddUser(context.Background(), testUser)
 	if err != nil {

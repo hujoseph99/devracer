@@ -20,7 +20,6 @@ type UserModel struct {
 	Username     string             `bson:"username" json:"username"`
 	Password     string             `bson:"password" json:"password"`
 	Email        string             `bson:"email" json:"email"`
-	Salt         string             `bson:"salt" json:"salt"`
 	GoogleID     string             `bson:"googleID" json:"googleID"`
 	GithubID     string             `bson:"githubID" json:"githubID"`
 	FacebookID   string             `bson:"facebookID" json:"facebookID"`
@@ -28,14 +27,13 @@ type UserModel struct {
 }
 
 // NewUser is the constructor for User - it creates a new User object
-func NewUser(username, password, email, salt, googleID, githubID, facebookID string,
+func NewUser(username, password, email, googleID, githubID, facebookID string,
 	registerDate time.Time) *UserModel {
 
 	res := &UserModel{
 		Username:     username,
 		Password:     password,
 		Email:        email,
-		Salt:         salt,
 		GoogleID:     googleID,
 		GithubID:     githubID,
 		FacebookID:   facebookID,
