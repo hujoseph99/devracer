@@ -100,16 +100,16 @@ func FindUserByUsername(ctx context.Context, username string) (*UserModel, error
 }
 
 // // FindUserByEmail will find a user by their email in the db
-// func FindUserByEmail(ctx context.Context, email string) (*UserModel, error) {
-// 	collection := db.Database(DatabaseTypers).Collection(CollectionsUser)
+func FindUserByEmail(ctx context.Context, email string) (*UserModel, error) {
+	collection := db.Database(DatabaseTypers).Collection(CollectionsUser)
 
-// 	params := make(map[string]string)
-// 	params["email"] = email
+	params := make(map[string]string)
+	params["email"] = email
 
-// 	var user UserModel
-// 	err := db.getDocumentFromCollection(ctx, collection, params, &user)
-// 	if err != nil {
-// 		return nil, err
-// 	}
-// 	return &user, nil
-// }
+	var user UserModel
+	err := getDocumentFromCollection(ctx, collection, params, &user)
+	if err != nil {
+		return nil, err
+	}
+	return &user, nil
+}
