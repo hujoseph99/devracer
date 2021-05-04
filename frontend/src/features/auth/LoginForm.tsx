@@ -1,7 +1,7 @@
-import { Avatar, Box, Button, Checkbox, Container, Divider, FormControl, FormControlLabel, Grid, Link, makeStyles, Paper, TextField, TextFieldProps, Theme, Typography } from '@material-ui/core';
-import { cyan } from '@material-ui/core/colors';
-import { LockOutlined } from '@material-ui/icons';
-import React from 'react';
+import { Avatar, Box, Button, Checkbox, Container, Divider, FormControl, FormControlLabel, Grid, IconButton, InputAdornment, Link, makeStyles, Paper, TextField, TextFieldProps, Theme, Typography } from '@material-ui/core';
+import { cyan, red } from '@material-ui/core/colors';
+import { LockOutlined, PersonalVideo, Visibility, VisibilityOff } from '@material-ui/icons';
+import React, { useState } from 'react';
 import { theme } from '../../theme';
 
 const FormTextField = ({
@@ -20,15 +20,33 @@ const FormTextField = ({
 const useStyles = makeStyles<Theme>(theme => ({
 	avatar: {
 		margin: theme.spacing(1),
-		backgroundColor: theme.palette.secondary.main
+		backgroundColor: red[400]
 	},
 	submit: {
 		margin: theme.spacing(3, 0, 2)
 	}
 }));
 
+interface FormState {
+	username: string;
+	password: string;
+}
+
 export const LoginForm = (): JSX.Element => {
 	const classes = useStyles();
+	const [formState, setFormState] = useState<FormState>({
+		username: '',
+		password: ''
+	});
+	const [showPassword, setShowPassword] = useState(false)
+
+	const handleClickShowPassword = () => {
+		setShowPassword(prev => !prev);
+	}
+
+	const handleChange = (key: keyof FormState) => (event: React.ChangeEvent<HTMLInputElement>) => {
+		setFormState(prev => ({ ...prev, [key]: event.target.value }))
+	}
 
 	return (
 		<Grid container justify='center'>
@@ -39,8 +57,32 @@ export const LoginForm = (): JSX.Element => {
 					</Avatar>
 					<Typography variant="h4" align='center'>Sign in</Typography>
 					<Box width='100%'>
-						<FormTextField autoFocus label='Username' />
-						<FormTextField label='Password' />
+						<FormTextField 
+							autoFocus 
+							label='Username' 
+							value={formState.username} 
+							onChange={handleChange('username')}
+						/>
+						<FormTextField 
+							label='Password' 
+							type={showPassword ? 'text' : 'password'}
+							value={formState.password}
+							onChange={handleChange('password')}
+							InputProps={{
+								endAdornment: (
+									<InputAdornment position='end'>
+										<IconButton
+											onClick={handleClickShowPassword}
+											disableFocusRipple
+											disableRipple
+											disableTouchRipple
+										>
+											{showPassword ? <VisibilityOff /> : <Visibility />}
+										</IconButton>
+									</InputAdornment>
+								)
+							}
+						}/>
 						<FormControlLabel
 							control={<Checkbox value="remember" color="primary" />}
 							label="Remember me"
@@ -62,27 +104,5 @@ export const LoginForm = (): JSX.Element => {
 				</Box>
 			</Grid>
 		</Grid>
-		// <Box mt={5}>
-		// 	<Grid container justify='center'>
-		// 		<Grid item xs={12} sm={10}>
-		// 			<Paper >
-		// 				<Grid container justify='center' spacing={4}>
-		// 					<Grid item xs={8}>
-		// 						<Box mt={4}>
-		// 							<Typography variant='h4' align='center' gutterBottom>Login</Typography>
-		// 						</Box>
-		// 					</Grid>
-		// 					<Grid item xs={10} sm={8}>
-		// 						<FormTextField label='Email' />
-		// 						<FormTextField label='Username' />
-		// 						<FormTextField label='Password' />
-		// 						<FormTextField label='Confirm Password' />
-		// 						<FormTextField label='Nickname' />
-		// 					</Grid>
-		// 				</Grid>
-		// 			</Paper>
-		// 		</Grid>
-		// 	</Grid>
-		// </Box>
 	)
 }
