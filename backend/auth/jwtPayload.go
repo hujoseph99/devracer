@@ -60,3 +60,18 @@ func (user *jwtPayload) convertToJwt() (string, error) {
 	// parseToken(token)
 	return token, nil
 }
+
+func parseToken(tokenString string) {
+	hmacSecret := []byte(secret.SecretStateString)
+	token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
+		return hmacSecret, nil
+	})
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	if claims, ok := token.Claims.(jwt.MapClaims); ok && token.Valid {
+		fmt.Println(claims)
+	}
+
+}

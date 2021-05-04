@@ -6,6 +6,7 @@ import (
 	"time"
 
 	"github.com/dgrijalva/jwt-go"
+	"github.com/hujoseph99/typing/backend/secret"
 )
 
 // UserReturnToClient is a struct that will be used to return data back to the client.
@@ -37,9 +38,6 @@ type UserReturnToClient struct {
 
 // JWTExpireTime will be the amount of time before the JWT expires
 const JWTExpireTime = time.Minute * 15
-
-// TODO: Change secret and put into environment file
-const tempSecret = "abc123abc123"
 
 // convertToMapClaims will take a User object that is meant to be returned
 // to the client and conver it to a jwt.MapClaims to be used for jwt
@@ -84,8 +82,8 @@ func (user *UserReturnToClient) convertToJwt() (string, error) {
 	atClaims := user.convertToMapClaims()
 	(*atClaims)["exp"] = time.Now().Add(JWTExpireTime).Unix() // Set expire time
 	res := jwt.NewWithClaims(jwt.SigningMethodHS256, atClaims)
-	tempSecretConverted := []byte(tempSecret)
-	token, err := res.SignedString(tempSecretConverted)
+	secretConverted := []byte(secret.SecretStateString)
+	token, err := res.SignedString(secretConverted)
 	if err != nil {
 		fmt.Println(err)
 		return "", err
