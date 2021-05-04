@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
+	"time"
 
 	"github.com/hujoseph99/typing/backend/common/api"
 	"github.com/hujoseph99/typing/backend/db"
@@ -90,25 +91,34 @@ func HandleRegister(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// 	// Fill in the rest of the fields with default data
-	// 	user.Wpm = 0
-	// 	user.RegisterDate = time.Now()
+	// hash the password
+	bytePassword := []byte(model.Password)
+	hashed, err := bcrypt.GenerateFromPassword(bytePassword, bcrypt.DefaultCost)
+	if err != nil {
+		api.DefaultError(w, r, http.StatusInternalServerError, api.DefaultErrorMessage)
+		return
+	}
 
-	// 	// hash and salt the password
-	// 	bytePassword := []byte(user.Password)
-	// 	hashed, err := hashAndSalt(bytePassword)
-	// 	if err != nil {
-	// 		defaultError(w, r, http.StatusBadRequest, defaultErrorMessage)
-	// 		return
-	// 	}
-	// 	user.Password = hashed
+	newUser := db.NewUser(model.Username, string(hashed), model.Email, "", "", "", time.Now())
+	newPreferences := db.NewPreferences(newUser.ID, model.Nickname)
+	newProfile := db.NewProfile(newUser.ID, 0, 0, 0, 0, 0, 0)
 
-	// 	// add user to db
-	// 	err = myAPI.Database.AddUser(ctx, user)
-	// 	if err != nil {
-	// 		defaultError(w, r, http.StatusBadRequest, defaultErrorMessage)
-	// 		return
-	// 	}
+	err = db.RegisterUser(ctx, newUser, newProfile, newPreferences)
+	if err != nil {
+		api.DefaultError(w, r, http.StatusInternalServerError, api.DefaultErrorMessage)
+		return
+	}
 
-	// 	returnUserToClient(w, r, user)
+	jwtPayload := newJwtPayload(newUser.ID)
+	token, err := jwtPayload.convertToJwt()
+	if err != nil {
+		api.DefaultError(w, r, http.StatusInternalServerError, api.DefaultErrorMessage)
+		return
+	}
+
+	jsonToken := map[string]string{
+		"token": token,
+	}
+
+	json.NewEncoder(w).Encode(jsonToken)
 }

@@ -34,7 +34,7 @@ func getBsonID(id string, idType int) (bson.M, error) {
 
 // AddUser adds a given user to a mongo client.  If it is successful, then it
 // will add it to the given user object and return a nil error.  We are assuming
-// that the password is already hashed and salted.
+// that the password is already hashed and salted. It also adds the id to the given user model.
 func AddUser(ctx context.Context, user *UserModel) error {
 	collection := db.Database(DatabaseTypers).Collection(CollectionsUser)
 

@@ -5,6 +5,8 @@ import (
 	"net/http"
 )
 
+const DefaultErrorMessage = "An error has occurred. Please try again."
+
 // ErroeMessage is a wrapper for a message to help with returning an error
 // message along with an error status code
 type ErrorMessage struct {

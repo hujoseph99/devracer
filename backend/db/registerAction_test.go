@@ -45,3 +45,6 @@ func TestRegister(t *testing.T) {
 		t.Fatal("The collections were not deleted correctly")
 	}
 }
+
+// Have to test failing register manually, don't know how to mock failing to add something to db
+// Similar story for delete
