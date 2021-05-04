@@ -28,18 +28,18 @@ export const Navbar = ({
 	}
 
 	return isHome ? (
-		<Grid container item xs={12} justify='flex-end' className={classes.navbar}>
+		<Grid container justify='flex-end' className={classes.navbar}>
 			<Grid item>
-				<Button variant='outlined' size='small' color='primary' onClick={onLoginClick}>Login</Button>
+				<Button variant='outlined' size='small' onClick={onLoginClick}>Login</Button>
 			</Grid>
 		</Grid>
 	) : (
-		<Grid container item xs={12} justify='space-between' className={classes.navbar}>
+		<Grid container justify='space-between' className={classes.navbar}>
 			<Grid item>
-				<Button variant='outlined' size='small' color='primary' onClick={onHomeClick}>Home</Button>
+				<Button variant='outlined' size='small' onClick={onHomeClick}>Home</Button>
 			</Grid>
 			<Grid item>
-				<Button variant='outlined' size='small' color='primary' onClick={onLoginClick}>Login</Button>
+				<Button variant='outlined' size='small' onClick={onLoginClick}>Login</Button>
 			</Grid>
 		</Grid>
 	);
