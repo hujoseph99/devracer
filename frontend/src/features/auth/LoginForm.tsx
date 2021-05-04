@@ -1,8 +1,7 @@
-import { Avatar, Box, Button, Checkbox, Container, Divider, FormControl, FormControlLabel, Grid, IconButton, InputAdornment, Link, makeStyles, Paper, TextField, TextFieldProps, Theme, Typography } from '@material-ui/core';
-import { cyan, red } from '@material-ui/core/colors';
-import { LockOutlined, PersonalVideo, Visibility, VisibilityOff } from '@material-ui/icons';
+import { Avatar, Box, Button, Checkbox, FormControlLabel, Grid, IconButton, InputAdornment, Link, makeStyles, TextField, TextFieldProps, Theme, Typography } from '@material-ui/core';
+import { red } from '@material-ui/core/colors';
+import { LockOutlined, Visibility, VisibilityOff } from '@material-ui/icons';
 import React, { useState } from 'react';
-import { theme } from '../../theme';
 
 const FormTextField = ({
 	...props
