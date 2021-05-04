@@ -16,7 +16,7 @@ type jwtPayload struct {
 
 func newJwtPayload(id primitive.ObjectID) *jwtPayload {
 	res := &jwtPayload{
-		UserId: id.String(),
+		UserId: id.Hex(),
 	}
 	return res
 }
