@@ -79,7 +79,10 @@ func GetUserByID(ctx context.Context, id string, idType int) (*UserModel, error)
 	}
 
 	var user UserModel
-	_ = collection.FindOne(ctx, bsonID).Decode(&user)
+	err = collection.FindOne(ctx, bsonID).Decode(&user)
+	if err != nil {
+		return nil, err
+	}
 
 	return &user, nil
 }
