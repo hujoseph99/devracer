@@ -8,6 +8,9 @@ import (
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
+const DefaultExpiryTime = time.Hour * 24
+const RememberMeExpiryTime = time.Hour * 24 * 7
+
 type SessionModel struct {
 	ID           primitive.ObjectID `bson:"_id,omitempty" json:"_id,omitempty"`
 	RefreshToken string             `bson:"refreshToken" json:"refreshToken"`

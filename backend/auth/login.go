@@ -3,66 +3,83 @@ package auth
 import (
 	"context"
 	"encoding/json"
-	"fmt"
 	"net/http"
 	"time"
 
 	"github.com/hujoseph99/typing/backend/common/api"
 	"github.com/hujoseph99/typing/backend/db"
+	"go.mongodb.org/mongo-driver/bson/primitive"
 	"golang.org/x/crypto/bcrypt"
 )
 
-func decodeUserBody(w http.ResponseWriter, r *http.Request) (*db.UserModel, error) {
-	decoder := json.NewDecoder(r.Body)
-	var user db.UserModel
-	err := decoder.Decode(&user)
-	if err != nil {
-		return nil, err
-	} else if user.Username == "" || user.Password == "" {
-		return nil, fmt.Errorf("invalid username or password")
+// createSession creates a session for the given userid and then return thes refreshToken string
+// if successful. Otherwise, an error will be returned
+func createSession(ctx context.Context, userid primitive.ObjectID, rememberMe bool) (string, error) {
+	// create session
+	refreshToken := db.GenerateRefreshToken()
+	expiryTime := time.Now()
+	if rememberMe {
+		expiryTime = expiryTime.Add(db.RememberMeExpiryTime)
+	} else {
+		expiryTime = expiryTime.Add(db.DefaultExpiryTime)
 	}
-	return &user, nil
+	session := db.NewSession(refreshToken, userid, expiryTime)
+	err := db.AddSession(ctx, session)
+	if err != nil {
+		return "", err
+	}
+	return refreshToken, nil
 }
 
 /*
  * Expects an object like:
  * {
  *  	username,
- *		password
+ *		password,
+ *    rememberMe
  * }
  */
 func HandleLogin(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "appliaction/json")
 	ctx := context.TODO()
 
-	user, err := decodeUserBody(w, r)
+	login, err := decodeLoginRequest(w, r)
 	if err != nil {
 		api.DefaultError(w, r, http.StatusBadRequest, "Invalid request.")
 		return
 	}
 
-	existingUser, err := db.FindUserByUsername(ctx, user.Username)
+	existingUser, err := db.FindUserByUsername(ctx, login.Username)
 	if err != nil || existingUser == nil {
 		api.DefaultError(w, r, http.StatusUnauthorized, "The username and password was not found. Please try again.")
 		return
 	}
 
 	byteHash := []byte(existingUser.Password)
-	bytePassword := []byte(user.Password)
+	bytePassword := []byte(login.Password)
 	err = bcrypt.CompareHashAndPassword(byteHash, bytePassword)
 	if err != nil {
-		api.DefaultError(w, r, http.StatusUnauthorized, "The username and password is incorrect. Please try again.")
+		api.DefaultError(w, r, http.StatusUnauthorized, "The username and password was not found. Please try again.")
 	}
 
+	// generate jwt
 	jwtPayload := newJwtPayload(existingUser.ID)
 	accessToken, err := jwtPayload.convertToJwt()
 	if err != nil {
-		api.DefaultError(w, r, http.StatusInternalServerError, "An error has occurred. Please try again.")
+		api.DefaultError(w, r, http.StatusInternalServerError, api.DefaultErrorMessage)
+		return
+	}
+
+	// create session
+	refreshToken, err := createSession(ctx, existingUser.ID, login.RememberMe)
+	if err != nil {
+		api.DefaultError(w, r, http.StatusInternalServerError, api.DefaultErrorMessage)
 		return
 	}
 
 	jsonToken := map[string]string{
-		"accessToken": accessToken,
+		"accessToken":  accessToken,
+		"refreshToken": refreshToken,
 	}
 
 	json.NewEncoder(w).Encode(jsonToken)
@@ -116,8 +133,16 @@ func HandleRegister(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	// create session
+	refreshToken, err := createSession(ctx, newUser.ID, false)
+	if err != nil {
+		api.DefaultError(w, r, http.StatusInternalServerError, api.DefaultErrorMessage)
+		return
+	}
+
 	jsonToken := map[string]string{
-		"accessToken": accessToken,
+		"accessToken":  accessToken,
+		"refreshToken": refreshToken,
 	}
 
 	json.NewEncoder(w).Encode(jsonToken)
