@@ -73,5 +73,4 @@ func parseToken(tokenString string) {
 	if claims, ok := token.Claims.(jwt.MapClaims); ok && token.Valid {
 		fmt.Println(claims)
 	}
-
 }

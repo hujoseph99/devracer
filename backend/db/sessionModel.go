@@ -16,13 +16,15 @@ type SessionModel struct {
 	RefreshToken string             `bson:"refreshToken" json:"refreshToken"`
 	UserID       primitive.ObjectID `bson:"userid" json:"userid"`
 	ExpiryDate   time.Time          `bson:"expiryDate" json:"expiryDate"`
+	Remember     bool               `bson:"remember" json:"remember"`
 }
 
-func NewSession(refreshToken string, userID primitive.ObjectID, expiryDate time.Time) *SessionModel {
+func NewSession(refreshToken string, userID primitive.ObjectID, expiryDate time.Time, remember bool) *SessionModel {
 	res := &SessionModel{
 		RefreshToken: refreshToken,
 		UserID:       userID,
 		ExpiryDate:   expiryDate.UTC().Round(time.Millisecond), // mongodb converts to UTC, make it consistent with our models
+		Remember:     remember,
 	}
 
 	return res

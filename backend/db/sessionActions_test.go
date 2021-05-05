@@ -18,7 +18,7 @@ func TestAddAndDeleteSession(t *testing.T) {
 	collection := db.Database(DatabaseTypers).Collection(CollectionsSessions)
 
 	refreshToken := GenerateRefreshToken()
-	session := NewSession(refreshToken, userID, time.Now())
+	session := NewSession(refreshToken, userID, time.Now(), false)
 
 	startingNum := getNumDocuments(t, collection)
 	err = AddSession(context.Background(), session)
@@ -41,7 +41,7 @@ func TestGetSessionByRefreshToken(t *testing.T) {
 	}
 
 	refreshToken := GenerateRefreshToken()
-	session := NewSession(refreshToken, userID, time.Now())
+	session := NewSession(refreshToken, userID, time.Now(), false)
 	err = AddSession(context.Background(), session)
 	if err != nil {
 		t.Fatal("Document was not added")
@@ -70,7 +70,7 @@ func TestDeleteExistingSessionWhenAdding(t *testing.T) {
 	}
 
 	firstRefreshToken := GenerateRefreshToken()
-	firstSession := NewSession(firstRefreshToken, userID, time.Now())
+	firstSession := NewSession(firstRefreshToken, userID, time.Now(), false)
 
 	err = AddSession(context.Background(), firstSession)
 	if err != nil {
@@ -78,7 +78,7 @@ func TestDeleteExistingSessionWhenAdding(t *testing.T) {
 	}
 
 	secondRefreshToken := GenerateRefreshToken()
-	secondSession := NewSession(secondRefreshToken, userID, time.Now()) // same userid
+	secondSession := NewSession(secondRefreshToken, userID, time.Now(), false) // same userid
 
 	collection := db.Database(DatabaseTypers).Collection(CollectionsSessions)
 	startingNum := getNumDocuments(t, collection)
@@ -113,14 +113,14 @@ func TestUpdateSesionByRefreshToken(t *testing.T) {
 	}
 
 	refreshToken := GenerateRefreshToken()
-	session := NewSession(refreshToken, userID, time.Now())
+	session := NewSession(refreshToken, userID, time.Now(), false)
 
 	err = AddSession(context.Background(), session)
 	if err != nil {
 		t.Fatal("First session was not added")
 	}
 
-	newSession := NewSession(refreshToken, userID, time.Now().Add(time.Minute*15))
+	newSession := NewSession(refreshToken, userID, time.Now().Add(time.Minute*15), false)
 	err = UpdateSessionByRefreshToken(context.Background(), refreshToken, newSession)
 	if err != nil {
 		t.Fatal("Could not update the document")

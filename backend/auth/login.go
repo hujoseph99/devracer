@@ -23,7 +23,7 @@ func createSession(ctx context.Context, userid primitive.ObjectID, rememberMe bo
 	} else {
 		expiryTime = expiryTime.Add(db.DefaultExpiryTime)
 	}
-	session := db.NewSession(refreshToken, userid, expiryTime)
+	session := db.NewSession(refreshToken, userid, expiryTime, rememberMe)
 	err := db.AddSession(ctx, session)
 	if err != nil {
 		return "", err
