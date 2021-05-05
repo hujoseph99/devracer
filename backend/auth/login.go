@@ -3,6 +3,7 @@ package auth
 import (
 	"context"
 	"encoding/json"
+	"fmt"
 	"net/http"
 	"time"
 
@@ -29,6 +30,29 @@ func createSession(ctx context.Context, userid primitive.ObjectID, rememberMe bo
 		return "", err
 	}
 	return refreshToken, nil
+}
+
+// updateSession will update the session containing the refresh token and then update its expiry
+// date (if it's still available). If it's not available anymore, then it will return an error.
+func updateSession(ctx context.Context, refreshToken string) (*db.SessionModel, error) {
+	session, err := db.GetSessionByRefreshToken(ctx, refreshToken)
+	if err != nil {
+		return nil, fmt.Errorf("the session does not exist")
+	}
+
+	if time.Now().After(session.ExpiryDate) {
+		return nil, fmt.Errorf("the session has expired")
+	}
+
+	newExpiry := db.GetNewExpiryTime(session.Remember)
+	session.ExpiryDate = newExpiry
+
+	err = db.UpdateSessionByRefreshToken(ctx, refreshToken, session)
+	if err != nil {
+		return nil, fmt.Errorf("there was an error when updating the refresh token")
+	}
+
+	return session, nil
 }
 
 /*
@@ -77,12 +101,12 @@ func HandleLogin(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	jsonToken := map[string]string{
+	res := map[string]string{
 		"accessToken":  accessToken,
 		"refreshToken": refreshToken,
 	}
 
-	json.NewEncoder(w).Encode(jsonToken)
+	json.NewEncoder(w).Encode(res)
 }
 
 /*
@@ -100,11 +124,13 @@ func HandleRegister(w http.ResponseWriter, r *http.Request) {
 
 	model, err := decodeRegisterRequest(w, r)
 	if err != nil {
-		api.DefaultError(w, r, http.StatusBadRequest, "Invalid request")
+		api.DefaultError(w, r, http.StatusBadRequest, api.DefaultErrorMessage)
+		return
 	}
 
 	err = model.validateRegisterRequest(w, r, ctx)
 	if err != nil {
+		api.DefaultError(w, r, http.StatusBadRequest, api.DefaultErrorMessage)
 		return
 	}
 
@@ -140,16 +166,44 @@ func HandleRegister(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	jsonToken := map[string]string{
+	res := map[string]string{
 		"accessToken":  accessToken,
 		"refreshToken": refreshToken,
 	}
 
-	json.NewEncoder(w).Encode(jsonToken)
+	json.NewEncoder(w).Encode(res)
 }
 
 // HandleRefresh will take a refresh token, check it against the db and then provide a new access
 // token if it's acceptable.
 func HandleRefresh(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json")
+	ctx := context.TODO()
 
+	request, err := decodeRefreshRequest(w, r)
+	if err != nil {
+		api.DefaultError(w, r, http.StatusBadRequest, api.DefaultErrorMessage)
+		return
+	}
+
+	session, err := updateSession(ctx, request.RefreshToken)
+	if err != nil {
+		api.DefaultError(w, r, http.StatusBadRequest, api.DefaultErrorMessage)
+		return
+	}
+
+	// generate jwt
+	jwtPayload := newJwtPayload(session.UserID)
+	accessToken, err := jwtPayload.convertToJwt()
+	if err != nil {
+		api.DefaultError(w, r, http.StatusInternalServerError, api.DefaultErrorMessage)
+		return
+	}
+
+	res := map[string]string{
+		"accessToken":  accessToken,
+		"refreshToken": session.RefreshToken,
+	}
+
+	json.NewEncoder(w).Encode(res)
 }

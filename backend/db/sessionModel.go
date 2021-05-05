@@ -30,6 +30,16 @@ func NewSession(refreshToken string, userID primitive.ObjectID, expiryDate time.
 	return res
 }
 
+// Generates a cryptographically safe refresh token
 func GenerateRefreshToken() string {
 	return uniuri.NewLen(uniuri.UUIDLen) // length of 20 characters
+}
+
+// Get new expiry gets a new expiry time for us in the corect format. It will add onto the current
+// date depending on if the user has the remember me option enabled.
+func GetNewExpiryTime(remember bool) time.Time {
+	if remember {
+		return time.Now().UTC().Round(time.Millisecond).Add(RememberMeExpiryTime)
+	}
+	return time.Now().UTC().Round(time.Millisecond).Add(DefaultExpiryTime)
 }

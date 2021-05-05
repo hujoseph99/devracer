@@ -3,7 +3,7 @@ module github.com/hujoseph99/typing/backend
 go 1.16
 
 require (
-	github.com/dchest/uniuri v0.0.0-20200228104902-7aecb25e1fe5 // indirect
+	github.com/dchest/uniuri v0.0.0-20200228104902-7aecb25e1fe5
 	github.com/dgrijalva/jwt-go v3.2.0+incompatible
 	github.com/gorilla/mux v1.7.4
 	github.com/graphql-go/graphql v0.7.9
