@@ -29,7 +29,7 @@ func NewRaceHistory(snippetID string, raceParticipants []RaceParticipantModel, d
 	res := &RaceHistoryModel{
 		SnippetID:        snippetID,
 		RaceParticipants: raceParticipants,
-		Date:             date,
+		Date:             date.UTC().Round(time.Millisecond), // mongodb converts to UTC, make it consistent with our models
 	}
 
 	return res

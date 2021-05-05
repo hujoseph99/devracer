@@ -17,7 +17,7 @@ func NewSession(refreshToken string, userID primitive.ObjectID, expiryDate time.
 	res := &SessionModel{
 		RefreshToken: refreshToken,
 		UserID:       userID,
-		ExpiryDate:   expiryDate,
+		ExpiryDate:   expiryDate.UTC().Round(time.Millisecond), // mongodb converts to UTC, make it consistent with our models
 	}
 
 	return res

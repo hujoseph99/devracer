@@ -37,7 +37,7 @@ func NewUser(username, password, email, googleID, githubID, facebookID string,
 		GoogleID:     googleID,
 		GithubID:     githubID,
 		FacebookID:   facebookID,
-		RegisterDate: registerDate,
+		RegisterDate: registerDate.UTC().Round(time.Millisecond), // mongodb converts to UTC, make it consistent with our models
 	}
 
 	return res

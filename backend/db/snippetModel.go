@@ -31,7 +31,7 @@ func NewSnippet(raceContent string, language int, dateCreated time.Time) *Snippe
 		RaceContent: raceContent,
 		TokenCount:  len(raceContent),
 		Language:    language,
-		DateCreated: dateCreated,
+		DateCreated: dateCreated.UTC().Round(time.Millisecond), // mongodb converts to UTC, make it consistent with our models
 	}
 
 	return res
