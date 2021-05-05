@@ -13,7 +13,7 @@ type SessionModel struct {
 	ExpiryDate   time.Time          `bson:"expiryDate" json:"expiryDate"`
 }
 
-func NewSessionModel(refreshToken string, userID primitive.ObjectID, expiryDate time.Time) *SessionModel {
+func NewSession(refreshToken string, userID primitive.ObjectID, expiryDate time.Time) *SessionModel {
 	res := &SessionModel{
 		RefreshToken: refreshToken,
 		UserID:       userID,
