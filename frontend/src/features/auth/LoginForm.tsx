@@ -51,7 +51,7 @@ export const LoginForm = (): JSX.Element => {
 		<Grid container justify='center'>
 			<Grid item xs={12} sm={10}>
 				<Paper>
-					<Box py={5}>
+					<Box py={5} mt={4}>  { /* because footer also has mt={4} */} 
 						<Grid container justify='center'>
 							<Grid item xs={10} sm={8}>
 								<Box display='flex' flexDirection='column' alignItems='center' width='100%'>
