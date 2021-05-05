@@ -17,7 +17,7 @@ func TestAddAndDeleteSession(t *testing.T) {
 
 	collection := db.Database(DatabaseTypers).Collection(CollectionsSessions)
 
-	refreshToken := "1234123412341234"
+	refreshToken := GenerateRefreshToken()
 	session := NewSession(refreshToken, userID, time.Now())
 
 	startingNum := getNumDocuments(t, collection)
@@ -40,7 +40,7 @@ func TestGetSessionByRefreshToken(t *testing.T) {
 		t.Fatal("Could not create the userid")
 	}
 
-	refreshToken := "1234123412341234"
+	refreshToken := GenerateRefreshToken()
 	session := NewSession(refreshToken, userID, time.Now())
 	err = AddSession(context.Background(), session)
 	if err != nil {
@@ -69,7 +69,7 @@ func TestDeleteExistingSessionWhenAdding(t *testing.T) {
 		t.Fatal("Could not create the userid")
 	}
 
-	firstRefreshToken := "1234123412341234"
+	firstRefreshToken := GenerateRefreshToken()
 	firstSession := NewSession(firstRefreshToken, userID, time.Now())
 
 	err = AddSession(context.Background(), firstSession)
@@ -77,7 +77,7 @@ func TestDeleteExistingSessionWhenAdding(t *testing.T) {
 		t.Fatal("First session was not added")
 	}
 
-	secondRefreshToken := "1234123412341235"
+	secondRefreshToken := GenerateRefreshToken()
 	secondSession := NewSession(secondRefreshToken, userID, time.Now()) // same userid
 
 	collection := db.Database(DatabaseTypers).Collection(CollectionsSessions)
@@ -112,7 +112,7 @@ func TestUpdateSesionByRefreshToken(t *testing.T) {
 		t.Fatal("Could not create the userid")
 	}
 
-	refreshToken := "1234123412341234"
+	refreshToken := GenerateRefreshToken()
 	session := NewSession(refreshToken, userID, time.Now())
 
 	err = AddSession(context.Background(), session)

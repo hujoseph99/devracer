@@ -3,6 +3,8 @@ package db
 import (
 	"time"
 
+	"github.com/dchest/uniuri"
+
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
@@ -21,4 +23,8 @@ func NewSession(refreshToken string, userID primitive.ObjectID, expiryDate time.
 	}
 
 	return res
+}
+
+func GenerateRefreshToken() string {
+	return uniuri.NewLen(uniuri.UUIDLen) // length of 20 characters
 }
