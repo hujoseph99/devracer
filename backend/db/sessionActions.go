@@ -8,12 +8,12 @@ import (
 	"go.mongodb.org/mongo-driver/bson"
 )
 
-// GetSessionBySessionString will get a session from the db by a given session string. If nothing
+// GetSessionByRefreshToken will get a session from the db by a given session string. If nothing
 // was found, then it will return an error.
-func GetSessionBySessionString(ctx context.Context, sessionString string) (*SessionModel, error) {
+func GetSessionByRefreshToken(ctx context.Context, refreshToken string) (*SessionModel, error) {
 	collection := db.Database(DatabaseTypers).Collection(CollectionsSessions)
 
-	filter := bson.M{"refreshToken": sessionString}
+	filter := bson.M{"refreshToken": refreshToken}
 
 	var session SessionModel
 	err := collection.FindOne(ctx, filter).Decode(&session)
@@ -44,10 +44,10 @@ func AddSession(ctx context.Context, session *SessionModel) error {
 }
 
 // Updates a session by id when given one.
-func UpdateSessionBySessionString(ctx context.Context, sessionString string, session *SessionModel) error {
+func UpdateSessionByRefreshToken(ctx context.Context, refreshToken string, session *SessionModel) error {
 	collection := db.Database(DatabaseTypers).Collection(CollectionsSessions)
 
-	filter := bson.M{"refreshToken": sessionString}
+	filter := bson.M{"refreshToken": refreshToken}
 	result := collection.FindOneAndUpdate(ctx, filter, bson.M{"$set": session})
 	if result.Err() != nil {
 		return result.Err()
@@ -55,18 +55,18 @@ func UpdateSessionBySessionString(ctx context.Context, sessionString string, ses
 	return nil
 }
 
-// DeleteSessionBySessionString will delete a given session string from the database. If no session
+// DeleteSessionByRefreshToken will delete a given session string from the database. If no session
 // can be found with this string, then it will throw an error.
-func DeleteSessionBySessionString(ctx context.Context, sessionString string) error {
+func DeleteSessionByRefreshToken(ctx context.Context, refreshToken string) error {
 	collection := db.Database(DatabaseTypers).Collection(CollectionsSessions)
 
-	del, err := collection.DeleteOne(ctx, bson.M{"refreshToken": sessionString})
+	del, err := collection.DeleteOne(ctx, bson.M{"refreshToken": refreshToken})
 	if err != nil {
 		return err
 	} else if del.DeletedCount == 0 {
 		return fmt.Errorf("ERROR: Could not delete the document")
 	}
 
-	log.Printf("Deleted session with with session string: %v\n", sessionString)
+	log.Printf("Deleted session with with session string: %v\n", refreshToken)
 	return nil
 }
