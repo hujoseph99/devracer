@@ -8,7 +8,8 @@ import (
 	"go.mongodb.org/mongo-driver/bson"
 )
 
-// GetSessionBySessionString will get a session from the db by a given session string.
+// GetSessionBySessionString will get a session from the db by a given session string. If nothing
+// was found, then it will return an error.
 func GetSessionBySessionString(ctx context.Context, sessionString string) (*SessionModel, error) {
 	collection := db.Database(DatabaseTypers).Collection(CollectionsSessions)
 
@@ -59,7 +60,7 @@ func UpdateSessionBySessionString(ctx context.Context, sessionString string, ses
 func DeleteSessionBySessionString(ctx context.Context, sessionString string) error {
 	collection := db.Database(DatabaseTypers).Collection(CollectionsSessions)
 
-	del, err := collection.DeleteOne(ctx, bson.M{"userid": sessionString})
+	del, err := collection.DeleteOne(ctx, bson.M{"refreshToken": sessionString})
 	if err != nil {
 		return err
 	} else if del.DeletedCount == 0 {
