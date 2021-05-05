@@ -55,14 +55,14 @@ func HandleLogin(w http.ResponseWriter, r *http.Request) {
 	}
 
 	jwtPayload := newJwtPayload(existingUser.ID)
-	token, err := jwtPayload.convertToJwt()
+	accessToken, err := jwtPayload.convertToJwt()
 	if err != nil {
 		api.DefaultError(w, r, http.StatusInternalServerError, "An error has occurred. Please try again.")
 		return
 	}
 
 	jsonToken := map[string]string{
-		"token": token,
+		"accessToken": accessToken,
 	}
 
 	json.NewEncoder(w).Encode(jsonToken)
@@ -110,15 +110,21 @@ func HandleRegister(w http.ResponseWriter, r *http.Request) {
 	}
 
 	jwtPayload := newJwtPayload(newUser.ID)
-	token, err := jwtPayload.convertToJwt()
+	accessToken, err := jwtPayload.convertToJwt()
 	if err != nil {
 		api.DefaultError(w, r, http.StatusInternalServerError, api.DefaultErrorMessage)
 		return
 	}
 
 	jsonToken := map[string]string{
-		"token": token,
+		"accessToken": accessToken,
 	}
 
 	json.NewEncoder(w).Encode(jsonToken)
+}
+
+// HandleRefresh will take a refresh token, check it against the db and then provide a new access
+// token if it's acceptable.
+func HandleRefresh(w http.ResponseWriter, r *http.Request) {
+
 }

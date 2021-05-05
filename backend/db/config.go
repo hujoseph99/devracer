@@ -20,3 +20,6 @@ const CollectionsRaceSnippets = "racesnippets"
 
 // CollectionsSnippets is the name of the race snippets collection
 const CollectionsSnippets = "snippets"
+
+// CollectionSessions is the name of the sessions collection
+const CollectionsSessions = "sessions"
