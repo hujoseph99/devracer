@@ -1,20 +1,12 @@
-import { Avatar, Box, Button, Checkbox, FormControlLabel, Grid, IconButton, InputAdornment, Link, makeStyles, Paper, TextField, TextFieldProps, Theme, Typography } from '@material-ui/core';
-import { red } from '@material-ui/core/colors';
-import { LockOutlined, Visibility, VisibilityOff } from '@material-ui/icons';
 import React, { useState } from 'react';
+import { useDispatch } from 'react-redux';
 
-const FormTextField = ({
-	...props
-}: TextFieldProps): JSX.Element => (
-	<Box width='100%'>
-		<TextField 
-			variant='outlined' 
-			margin='normal'
-			fullWidth
-			{...props}
-		/>
-	</Box>
-)
+import { Avatar, Box, Button, Checkbox, FormControlLabel, Grid, IconButton, InputAdornment, Link, makeStyles, Paper, Theme, Typography } from '@material-ui/core';
+import { LockOutlined, Visibility, VisibilityOff } from '@material-ui/icons';
+import { red } from '@material-ui/core/colors';
+
+import { FormTextField } from './FormTextField';
+import { login } from './authSlice';
 
 const useStyles = makeStyles<Theme>(theme => ({
 	avatar: {
@@ -29,24 +21,35 @@ const useStyles = makeStyles<Theme>(theme => ({
 interface FormState {
 	username: string;
 	password: string;
+	rememberMe: boolean;
 }
 
 export const LoginForm = (): JSX.Element => {
+	const dispatch = useDispatch();
 	const classes = useStyles();
 	const [formState, setFormState] = useState<FormState>({
 		username: '',
-		password: ''
+		password: '',
+		rememberMe: false,
 	});
-	const [showPassword, setShowPassword] = useState(false)
+	const [showPassword, setShowPassword] = useState(false);
 
 	const handleClickShowPassword = () => {
 		setShowPassword(prev => !prev);
 	}
 
-	const handleChange = (key: keyof FormState) => (event: React.ChangeEvent<HTMLInputElement>) => {
-		setFormState(prev => ({ ...prev, [key]: event.target.value }))
+	const handleClickRememberMe = () => {
+		setFormState(prev => ({ ...prev, rememberMe: !prev.rememberMe}));
 	}
 
+	const handleChange = (key: keyof FormState) => (event: React.ChangeEvent<HTMLInputElement>) => {
+		setFormState(prev => ({ ...prev, [key]: event.target.value }));
+	}
+
+	const handleSubmit = () => {
+		dispatch(login(formState));
+	}
+	
 	return (
 		<Grid container justify='center'>
 			<Grid item xs={12} sm={10}>
@@ -87,14 +90,20 @@ export const LoginForm = (): JSX.Element => {
 											}
 										}/>
 										<FormControlLabel
-											control={<Checkbox value="remember" color="primary" />}
+											control={(
+												<Checkbox 
+													checked={formState.rememberMe} 
+													onClick={handleClickRememberMe} 
+													color="primary" 
+												/>
+											)}
 											label="Remember me"
 										/>
 										<Button
-											type='submit'
 											fullWidth
 											variant='contained'
 											className={classes.submit}
+											onClick={handleSubmit}
 										>
 											Sign In
 										</Button>
