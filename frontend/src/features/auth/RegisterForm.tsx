@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
-import { Avatar, Box, Button, Checkbox, FormControlLabel, Grid, IconButton, InputAdornment, Link, makeStyles, Paper, Theme, Typography } from '@material-ui/core';
+import { Avatar, Box, Button, Grid, IconButton, InputAdornment, Link, makeStyles, Paper, Theme, Typography } from '@material-ui/core';
 import { LockOutlined, Visibility, VisibilityOff } from '@material-ui/icons';
 import { red } from '@material-ui/core/colors';
 
 import { FormTextField } from './FormTextField';
-import { login, resetStatus, selectStatus } from './authSlice';
+import { register, resetStatus, selectStatus } from './authSlice';
 import { useHistory } from 'react-router';
 
 const useStyles = makeStyles<Theme>(theme => ({
@@ -22,22 +22,23 @@ const useStyles = makeStyles<Theme>(theme => ({
 interface FormState {
 	username: string;
 	password: string;
-	rememberMe: boolean;
+	email: string;
+	nickname: string;
 }
 
-export const LoginForm = (): JSX.Element => {
+export const RegisterForm = (): JSX.Element => {
 	const history = useHistory();
 	const dispatch = useDispatch();
 	const classes = useStyles();
 	const [formState, setFormState] = useState<FormState>({
 		username: '',
 		password: '',
-		rememberMe: false,
+		email: '',
+		nickname: '',
 	});
 	const [showPassword, setShowPassword] = useState(false);
 	const status = useSelector(selectStatus);
 
-	// reset it on load too
 	useEffect(() => {
 		dispatch(resetStatus());
 	}, [dispatch]);
@@ -47,14 +48,10 @@ export const LoginForm = (): JSX.Element => {
 			dispatch(resetStatus());
 			history.push('/');
 		} 
-	}, [dispatch, history, status])
+	}, [dispatch, history, status]);
 
 	const handleClickShowPassword = () => {
 		setShowPassword(prev => !prev);
-	}
-
-	const handleClickRememberMe = () => {
-		setFormState(prev => ({ ...prev, rememberMe: !prev.rememberMe}));
 	}
 
 	const handleChange = (key: keyof FormState) => (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -62,12 +59,12 @@ export const LoginForm = (): JSX.Element => {
 	}
 
 	const handleSubmit = () => {
-		dispatch(login(formState));
+		dispatch(register(formState));
 	}
 
-	const handleRegister = () => {
+	const handleLogin = () => {
 		dispatch(resetStatus());
-		history.push('/register');
+		history.push('/login');
 	}
 	
 	return (
@@ -81,7 +78,7 @@ export const LoginForm = (): JSX.Element => {
 									<Avatar className={classes.avatar}>
 										<LockOutlined />
 									</Avatar>
-									<Typography variant="h4" align='center' gutterBottom>Sign in</Typography>
+									<Typography variant="h4" align='center' gutterBottom>Register</Typography>
 									<Box width='100%' mt={2}>
 										<FormTextField 
 											autoFocus 
@@ -96,7 +93,6 @@ export const LoginForm = (): JSX.Element => {
 											type={showPassword ? 'text' : 'password'}
 											error={status === 'failed'}
 											onChange={handleChange('password')}
-											helperText={status === 'failed' ? 'The username and password were incorrect' : ''}
 											InputProps={{
 												endAdornment: (
 													<InputAdornment position='end'>
@@ -112,15 +108,18 @@ export const LoginForm = (): JSX.Element => {
 												)
 											}
 										}/>
-										<FormControlLabel
-											control={(
-												<Checkbox 
-													checked={formState.rememberMe} 
-													onClick={handleClickRememberMe} 
-													color="primary" 
-												/>
-											)}
-											label="Remember me"
+										<FormTextField 
+											label='Email' 
+											value={formState.email} 
+											error={status === 'failed'}
+											onChange={handleChange('email')}
+										/>
+										<FormTextField 
+											label='Nickname' 
+											value={formState.nickname} 
+											error={status === 'failed'}
+											onChange={handleChange('nickname')}
+											helperText={status === 'failed' ? 'The username or email has already been taken.' : ''}
 										/>
 										<Button
 											fullWidth
@@ -128,11 +127,11 @@ export const LoginForm = (): JSX.Element => {
 											className={classes.submit}
 											onClick={handleSubmit}
 										>
-											Sign In
+											Register
 										</Button>
 										<Box display='flex' flexDirection='row-reverse'>
-											<Link variant="body2" onClick={handleRegister}>
-												Don't have an account? Sign Up
+											<Link variant="body2" onClick={handleLogin}>
+												Already have an account? Log In
 											</Link>
 										</Box>
 									</Box>

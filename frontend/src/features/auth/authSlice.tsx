@@ -1,5 +1,5 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit"
-import { AuthState, LoginBody, LoginResponse } from "./types"
+import { AuthState, LoginBody, LoginResponse, RegisterBody, RegisterResponse } from "./types"
 
 import axios from 'axios';
 import { RootState } from "../../app/store";
@@ -15,7 +15,18 @@ export const login = createAsyncThunk<LoginResponse, LoginBody>(
 		)
 		return response.data;
 	}
-)
+);
+
+export const register = createAsyncThunk<RegisterResponse, RegisterBody>(
+	`${AUTH_SLICE_NAME}/register`,
+	async body => {
+		const response = await axios.post<RegisterResponse>(
+			'http://localhost:8080/auth/register',
+			body
+		)
+		return response.data;
+	}
+);
 
 const initialState: AuthState = {
 	accessToken: "",
@@ -41,6 +52,18 @@ export const authSlice = createSlice({
 			state.status = 'loading';
 		});
 		builder.addCase(login.rejected, state => {
+			state.status = 'failed';
+		});
+
+		builder.addCase(register.fulfilled, (state, action) => {
+			state.status = 'succeeded';
+			state.accessToken = action.payload.accessToken;
+			state.refreshToken = action.payload.refreshToken;
+		});
+		builder.addCase(register.pending, state => {
+			state.status = 'loading';
+		});
+		builder.addCase(register.rejected, state => {
 			state.status = 'failed';
 		});
 	},

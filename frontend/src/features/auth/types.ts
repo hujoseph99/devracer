@@ -16,3 +16,15 @@ export interface LoginBody {
 	password: string;
 	rememberMe: boolean;
 }
+
+export interface RegisterResponse {
+	accessToken: string;
+	refreshToken: string;
+}
+
+export interface RegisterBody {
+	username: string;
+	password: string;
+	email: string;
+	nickname: string;
+}
