@@ -26,7 +26,11 @@ const initialState: AuthState = {
 export const authSlice = createSlice({
 	name: AUTH_SLICE_NAME,
 	initialState,
-	reducers: {},
+	reducers: {
+		resetStatus: state => {
+			state.status = 'idle'
+		}
+	},
 	extraReducers: builder => {
 		builder.addCase(login.fulfilled, (state, action) => {
 			state.status = 'succeeded';
@@ -43,6 +47,8 @@ export const authSlice = createSlice({
 });
 
 export default authSlice.reducer;
+
+export const { resetStatus } = authSlice.actions;
 
 export const selectAccessToken = (state: RootState) => state.auth.accessToken;
 export const selectRefreshToken = (state: RootState) => state.auth.refreshToken;

@@ -1,12 +1,13 @@
-import React, { useState } from 'react';
-import { useDispatch } from 'react-redux';
+import React, { useEffect, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 
 import { Avatar, Box, Button, Checkbox, FormControlLabel, Grid, IconButton, InputAdornment, Link, makeStyles, Paper, Theme, Typography } from '@material-ui/core';
 import { LockOutlined, Visibility, VisibilityOff } from '@material-ui/icons';
 import { red } from '@material-ui/core/colors';
 
 import { FormTextField } from './FormTextField';
-import { login } from './authSlice';
+import { login, resetStatus, selectStatus } from './authSlice';
+import { useHistory } from 'react-router';
 
 const useStyles = makeStyles<Theme>(theme => ({
 	avatar: {
@@ -25,6 +26,7 @@ interface FormState {
 }
 
 export const LoginForm = (): JSX.Element => {
+	const history = useHistory();
 	const dispatch = useDispatch();
 	const classes = useStyles();
 	const [formState, setFormState] = useState<FormState>({
@@ -33,6 +35,19 @@ export const LoginForm = (): JSX.Element => {
 		rememberMe: false,
 	});
 	const [showPassword, setShowPassword] = useState(false);
+	const status = useSelector(selectStatus);
+
+	// reset it on load too
+	useEffect(() => {
+		dispatch(resetStatus());
+	}, []);
+
+	useEffect(() => {
+		if (status == 'succeeded')  {
+			dispatch(resetStatus());
+			history.push('/');
+		} 
+	}, [status])
 
 	const handleClickShowPassword = () => {
 		setShowPassword(prev => !prev);
@@ -61,19 +76,22 @@ export const LoginForm = (): JSX.Element => {
 									<Avatar className={classes.avatar}>
 										<LockOutlined />
 									</Avatar>
-									<Typography variant="h4" align='center'>Sign in</Typography>
-									<Box width='100%'>
+									<Typography variant="h4" align='center' gutterBottom>Sign in</Typography>
+									<Box width='100%' mt={2}>
 										<FormTextField 
 											autoFocus 
 											label='Username' 
 											value={formState.username} 
+											error={status == 'failed'}
 											onChange={handleChange('username')}
 										/>
 										<FormTextField 
 											label='Password' 
-											type={showPassword ? 'text' : 'password'}
 											value={formState.password}
+											type={showPassword ? 'text' : 'password'}
+											error={status == 'failed'}
 											onChange={handleChange('password')}
+											helperText={status == 'failed' ? 'The username and password were incorrect' : ''}
 											InputProps={{
 												endAdornment: (
 													<InputAdornment position='end'>
