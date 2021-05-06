@@ -6,6 +6,7 @@ import (
 	"github.com/gorilla/mux"
 	"github.com/hujoseph99/typing/backend/db"
 	"github.com/hujoseph99/typing/backend/graphql"
+	"github.com/rs/cors"
 )
 
 func main() {
@@ -14,5 +15,7 @@ func main() {
 	db.InitDatabase()
 	graphql.RegisterEndpoints(router)
 	InitRouter(router)
-	http.ListenAndServe(":8080", router)
+
+	handler := cors.Default().Handler(router)
+	http.ListenAndServe(":8080", handler)
 }
