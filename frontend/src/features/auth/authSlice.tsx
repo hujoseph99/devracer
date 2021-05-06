@@ -1,5 +1,5 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit"
-import { AuthState, LoginBody, LoginResponse, RegisterBody, RegisterResponse } from "./types"
+import { AuthState, LoginBody, LoginResponse, RefreshBody, RefreshResponse, RegisterBody, RegisterResponse } from "./types"
 
 import axios from 'axios';
 import { RootState } from "../../app/store";
@@ -23,15 +23,27 @@ export const register = createAsyncThunk<RegisterResponse, RegisterBody>(
 		const response = await axios.post<RegisterResponse>(
 			'http://localhost:8080/auth/register',
 			body
-		)
+		);
 		return response.data;
 	}
 );
 
+export const refresh = createAsyncThunk<RefreshResponse, RefreshBody>(
+	`${AUTH_SLICE_NAME}/refresh`,
+	async body => {
+		const response = await axios.post<RefreshResponse>(
+			'http://localhost:8080/auth/refresh',
+			body
+		);
+		return response.data;
+	}
+)
+
 const initialState: AuthState = {
 	accessToken: "",
 	refreshToken: "",
-	status: 'idle'
+	status: 'idle',
+	isLoggedIn: false,
 };
 
 export const authSlice = createSlice({
@@ -47,6 +59,7 @@ export const authSlice = createSlice({
 			state.status = 'succeeded';
 			state.accessToken = action.payload.accessToken;
 			state.refreshToken = action.payload.refreshToken;
+			state.isLoggedIn = true;
 		});
 		builder.addCase(login.pending, state => {
 			state.status = 'loading';
@@ -59,12 +72,28 @@ export const authSlice = createSlice({
 			state.status = 'succeeded';
 			state.accessToken = action.payload.accessToken;
 			state.refreshToken = action.payload.refreshToken;
+			state.isLoggedIn = true;
 		});
 		builder.addCase(register.pending, state => {
 			state.status = 'loading';
 		});
 		builder.addCase(register.rejected, state => {
 			state.status = 'failed';
+		});
+		builder.addCase(refresh.fulfilled, (state, action) => {
+			state.status = 'idle';
+			state.accessToken = action.payload.accessToken;
+			state.refreshToken = action.payload.refreshToken;
+			state.isLoggedIn = true;
+		});
+		builder.addCase(refresh.pending, state => {
+			state.status = 'loading';
+		});
+		builder.addCase(refresh.rejected, state => {
+			state.status = 'failed';
+			state.accessToken = "";
+			state.refreshToken = "";
+			state.isLoggedIn = false;
 		});
 	},
 });
@@ -76,3 +105,4 @@ export const { resetStatus } = authSlice.actions;
 export const selectAccessToken = (state: RootState) => state.auth.accessToken;
 export const selectRefreshToken = (state: RootState) => state.auth.refreshToken;
 export const selectStatus = (state: RootState) => state.auth.status;
+export const selectIsLoggedIn = (state: RootState) => state.auth.isLoggedIn;
