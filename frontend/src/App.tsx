@@ -11,6 +11,8 @@ import { CssBaseline, MuiThemeProvider } from '@material-ui/core';
 import { theme } from './theme';
 import { MainMenu } from './features/main-menu/MainMenu';
 import { RaceField } from './features/race-text-field/RaceField';
+import { LoginPage } from './features/auth/LoginPage';
+import { RegisterPage } from './features/auth/RegisterPage';
 
 const App = (): JSX.Element => {
   return (
@@ -20,6 +22,12 @@ const App = (): JSX.Element => {
         <Switch>
           <Route path='/practice'>
             <RaceField />
+          </Route>
+          <Route path='/login'>
+            <LoginPage />
+          </Route>
+          <Route path='/register'>
+            <RegisterPage />
           </Route>
           <Route path='/'>
             <MainMenu />

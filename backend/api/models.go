@@ -6,21 +6,8 @@ import (
 	"time"
 
 	"github.com/dgrijalva/jwt-go"
+	"github.com/hujoseph99/typing/backend/secret"
 )
-
-// errorMessage is a wrapper for a message to help with returning an error
-// message along with an error status code
-type errorMessage struct {
-	Message string `json:"message"`
-}
-
-// newErrorMessage will return a new errorMessage given a message
-func newErrorMessage(msg string) *errorMessage {
-	res := &errorMessage{
-		Message: msg,
-	}
-	return res
-}
 
 // UserReturnToClient is a struct that will be used to return data back to the client.
 // It will exclude sensitive data such as emails and passwords that the db typically
@@ -51,9 +38,6 @@ type UserReturnToClient struct {
 
 // JWTExpireTime will be the amount of time before the JWT expires
 const JWTExpireTime = time.Minute * 15
-
-// TODO: Change secret and put into environment file
-const tempSecret = "abc123abc123"
 
 // convertToMapClaims will take a User object that is meant to be returned
 // to the client and conver it to a jwt.MapClaims to be used for jwt
@@ -98,8 +82,8 @@ func (user *UserReturnToClient) convertToJwt() (string, error) {
 	atClaims := user.convertToMapClaims()
 	(*atClaims)["exp"] = time.Now().Add(JWTExpireTime).Unix() // Set expire time
 	res := jwt.NewWithClaims(jwt.SigningMethodHS256, atClaims)
-	tempSecretConverted := []byte(tempSecret)
-	token, err := res.SignedString(tempSecretConverted)
+	secretConverted := []byte(secret.SecretStateString)
+	token, err := res.SignedString(secretConverted)
 	if err != nil {
 		fmt.Println(err)
 		return "", err

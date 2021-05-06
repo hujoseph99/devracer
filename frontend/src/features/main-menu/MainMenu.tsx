@@ -3,9 +3,12 @@ import { useHistory } from 'react-router';
 import Typist from 'react-typist';
 
 import { Box, Button, Container, Grid, makeStyles, Theme, Typography } from '@material-ui/core';
+
 import PersonIcon from '@material-ui/icons/Person';
 import KeyboardIcon from '@material-ui/icons/Keyboard';
 import { blurb } from './constants';
+import { Navbar } from '../navbar/Navbar';
+import { Footer } from '../footer/Footer';
 
 const useStyles = makeStyles<Theme>(theme => ({
 	titleIcon: {
@@ -25,25 +28,26 @@ export const MainMenu = (): JSX.Element => {
 	return (
 		<Container maxWidth='sm'>
 			<Grid container>
+				<Navbar isHome />
 				<Grid item xs={12}>
-					<Typist>
-						<Box mt='5vh' display='flex' width='100%' justifyContent='center' alignItems='center'>
-							<KeyboardIcon className={classes.titleIcon} color='primary' />
-							<Typist.Delay ms={1000} />
-							<Typography component='span' variant='h3' color='primary'> 
+					{/* <Typist> */}
+						<Box mt='5vh' display='flex' width='100%' justifyContent='center' alignItems='center' mb={3}>
+							<KeyboardIcon className={classes.titleIcon} />
+							{/* <Typist.Delay ms={1000} /> */}
+							<Typography component='span' variant='h3'> 
 								CodeRacers
 							</Typography>
 						</Box>
-					</Typist>
+					{/* </Typist> */}
 				</Grid>
 				<Grid container item xs={12}>
-					<Typography variant='body1' color='primary' align='center'>
+					<Typography variant='body1' align='center'>
 							{blurb}
 					</Typography>
 				</Grid>
 				<Grid item xs={12}>
 					<Box mt='5vh' display='flex' width='100%' justifyContent='center' alignItems='center'>
-						<Typography component='span' variant='h4' color='primary'> 
+						<Typography component='span' variant='h4'> 
 							Modes
 						</Typography>
 					</Box>
@@ -54,9 +58,7 @@ export const MainMenu = (): JSX.Element => {
 					</Box>
 				</Grid>
 			</Grid>
-			<Box display='flex' width='100%' mt="5vh" justifyContent='center'>
-				<Typography color='primary' align='center'>Made with &#10084;&#65039; by Joseph and David</Typography>
-			</Box>
+			<Footer />
 		</Container>
 	);
 }

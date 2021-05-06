@@ -1,8 +1,30 @@
 import { createMuiTheme, responsiveFontSizes } from "@material-ui/core";
-import { grey } from "@material-ui/core/colors";
+import { cyan } from "@material-ui/core/colors";
 
 export const theme = responsiveFontSizes(createMuiTheme({
+	palette: {
+		type: 'dark',
+		primary: cyan,
+	},
 	typography: {
+		h1: {
+			fontFamily: [
+				'"Proxima Nova"',
+				'"Helvetica"',
+				'-apple-system',
+				'Arial',
+				'sans-serif',
+			].join(','),
+		},
+		h2: {
+			fontFamily: [
+				'"Proxima Nova"',
+				'"Helvetica"',
+				'-apple-system',
+				'Arial',
+				'sans-serif',
+			].join(','),
+		},
 		h3: {
 			fontFamily: [
 				'"Proxima Nova"',
@@ -21,6 +43,15 @@ export const theme = responsiveFontSizes(createMuiTheme({
 				'sans-serif',
 			].join(','),
 		},
+		h5: {
+			fontFamily: [
+				'"Proxima Nova"',
+				'"Helvetica"',
+				'-apple-system',
+				'Arial',
+				'sans-serif',
+			].join(','),
+		},
 		fontFamily: [
 			'"Helvetica Neue"',
 			'-apple-system',
@@ -28,15 +59,4 @@ export const theme = responsiveFontSizes(createMuiTheme({
 			'sans-serif',
 		].join(','),
 	},
-	palette: {
-		primary: {
-			main: grey[50]
-		},
-		secondary: {
-			main: grey[900]
-		},
-		background: {
-			default: grey[900]
-		},
-	}
 }));

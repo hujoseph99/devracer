@@ -34,7 +34,7 @@ func getBsonID(id string, idType int) (bson.M, error) {
 
 // AddUser adds a given user to a mongo client.  If it is successful, then it
 // will add it to the given user object and return a nil error.  We are assuming
-// that the password is already hashed and salted.
+// that the password is already hashed and salted. It also adds the id to the given user model.
 func AddUser(ctx context.Context, user *UserModel) error {
 	collection := db.Database(DatabaseTypers).Collection(CollectionsUser)
 
@@ -79,37 +79,40 @@ func GetUserByID(ctx context.Context, id string, idType int) (*UserModel, error)
 	}
 
 	var user UserModel
-	_ = collection.FindOne(ctx, bsonID).Decode(&user)
+	err = collection.FindOne(ctx, bsonID).Decode(&user)
+	if err != nil {
+		return nil, err
+	}
 
 	return &user, nil
 }
 
 // FindUserByUsername will find a user by their username in the db
-// func FindUserByUsername(ctx context.Context, username string) (*UserModel, error) {
-// 	collection := db.Database(DatabaseTypers).Collection(CollectionsUser)
+func FindUserByUsername(ctx context.Context, username string) (*UserModel, error) {
+	collection := db.Database(DatabaseTypers).Collection(CollectionsUser)
 
-// 	params := make(map[string]string)
-// 	params["username"] = username
+	params := make(map[string]string)
+	params["username"] = username
 
-// 	var user UserModel
-// 	err := db.getDocumentFromCollection(ctx, collection, params, &user)
-// 	if err != nil {
-// 		return nil, err
-// 	}
-// 	return &user, nil
-// }
+	var user UserModel
+	err := getDocumentFromCollection(ctx, collection, params, &user)
+	if err != nil {
+		return nil, err
+	}
+	return &user, nil
+}
 
 // // FindUserByEmail will find a user by their email in the db
-// func FindUserByEmail(ctx context.Context, email string) (*UserModel, error) {
-// 	collection := db.Database(DatabaseTypers).Collection(CollectionsUser)
+func FindUserByEmail(ctx context.Context, email string) (*UserModel, error) {
+	collection := db.Database(DatabaseTypers).Collection(CollectionsUser)
 
-// 	params := make(map[string]string)
-// 	params["email"] = email
+	params := make(map[string]string)
+	params["email"] = email
 
-// 	var user UserModel
-// 	err := db.getDocumentFromCollection(ctx, collection, params, &user)
-// 	if err != nil {
-// 		return nil, err
-// 	}
-// 	return &user, nil
-// }
+	var user UserModel
+	err := getDocumentFromCollection(ctx, collection, params, &user)
+	if err != nil {
+		return nil, err
+	}
+	return &user, nil
+}
