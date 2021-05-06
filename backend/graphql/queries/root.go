@@ -44,5 +44,41 @@ var RootQuery = graphql.NewObject(
 					return models.NewNewPracticeRace(snippet, models.GetTimeLimit(snippet)), nil
 				},
 			},
+			"user": &graphql.Field{
+				Type: userType,
+				Args: graphql.FieldConfigArgument{
+					"userId": {
+						Type: graphql.String,
+					},
+				},
+				Resolve: func(p graphql.ResolveParams) (interface{}, error) {
+					userid, ok := p.Args["userId"]
+					if !ok {
+						return nil, fmt.Errorf("expected a userId")
+					}
+
+					useridString, ok := userid.(string)
+					if !ok {
+						return nil, fmt.Errorf("given invalid id, id is: %v", userid)
+					}
+
+					userObjectID, err := primitive.ObjectIDFromHex(useridString)
+					if err != nil {
+						return nil, fmt.Errorf("given invalid id, id is: %v", useridString)
+					}
+
+					preferences, err := db.GetPreferencesByID(p.Context, userObjectID)
+					if err != nil {
+						return nil, fmt.Errorf("there was an error when fetching the preferences")
+					}
+					profile, err := db.GetProfileByID(p.Context, userObjectID)
+					if err != nil {
+						return nil, fmt.Errorf("there was an error when fetching the profile")
+					}
+
+					user := models.NewUser(profile, preferences)
+					return user, nil
+				},
+			},
 		},
 	})
