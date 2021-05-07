@@ -14,12 +14,16 @@ import { MainMenu } from './features/main-menu/MainMenu';
 import { RaceField } from './features/race-text-field/RaceField';
 import { LoginPage } from './features/auth/LoginPage';
 import { RegisterPage } from './features/auth/RegisterPage';
-import { refresh, selectRefreshToken } from './features/auth/authSlice';
+import { refresh, selectIsLoggedIn, selectRefreshToken, selectUserID } from './features/auth/authSlice';
+import { fetchUserData } from './features/user/userSlice';
 
 const App = (): JSX.Element => {
   const dispatch = useDispatch();
   const refreshToken = useSelector(selectRefreshToken);
   const [firstTime, setFirstTime] = useState(true);
+
+  const loggedIn = useSelector(selectIsLoggedIn);
+  const userid = useSelector(selectUserID);
 
   // check if logged in on first load of web app
   useEffect(() => {
@@ -28,6 +32,12 @@ const App = (): JSX.Element => {
       setFirstTime(false);
     }
   }, [firstTime, setFirstTime, refreshToken, dispatch]);
+
+  useEffect(() => {
+    if (loggedIn) {
+      dispatch(fetchUserData({ userid }))
+    }
+  }, [dispatch, loggedIn, userid])
 
   return (
     <MuiThemeProvider theme={theme}>
