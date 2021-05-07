@@ -40,12 +40,16 @@ export const LoginForm = (): JSX.Element => {
 	// reset it on load too
 	useEffect(() => {
 		dispatch(resetStatus());
+		return () => {
+			dispatch(resetStatus());
+		}
 	}, [dispatch]);
 
+	// TODO: BUG WITH THIS - SOMETIMES IT WILL COME IN AS SUCCEEDED (NAMELY AFTER LOGGING OUT)
 	useEffect(() => {
-		if (status === 'succeeded')  {
-			dispatch(resetStatus());
+		if (status === 'succeeded') {
 			history.push('/');
+			dispatch(resetStatus());
 		} 
 	}, [dispatch, history, status])
 
@@ -66,7 +70,6 @@ export const LoginForm = (): JSX.Element => {
 	}
 
 	const handleRegister = () => {
-		dispatch(resetStatus());
 		history.push('/register');
 	}
 	

@@ -1,5 +1,5 @@
 interface Node {
-	id: ID!
+  id: ID!
 }
 
 # type PageInfo {
@@ -12,41 +12,60 @@ interface Node {
 # }
 
 type Snippet implements Node {
-	id: ID!
-	raceContent: String
-	wordCount: Int
-	language: Int
+  id: ID!
+  raceContent: String
+  wordCount: Int
+  language: Int
 }
 
 type Score implements Node {
-	id: ID!
-	wpm: Float
-	percent: Float
-	lettersCorrect: Int
-	lettersWrong: Int
-	wordsCorrect: Int
-	wordsWrong: Int
-	time: Float
+  id: ID!
+  wpm: Float
+  percent: Float
+  lettersCorrect: Int
+  lettersWrong: Int
+  wordsCorrect: Int
+  wordsWrong: Int
+  time: Float
 }
 
 type Race implements Node {
-	id: ID!
-	snippet: Snippet
-	users: [User]
-	timeLimit: Int
+  id: ID!
+  snippet: Snippet
+  users: [User]
+  timeLimit: Int
 }
 
 type NewPracticeRace {
-	snippet: Snippet
-	timeLimit: Int
+  snippet: Snippet
+  timeLimit: Int
+}
+
+type Profile {
+  totalWordsTyped: Int
+  racesCompleted: Int
+  racesWon: Int
+  maxTPM: Float
+  averageTPMAllTime: Float
+  averageTPMLast10: Float
+}
+
+type Preferences {
+  displayName: String
+}
+
+type User {
+  profile: Profile
+  preferences: Preferences
 }
 
 type Query {
-	practiceRace(snippetId: ID): NewPracticeRace
-} 
+  practiceRace(snippetId: ID): NewPracticeRace
+  user(userId: ID): User
+}
 
 type Mutation {
-	practiceRace(race: Race): Race
+  practiceRace(race: Race): Race
 }
 
 # type LoginCredentials {

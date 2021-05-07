@@ -3,6 +3,7 @@ type status = 'idle' | 'loading' | 'succeeded' | 'failed';
 export interface AuthState {
 	accessToken: string;
 	refreshToken: string;
+	isLoggedIn: boolean;
 	status: status;
 };
 
@@ -27,4 +28,22 @@ export interface RegisterBody {
 	password: string;
 	email: string;
 	nickname: string;
+}
+
+export interface RefreshResponse {
+	accessToken: string;
+	refreshToken: string;
+}
+
+export interface RefreshBody {
+	refreshToken: string;
+}
+
+export interface LogoutBody {
+	refreshToken: string;
+}
+
+export interface JWTPayload {
+	exp: number;
+	userid: string;
 }

@@ -130,6 +130,25 @@ func HandleRegister(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(res)
 }
 
+// handleLogout will take a refreshToken, and then expire its session
+func HandleLogout(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json")
+	ctx := context.TODO()
+
+	request, err := decodeLogoutRequest(w, r)
+	if err != nil {
+		api.DefaultError(w, r, http.StatusBadRequest, api.DefaultErrorMessage)
+		return
+	}
+
+	err = db.DeleteSessionByRefreshToken(ctx, request.RefreshToken)
+	if err != nil {
+		api.DefaultError(w, r, http.StatusBadRequest, api.DefaultErrorMessage)
+		return
+	}
+	w.WriteHeader(http.StatusOK)
+}
+
 // HandleRefresh will take a refresh token, check it against the db and then provide a new access
 // token if it's acceptable.
 func HandleRefresh(w http.ResponseWriter, r *http.Request) {

@@ -1,6 +1,7 @@
 import { configureStore, ThunkAction, Action, getDefaultMiddleware, combineReducers } from '@reduxjs/toolkit';
 import raceFieldReducer from '../features/race-text-field/raceFieldSlice'
 import authReducer from '../features/auth/authSlice';
+import userReducer from '../features/user/userSlice';
 
 import storage from 'redux-persist/lib/storage';
 import {
@@ -23,6 +24,7 @@ const persistConfig = {
 
 const rootReducer = combineReducers({
   raceField: raceFieldReducer,
+  user: userReducer,
   auth: authReducer,
 });
 
