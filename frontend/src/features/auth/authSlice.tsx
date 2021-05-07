@@ -1,5 +1,6 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit"
-import { AuthState, LoginBody, LoginResponse, RefreshBody, RefreshResponse, RegisterBody, RegisterResponse } from "./types"
+import { AuthState, JWTPayload, LoginBody, LoginResponse, RefreshBody, RefreshResponse, RegisterBody, RegisterResponse } from "./types"
+import jwtDecode from 'jwt-decode';
 
 import axios from 'axios';
 import { RootState } from "../../app/store";
@@ -106,3 +107,9 @@ export const selectAccessToken = (state: RootState) => state.auth.accessToken;
 export const selectRefreshToken = (state: RootState) => state.auth.refreshToken;
 export const selectStatus = (state: RootState) => state.auth.status;
 export const selectIsLoggedIn = (state: RootState) => state.auth.isLoggedIn;
+
+export const selectUserID = (state:RootState) => {
+	const accessToken = state.auth.accessToken;
+	const decoded = jwtDecode<JWTPayload>(accessToken);
+	return decoded.userid;
+}

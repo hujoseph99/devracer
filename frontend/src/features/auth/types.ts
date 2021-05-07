@@ -38,3 +38,8 @@ export interface RefreshResponse {
 export interface RefreshBody {
 	refreshToken: string;
 }
+
+export interface JWTPayload {
+	exp: number;
+	userid: string;
+}
