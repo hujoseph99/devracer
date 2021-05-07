@@ -1,6 +1,6 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 
-import { Box, Button, Grid, makeStyles, Typography } from '@material-ui/core';
+import { Box, Button, Grid, Typography } from '@material-ui/core';
 import { useHistory } from 'react-router';
 import { logout, resetStatus, selectIsLoggedIn, selectRefreshToken } from '../auth/authSlice';
 import { useDispatch, useSelector } from 'react-redux';
