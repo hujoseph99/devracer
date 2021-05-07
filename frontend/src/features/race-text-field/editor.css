@@ -9,3 +9,12 @@
 .backgroundEditor .ace_line {
 	color: #757575;  /* mui grey 600 */
 }
+
+.ace_selection {
+	background: #75757599 !important; /* mui grey 600 */
+}
+
+.error-marker {
+	background: #c62828; /* mui red 800 */
+	position: absolute;
+}
