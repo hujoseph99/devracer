@@ -1,15 +1,10 @@
 import React, { useEffect } from 'react';
 
-import { Button, Grid, makeStyles } from '@material-ui/core';
+import { Box, Button, Grid, makeStyles, Typography } from '@material-ui/core';
 import { useHistory } from 'react-router';
 import { logout, resetStatus, selectIsLoggedIn, selectRefreshToken } from '../auth/authSlice';
 import { useDispatch, useSelector } from 'react-redux';
-
-const useStyles = makeStyles({
-	navbar: {
-		marginTop: '1vh',
-	}
-});
+import { selectDisplayName } from '../user/userSlice';
 
 interface NavbarProps {
 	isHome?: boolean
@@ -18,11 +13,12 @@ interface NavbarProps {
 export const Navbar = ({ 
 	isHome = false 
 }: NavbarProps): JSX.Element => {
-	const classes = useStyles();
 	const history = useHistory();
 	const dispatch = useDispatch();
+
 	const isLoggedIn = useSelector(selectIsLoggedIn);
 	const refreshToken = useSelector(selectRefreshToken);
+	const displayName = useSelector(selectDisplayName)
 
 	const onLoginClick = () => {
 		history.push('/login');
@@ -38,6 +34,8 @@ export const Navbar = ({
 		history.push('/');
 	}
 
+	const heading = isLoggedIn ? "Welcome back, " + displayName : "Playing as Guest";
+
 	const loginLogoutButton = isLoggedIn ? (
 		<Button variant='outlined' size='small' onClick={onLogoutClick}>Logout</Button>
 	) : (
@@ -45,18 +43,32 @@ export const Navbar = ({
 	)
 
 	return isHome ? (
-		<Grid container justify='flex-end' className={classes.navbar}>
-			<Grid item>
-				{loginLogoutButton}
+		<Grid container>
+			<Grid item xs={3}></Grid>
+			<Grid item xs={6} justify='center'>
+				<Box height='100%' display='flex' justifyContent='center' alignItems='center'>
+					<Typography component='span' align="center">{heading}</Typography>
+				</Box>
+			</Grid>
+			<Grid item xs={3} justify='flex-end'>
+				<Box display='flex' justifyContent='flex-end' alignContent='center'>
+					{loginLogoutButton}
+				</Box>
 			</Grid>
 		</Grid>
 	) : (
-		<Grid container justify='space-between' className={classes.navbar}>
-			<Grid item>
-				<Button variant='outlined' size='small' onClick={onHomeClick}>Home</Button>
+		<Grid container justify='space-between'>
+			<Grid item xs={3}>
+				<Box display='flex'>
+					<Button variant='outlined' size='small' onClick={onHomeClick}>Home</Button>
+				</Box>
 			</Grid>
-			<Grid item>
-				{loginLogoutButton}
+			<Grid item xs={6}>
+				<Box height='100%' display='flex' justifyContent='center' alignItems='center'>
+					<Typography component='span' align="center">{heading}</Typography>
+				</Box>
+			</Grid>
+			<Grid item xs={3}>
 			</Grid>
 		</Grid>
 	);
