@@ -36,7 +36,13 @@ const initialState: UserState = {
 const userSlice = createSlice({
 	name: USER_SLICE_NAME,
 	initialState,
-	reducers: {},
+	reducers: {
+		resetUser: state => {
+			state.profile = initialState.profile;
+			state.preferences = initialState.preferences;
+			state.status = initialState.status;
+		}
+	},
 	extraReducers: builder => {
 		builder.addCase(fetchUserData.fulfilled, (state, action) => {
 			state.preferences = action.payload.preferences;
@@ -55,5 +61,7 @@ const userSlice = createSlice({
 });
 
 export default userSlice.reducer;
+
+export const { resetUser } = userSlice.actions;
 
 export const selectDisplayName = (state: RootState) => state.user.preferences.displayName;

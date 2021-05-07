@@ -39,6 +39,10 @@ export interface RefreshBody {
 	refreshToken: string;
 }
 
+export interface LogoutBody {
+	refreshToken: string;
+}
+
 export interface JWTPayload {
 	exp: number;
 	userid: string;

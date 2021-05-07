@@ -41,6 +41,9 @@ export const RegisterForm = (): JSX.Element => {
 
 	useEffect(() => {
 		dispatch(resetStatus());
+		return () => {
+			dispatch(resetStatus());
+		}
 	}, [dispatch]);
 
 	useEffect(() => {

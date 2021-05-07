@@ -1,9 +1,10 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit"
-import { AuthState, JWTPayload, LoginBody, LoginResponse, RefreshBody, RefreshResponse, RegisterBody, RegisterResponse } from "./types"
+import { AuthState, JWTPayload, LoginBody, LoginResponse, LogoutBody, RefreshBody, RefreshResponse, RegisterBody, RegisterResponse } from "./types"
 import jwtDecode from 'jwt-decode';
 
 import axios from 'axios';
 import { RootState } from "../../app/store";
+import { resetUser } from "../user/userSlice";
 
 const AUTH_SLICE_NAME = "auth"
 
@@ -28,6 +29,18 @@ export const register = createAsyncThunk<RegisterResponse, RegisterBody>(
 		return response.data;
 	}
 );
+
+export const logout = createAsyncThunk<{}, LogoutBody>(
+	`${AUTH_SLICE_NAME}/logout`,
+	async (body, thunkAPI)=> {
+		await axios.post<{}>(
+			'http://localhost:8080/auth/logout',
+			body
+		);
+		thunkAPI.dispatch(resetUser());
+		return {};
+	}
+)
 
 export const refresh = createAsyncThunk<RefreshResponse, RefreshBody>(
 	`${AUTH_SLICE_NAME}/refresh`,
@@ -81,6 +94,7 @@ export const authSlice = createSlice({
 		builder.addCase(register.rejected, state => {
 			state.status = 'failed';
 		});
+
 		builder.addCase(refresh.fulfilled, (state, action) => {
 			state.status = 'idle';
 			state.accessToken = action.payload.accessToken;
@@ -96,6 +110,19 @@ export const authSlice = createSlice({
 			state.refreshToken = "";
 			state.isLoggedIn = false;
 		});
+
+		builder.addCase(logout.fulfilled, state => {
+			state.accessToken = "";
+			state.refreshToken = "";
+			state.status = 'succeeded';
+			state.isLoggedIn = false;
+		})
+		builder.addCase(logout.pending, state => {
+			state.status = 'loading';
+		});
+		builder.addCase(logout.rejected, state => {
+			state.status = 'failed';
+		})
 	},
 });
 
@@ -109,7 +136,10 @@ export const selectStatus = (state: RootState) => state.auth.status;
 export const selectIsLoggedIn = (state: RootState) => state.auth.isLoggedIn;
 
 export const selectUserID = (state:RootState) => {
-	const accessToken = state.auth.accessToken;
-	const decoded = jwtDecode<JWTPayload>(accessToken);
-	return decoded.userid;
+	if (state.auth.accessToken) {
+		const accessToken = state.auth.accessToken;
+		const decoded = jwtDecode<JWTPayload>(accessToken);
+		return decoded.userid;
+	}
+	return "";
 }
