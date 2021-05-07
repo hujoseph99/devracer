@@ -1,6 +1,5 @@
 import React from 'react';
 import { useHistory } from 'react-router';
-import Typist from 'react-typist';
 
 import { Box, Button, Container, Grid, makeStyles, Theme, Typography } from '@material-ui/core';
 

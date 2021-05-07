@@ -1,13 +1,8 @@
-import React from 'react';
-import { useSelector } from 'react-redux';
-
+import React from 'react'
 import { Ace } from 'ace-builds';
-
 import { AceEditor } from './AceEditor';
-import { selectSnippet } from './raceFieldSlice';
 
-export const BackgroundEditor = (): JSX.Element => {
-	const snippet = useSelector(selectSnippet);
+export const BackgroundEditor = ({text}: {text: string}): JSX.Element => {
 
 	const handleLoad = (editor: Ace.Editor) => {
 		// settings to make the text editor look like it's disabled, some of the things are
@@ -28,7 +23,7 @@ export const BackgroundEditor = (): JSX.Element => {
 		<AceEditor 
 			mode='plain_text'
 			className='backgroundEditor'
-			value={snippet.raceContent}
+			value={text}
 			readOnly={true}
 			onLoad={handleLoad}
 		/>

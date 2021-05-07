@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef } from 'react';
 import { useSelector } from 'react-redux';
 
 import { Ace } from 'ace-builds';
@@ -10,33 +10,55 @@ import "./editor.css"
 
 interface ForegroundEditorProps {
 	focus?: boolean;
-	onblur: () => void;
+	onblur?: () => void;
+	ranges: Ace.Range[];
+	text: string;
+	onchange: (s: string) => void;
 }
 
 export const ForegroundEditor = ({
 	focus = false,
-	onblur = () => {}
+	onblur = () => {},
+	ranges,
+	onchange,
+	text
 }: ForegroundEditorProps): JSX.Element => {
 	const snippet = useSelector(selectSnippet);
-	const [editor, setEditor] = useState<Ace.Editor | undefined>(undefined);
+	const editor = useRef<Ace.Editor>();
+	const markers = useRef<number[]>([]);
 	
 	useEffect(() => {
+		if (editor.current !== undefined){
+			for (let marker of markers.current){
+				editor.current.session.removeMarker(marker);
+			}
+
+			let new_markers: number[] = [];
+			for (let marker of ranges){
+				new_markers.push(editor.current.session.addMarker(marker, "error-marker", "text"));
+			}
+			markers.current = new_markers;
+		}
+	}, [ranges])
+
+	useEffect(() => {
 		if (editor && focus) {
-			editor.focus();
+			editor.current?.focus();
 		}
 	}, [editor, focus])
 
 	const handleLoad = (editor_ref: Ace.Editor) => {
-		setEditor(editor_ref)
+		editor.current = editor_ref;
 	}
 
 	return (
 		<AceEditor  
 			className="foregroundEditor"
 			mode={snippet.language}
-			value=""
 			onLoad={handleLoad}
 			onBlur={onblur}
+			onChange={onchange}
+			value={text}
 		/>
 	);
 }
