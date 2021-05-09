@@ -16,6 +16,7 @@ import { LoginPage } from './features/auth/LoginPage';
 import { RegisterPage } from './features/auth/RegisterPage';
 import { refresh, selectIsLoggedIn, selectRefreshToken, selectUserID } from './features/auth/authSlice';
 import { fetchUserData } from './features/user/userSlice';
+import { CustomGame } from './features/custom-game/CustomGame';
 
 const App = (): JSX.Element => {
   const dispatch = useDispatch();
@@ -52,6 +53,9 @@ const App = (): JSX.Element => {
           </Route>
           <Route path='/register'>
             <RegisterPage />
+          </Route>
+          <Route path='/custom'>
+            <CustomGame />
           </Route>
           <Route path='/'>
             <MainMenu />
