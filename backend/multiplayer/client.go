@@ -119,7 +119,6 @@ func (client *Client) readPump() {
 			}
 			break
 		}
-		fmt.Println(string(jsonMessage))
 		client.handleNewMessage(jsonMessage)
 	}
 }

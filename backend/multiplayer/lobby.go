@@ -1,7 +1,5 @@
 package multiplayer
 
-import "fmt"
-
 type Lobby struct {
 	id         string
 	clients    map[*Client]bool
@@ -34,7 +32,6 @@ func (lobby *Lobby) RunLobby() {
 }
 
 func (lobby *Lobby) registerClientInLobby(client *Client) {
-	lobby.notifyClientJoined(client)
 	lobby.clients[client] = true
 }
 
@@ -48,15 +45,4 @@ func (lobby *Lobby) broadcastToClientsInLobby(message []byte) {
 	for client := range lobby.clients {
 		client.send <- message
 	}
-}
-
-const welcomeMessage = "%s joined the lobby"
-
-func (lobby *Lobby) notifyClientJoined(client *Client) {
-	message := &Message{
-		Action:  SendMessageAction,
-		Target:  lobby.id,
-		Message: fmt.Sprintf(welcomeMessage, client.GetName()),
-	}
-	lobby.broadcastToClientsInLobby(message.encode())
 }
