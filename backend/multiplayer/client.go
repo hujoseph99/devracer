@@ -1,6 +1,8 @@
 package multiplayer
 
 import (
+	"encoding/json"
+	"fmt"
 	"log"
 	"net/http"
 	"time"
@@ -38,14 +40,30 @@ type Client struct {
 	conn   *websocket.Conn
 	server *MultiplayerServer
 	send   chan []byte
+	lobby  *Lobby
+	Name   string `json:"name"`
 }
 
-func newClient(conn *websocket.Conn, server *MultiplayerServer) *Client {
+func newClient(conn *websocket.Conn, server *MultiplayerServer, name string) *Client {
 	return &Client{
 		conn:   conn,
 		server: server,
 		send:   make(chan []byte, 256),
+		lobby:  nil,
+		Name:   name,
 	}
+}
+
+func (client *Client) GetName() string {
+	return client.Name
+}
+
+func (client *Client) disconnect() {
+	client.server.unregister <- client
+	if client.lobby != nil {
+		client.lobby.unregister <- client
+	}
+	client.conn.Close()
 }
 
 // handleCustomGame will handle upgrading the request to use websocket protocol
@@ -54,18 +72,66 @@ func HandleCustomGame(server *MultiplayerServer, w http.ResponseWriter, r *http.
 		return true // will have to check the origin in the future. For now, just enable all
 	}
 
+	name, ok := r.URL.Query()["lobby"]
+	if !ok || len(name[0]) < 1 {
+		log.Println("Url Param 'lobby' is missing")
+	}
+
 	conn, err := upgrader.Upgrade(w, r, nil)
 	if err != nil {
 		log.Println(err)
 		return
 	}
 
-	client := newClient(conn, server)
+	client := newClient(conn, server, name[0])
 
 	go client.writePump()
 	go client.readPump()
 
 	server.register <- client
+}
+
+func (client *Client) handleNewMessage(jsonMessage []byte) error {
+	var message Message
+	if err := json.Unmarshal(jsonMessage, &message); err != nil {
+		log.Printf("error on unmarshal JSON message %s", err)
+		return fmt.Errorf("error on unmarshal JSON message %s", err)
+	}
+
+	message.Sender = client
+
+	switch message.Action {
+	case SendMessageAction:
+		if client.lobby != nil {
+			client.lobby.broadcast <- &message
+		}
+	case JoinRoomAction:
+		client.handleJoinRoomMessage(message)
+	case LeaveRoomAction:
+		client.handleLeaveRoomMessage(message)
+	}
+
+	return nil
+}
+
+func (client *Client) handleJoinRoomMessage(message Message) {
+	lobbyID := message.Target
+
+	lobby, err := client.server.findLobbyByID(lobbyID)
+	if err != nil {
+		lobby, _ = client.server.createLobby(lobbyID)
+	}
+
+	client.lobby = lobby
+	lobby.register <- client
+}
+
+func (client *Client) handleLeaveRoomMessage(message Message) {
+	room, err := client.server.findLobbyByID(message.Target)
+	client.lobby = nil
+	if err != nil {
+		room.unregister <- client
+	}
 }
 
 func (client *Client) readPump() {
@@ -89,8 +155,8 @@ func (client *Client) readPump() {
 			}
 			break
 		}
-
-		client.server.broadcast <- jsonMessage
+		fmt.Println(string(jsonMessage))
+		client.handleNewMessage(jsonMessage)
 	}
 }
 
@@ -133,10 +199,4 @@ func (client *Client) writePump() {
 			}
 		}
 	}
-}
-
-func (client *Client) disconnect() {
-	client.server.unregister <- client
-	// close(client.send)
-	client.conn.Close()
 }

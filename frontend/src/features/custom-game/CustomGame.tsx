@@ -1,17 +1,34 @@
 import { Box, Button, TextField } from '@material-ui/core';
 import React, { useEffect, useRef, useState } from 'react';
+import { RouteComponentProps } from 'react-router';
 
-export const CustomGame = (): JSX.Element => {
+interface MatchParams {
+	lobby: string;
+}
+
+export const CustomGame = (props : RouteComponentProps<MatchParams>): JSX.Element => {
 	const ws = useRef<WebSocket | undefined>(undefined);
 	const [messages, setMessages] = useState<string[]>([]);
 	const [currMessage, setCurrMessage] = useState("");
+	const [joinedRoom, setJoinedRoom] = useState(false);
+	const lobbyId = props.match.params.lobby;
 
 	// connect to websocket
 	useEffect(() => {
-		ws.current = new WebSocket("ws://localhost:8080/custom");
+		ws.current = new WebSocket(`ws://localhost:8080/custom?lobby=${lobbyId}`);
 		ws.current.addEventListener('open', () => { onWebsocketOpen() })
 		ws.current.addEventListener('message', event => handleNewMessage(event))
+		return () => {
+			ws.current?.send(JSON.stringify({ action: 'leave-room', target: lobbyId }))
+		}
 	}, [])
+
+	if (!joinedRoom) {
+		if (ws.current?.readyState == WebSocket.OPEN) {
+			ws.current?.send(JSON.stringify({ action: 'join-room', target: lobbyId }))
+			setJoinedRoom(true);
+		}
+	}
 
 	const handleNewMessage = (event: MessageEvent) => {
 		let data = event.data;
@@ -25,7 +42,11 @@ export const CustomGame = (): JSX.Element => {
 
 	const sendMessage = () => {
 		if (currMessage !== "") {
-			ws.current?.send(JSON.stringify({ message: currMessage }));
+			ws.current?.send(JSON.stringify({ 
+				action: 'send-message',
+				message: currMessage ,
+				target: lobbyId
+			}));
 			setCurrMessage("");
 		}
 	}
