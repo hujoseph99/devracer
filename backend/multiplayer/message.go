@@ -5,9 +5,11 @@ import (
 	"log"
 )
 
-const SendMessageAction = "send-message"
-const JoinRoomAction = "join-room"
-const LeaveRoomAction = "leave-room"
+const (
+	SendMessageAction = "send-message"
+	JoinRoomAction    = "join-room"
+	LeaveRoomAction   = "leave-room"
+)
 
 type Message struct {
 	Action  string  `json:"action"`
