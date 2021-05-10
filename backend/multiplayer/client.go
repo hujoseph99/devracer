@@ -1,7 +1,6 @@
 package multiplayer
 
 import (
-	"encoding/json"
 	"fmt"
 	"log"
 	"time"
@@ -21,11 +20,6 @@ const (
 
 	// Maximum message size allowed from peer.
 	maxMessageSize = 10000
-)
-
-var (
-	newline = []byte{'\n'}
-	space   = []byte{' '}
 )
 
 var upgrader = websocket.Upgrader{
@@ -64,13 +58,11 @@ func (client *Client) disconnect() {
 }
 
 func (client *Client) handleNewMessage(jsonMessage []byte) error {
-	var message Message
-	if err := json.Unmarshal(jsonMessage, &message); err != nil {
+	message, err := decode(jsonMessage, client)
+	if err != nil {
 		log.Printf("error on unmarshal JSON message %s", err)
 		return fmt.Errorf("error on unmarshal JSON message %s", err)
 	}
-
-	message.Sender = client
 
 	// switch message.Action {
 	// case SendMessageAction:
@@ -153,13 +145,6 @@ func (client *Client) writePump() {
 				return
 			}
 			w.Write(message)
-
-			// attach queued chat messages to the current websocket message.
-			n := len(client.send)
-			for i := 0; i < n; i++ {
-				w.Write(newline)
-				w.Write(<-client.send)
-			}
 
 			if err := w.Close(); err != nil {
 				return

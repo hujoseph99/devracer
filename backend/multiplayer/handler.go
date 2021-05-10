@@ -29,6 +29,4 @@ func HandleCustomGame(server *MultiplayerServer, w http.ResponseWriter, r *http.
 
 	go client.writePump()
 	go client.readPump()
-
-	// server.register <- client
 }
