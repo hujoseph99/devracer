@@ -13,7 +13,19 @@ export const login = createAsyncThunk<LoginResponse, LoginBody>(
 	async body => {
 		const response = await axios.post<LoginResponse>(
 			'http://localhost:8080/auth/login',
-			body
+			body, {withCredentials: true}
+		)
+		return response.data;
+	}
+);
+
+
+export const githubCallback = createAsyncThunk<LoginResponse, URLSearchParams>(
+	`${AUTH_SLICE_NAME}/githubCallback`,
+	async body => {
+		const response = await axios.post<LoginResponse>(
+			'http://localhost:8080/auth/githubCallback?' + body.toString(),
+			body, {withCredentials: true}
 		)
 		return response.data;
 	}
@@ -79,6 +91,19 @@ export const authSlice = createSlice({
 			state.status = 'loading';
 		});
 		builder.addCase(login.rejected, state => {
+			state.status = 'failed';
+		});
+
+		builder.addCase(githubCallback.fulfilled, (state, action) => {
+			state.status = 'succeeded';
+			state.accessToken = action.payload.accessToken;
+			state.refreshToken = action.payload.refreshToken;
+			state.isLoggedIn = true;
+		});
+		builder.addCase(githubCallback.pending, state => {
+			state.status = 'loading';
+		});
+		builder.addCase(githubCallback.rejected, state => {
 			state.status = 'failed';
 		});
 

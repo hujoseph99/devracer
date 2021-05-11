@@ -10,4 +10,6 @@ func InitRouter(router *mux.Router) {
 	router.HandleFunc("/auth/register", auth.HandleRegister)
 	router.HandleFunc("/auth/refresh", auth.HandleRefresh)
 	router.HandleFunc("/auth/logout", auth.HandleLogout)
+	router.HandleFunc("/auth/githubLogin", auth.HandleGithubLogin)
+	router.HandleFunc("/auth/githubCallback", auth.HandleGithubCallback)
 }

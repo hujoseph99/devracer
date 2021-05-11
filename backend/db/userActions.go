@@ -87,8 +87,8 @@ func GetUserByID(ctx context.Context, id string, idType int) (*UserModel, error)
 	return &user, nil
 }
 
-// FindUserByUsername will find a user by their username in the db
-func FindUserByUsername(ctx context.Context, username string) (*UserModel, error) {
+// GetUserByUsername will find a user by their username in the db
+func GetUserByUsername(ctx context.Context, username string) (*UserModel, error) {
 	collection := db.Database(DatabaseTypers).Collection(CollectionsUser)
 
 	params := make(map[string]string)
@@ -102,8 +102,8 @@ func FindUserByUsername(ctx context.Context, username string) (*UserModel, error
 	return &user, nil
 }
 
-// // FindUserByEmail will find a user by their email in the db
-func FindUserByEmail(ctx context.Context, email string) (*UserModel, error) {
+// // GetUserByEmail will find a user by their email in the db
+func GetUserByEmail(ctx context.Context, email string) (*UserModel, error) {
 	collection := db.Database(DatabaseTypers).Collection(CollectionsUser)
 
 	params := make(map[string]string)

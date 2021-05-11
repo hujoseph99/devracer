@@ -9,6 +9,8 @@ import { FormTextField } from './FormTextField';
 import { login, resetStatus, selectStatus } from './authSlice';
 import { useHistory } from 'react-router';
 
+import { GitHub } from '@material-ui/icons';
+
 const useStyles = makeStyles<Theme>(theme => ({
 	avatar: {
 		margin: theme.spacing(1),
@@ -132,6 +134,14 @@ export const LoginForm = (): JSX.Element => {
 											onClick={handleSubmit}
 										>
 											Sign In
+										</Button>
+										<Button
+											fullWidth
+											variant='contained'
+											className={classes.submit}
+											href="http://localhost:8080/auth/githubLogin"
+										>
+											<GitHub></GitHub>Login with GutHub
 										</Button>
 										<Box display='flex' flexDirection='row-reverse'>
 											<Link variant="body2" onClick={handleRegister}>
