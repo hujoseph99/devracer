@@ -177,12 +177,12 @@ func (client *Client) readPump() {
 			break
 		}
 		client.handleNewMessage(jsonMessage)
-		if client.lobby != nil {
-			fmt.Println("-")
-			fmt.Println(client.lobby.clients)
-			fmt.Println(client.lobby.gameProgress)
-		}
-		fmt.Println(client.server)
+		// if client.lobby != nil {
+		// 	fmt.Println("-")
+		// 	fmt.Println(client.lobby.clients)
+		// 	fmt.Println(client.lobby.gameProgress)
+		// }
+		fmt.Println(client.server.lobbies)
 	}
 }
 

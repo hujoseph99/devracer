@@ -55,19 +55,30 @@ func (lobby *Lobby) RunLobby() {
 }
 
 func (lobby *Lobby) registerClientInLobby(client *Client) {
+	// first send the client to all the players already in the lobby
+	lobbyPayload := newNewPlayerResult(client.id, client.name)
+	lobbyResponse := newRequestResponse(newPlayerResponse, lobbyPayload)
+	lobbyEncoded, err := json.Marshal(lobbyResponse)
+	if err != nil {
+		log.Println(err)
+		return
+	}
+	lobby.broadcastToClientsInLobby(lobbyEncoded)
+
+	// add the client to the lobby and then send all the details to the client
 	lobby.clients[client] = true
 	lobby.gameProgress = append(lobby.gameProgress, newGameProgressContent(client.id, client.name))
 
-	payload := newJoinGameResult(client.id, lobby.snippet, lobby.gameProgress)
-	response := newRequestResponse(joinGameResponse, payload)
-	encoded, err := json.Marshal(response)
+	clientPayload := newJoinGameResult(client.id, lobby.snippet, lobby.gameProgress)
+	clientResponse := newRequestResponse(joinGameResponse, clientPayload)
+	clientEncoded, err := json.Marshal(clientResponse)
 	if err != nil {
 		log.Println(err)
 		return
 		// TODO: handle error
 	}
-
-	lobby.broadcastToClientsInLobby(encoded)
+	client.send <- clientEncoded
+	// lobby.broadcastToClientsInLobby(encoded)
 }
 
 // func (lobby *Lobby) unregisterClientInLobby(client *Client) {
