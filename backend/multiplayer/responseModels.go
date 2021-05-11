@@ -1,8 +1,14 @@
 package multiplayer
 
-import "github.com/hujoseph99/typing/backend/db"
+import (
+	"encoding/json"
+	"log"
+
+	"github.com/hujoseph99/typing/backend/db"
+)
 
 const (
+	errorResponse     = "errorResponse"
 	createGameReponse = "createGameResponse"
 	joinGameResponse  = "joinGameResponse"
 	newPlayerResponse = "newPlayerResponse"
@@ -18,6 +24,28 @@ func newRequestResponse(action string, payload interface{}) *requestResponse {
 		Action:  action,
 		Payload: payload,
 	}
+}
+
+type errorResult struct {
+	Message string `json:"message"`
+}
+
+func newErrorResult(message string) *errorResult {
+	return &errorResult{
+		Message: message,
+	}
+}
+
+func createAndSendError(client *Client, message string) {
+	log.Println(message)
+	payload := newErrorResult(message)
+	response := newRequestResponse(errorResponse, payload)
+	encoded, err := json.Marshal(response)
+	if err != nil {
+		log.Println("error when handling error: ", err)
+		return // in this case, silently do nothing and log the error LMAO
+	}
+	client.send <- encoded
 }
 
 type createGameResult struct {

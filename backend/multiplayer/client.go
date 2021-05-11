@@ -65,11 +65,11 @@ func (client *Client) disconnect() {
 	client.conn.Close()
 }
 
-func (client *Client) handleNewMessage(jsonMessage []byte) error {
+func (client *Client) handleNewMessage(jsonMessage []byte) {
 	message, err := decode(jsonMessage, client)
 	if err != nil {
-		log.Printf("error on unmarshal JSON message %s", err)
-		return fmt.Errorf("error on unmarshal JSON message %s", err)
+		createAndSendError(client, "Invalid message was sent")
+		return
 	}
 
 	switch message.Action {
@@ -77,20 +77,9 @@ func (client *Client) handleNewMessage(jsonMessage []byte) error {
 		client.handleCreateGameAction()
 	case joinGameAction:
 		client.handleJoinGameAction(message)
+	default:
+		createAndSendError(client, "Invalid message was sent")
 	}
-
-	return nil
-
-	// switch message.Action {
-	// case SendMessageAction:
-	// 	if client.lobby != nil {
-	// 		client.lobby.broadcast <- &message
-	// 	}
-	// case JoinRoomAction:
-	// 	client.handleJoinRoomMessage(message)
-	// case LeaveRoomAction:
-	// 	client.handleLeaveRoomMessage(message)
-	// }
 }
 
 // can ignore the payload in this case and lobby id
@@ -98,9 +87,8 @@ func (client *Client) handleCreateGameAction() {
 	var err error
 	client.lobby, err = NewLobby()
 	if err != nil {
-		log.Println(err)
+		createAndSendError(client, "An error occurred when creating a lobby")
 		return
-		// TODO: handle error
 	}
 
 	client.server.create <- client.lobby // add the lobby to the map
@@ -110,9 +98,9 @@ func (client *Client) handleCreateGameAction() {
 	response := newRequestResponse(createGameReponse, payload)
 	encoded, err := json.Marshal(response)
 	if err != nil {
-		log.Println(err)
+		// do not have to delete the created lobby here. Let pseudo-garbage collector deal with it.
+		createAndSendError(client, "An error occurred when joining the created lobby, please try again.")
 		return
-		// TODO: handle error
 	}
 
 	client.send <- encoded
@@ -121,39 +109,17 @@ func (client *Client) handleCreateGameAction() {
 // can ignore the payload in this case
 func (client *Client) handleJoinGameAction(message *Message) {
 	if len(message.LobbyId) <= 0 {
-		log.Println("invalid lobby id")
+		createAndSendError(client, "An invalid lobby id was provided")
 		return
-		// TODO: handle error
 	}
 	lobby, err := client.server.findLobbyByID(message.LobbyId)
 	if err != nil {
-		log.Println("invalid lobby id")
+		createAndSendError(client, "An invalid lobby id was provided")
 		return
-		// TODO: handle error
 	}
 
 	lobby.register <- client
 }
-
-// func (client *Client) handleJoinRoomMessage(message Message) {
-// 	lobbyID := message.Target
-
-// 	lobby, err := client.server.findLobbyByID(lobbyID)
-// 	if err != nil {
-// 		lobby, _ = client.server.createLobby(lobbyID)
-// 	}
-
-// 	client.lobby = lobby
-// 	lobby.register <- client
-// }
-
-// func (client *Client) handleLeaveRoomMessage(message Message) {
-// 	room, err := client.server.findLobbyByID(message.Target)
-// 	client.lobby = nil
-// 	if err != nil {
-// 		room.unregister <- client
-// 	}
-// }
 
 func (client *Client) readPump() {
 	defer func() {
@@ -177,11 +143,11 @@ func (client *Client) readPump() {
 			break
 		}
 		client.handleNewMessage(jsonMessage)
-		// if client.lobby != nil {
-		// 	fmt.Println("-")
-		// 	fmt.Println(client.lobby.clients)
-		// 	fmt.Println(client.lobby.gameProgress)
-		// }
+		fmt.Println("--------------")
+		if client.lobby != nil {
+			fmt.Println(client.lobby.clients)
+			fmt.Println(client.lobby.gameProgress)
+		}
 		fmt.Println(client.server.lobbies)
 	}
 }

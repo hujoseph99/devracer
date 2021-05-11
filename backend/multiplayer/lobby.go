@@ -3,7 +3,6 @@ package multiplayer
 import (
 	"context"
 	"encoding/json"
-	"log"
 
 	"github.com/dchest/uniuri"
 	"github.com/hujoseph99/typing/backend/db"
@@ -60,9 +59,12 @@ func (lobby *Lobby) registerClientInLobby(client *Client) {
 	lobbyResponse := newRequestResponse(newPlayerResponse, lobbyPayload)
 	lobbyEncoded, err := json.Marshal(lobbyResponse)
 	if err != nil {
-		log.Println(err)
+		createAndSendError(client, "Error when trying to join the lobby")
 		return
 	}
+
+	// in the case the bottom part errors, the ghost player would only be client side, so shouldn't
+	// affect starting a new game
 	lobby.broadcastToClientsInLobby(lobbyEncoded)
 
 	// add the client to the lobby and then send all the details to the client
@@ -73,12 +75,16 @@ func (lobby *Lobby) registerClientInLobby(client *Client) {
 	clientResponse := newRequestResponse(joinGameResponse, clientPayload)
 	clientEncoded, err := json.Marshal(clientResponse)
 	if err != nil {
-		log.Println(err)
+		// remove the client from the lobby so no ghost player shows up
+		delete(lobby.clients, client)
+		if len(lobby.gameProgress) > 0 {
+			lobby.gameProgress = lobby.gameProgress[:len(lobby.gameProgress)-1]
+		}
+
+		createAndSendError(client, "Error when trying to join the lobby")
 		return
-		// TODO: handle error
 	}
 	client.send <- clientEncoded
-	// lobby.broadcastToClientsInLobby(encoded)
 }
 
 // func (lobby *Lobby) unregisterClientInLobby(client *Client) {
