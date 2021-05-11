@@ -2,22 +2,31 @@ package multiplayer
 
 import (
 	"fmt"
-
-	"github.com/dchest/uniuri"
 )
 
 type MultiplayerServer struct {
+	create  chan *Lobby
+	delete  chan *Lobby
 	lobbies map[string]*Lobby
 }
 
 func NewMultiplayerServer() *MultiplayerServer {
 	return &MultiplayerServer{
+		create:  make(chan *Lobby),
+		delete:  make(chan *Lobby),
 		lobbies: make(map[string]*Lobby),
 	}
 }
 
-func generateLobbyId() string {
-	return uniuri.NewLen(uniuri.StdLen)
+func (server *MultiplayerServer) RunServer() {
+	for {
+		select {
+		case lobby := <-server.create:
+			server.addLobby(lobby)
+		case lobby := <-server.delete:
+			server.deleteLobby(lobby.id)
+		}
+	}
 }
 
 func (server *MultiplayerServer) findLobbyByID(id string) (*Lobby, error) {
@@ -27,15 +36,8 @@ func (server *MultiplayerServer) findLobbyByID(id string) (*Lobby, error) {
 	return nil, fmt.Errorf("could not find lobby with id %s", id)
 }
 
-func (server *MultiplayerServer) createLobby() *Lobby {
-	id := generateLobbyId()
-	lobby := NewLobby(id)
-
-	go lobby.RunLobby()
-
-	server.lobbies[id] = lobby
-
-	return lobby
+func (server *MultiplayerServer) addLobby(lobby *Lobby) {
+	server.lobbies[lobby.id] = lobby
 }
 
 func (server *MultiplayerServer) deleteLobby(id string) {

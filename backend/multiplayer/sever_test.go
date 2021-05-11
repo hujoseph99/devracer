@@ -6,7 +6,8 @@ import (
 
 func TestCreateAndDeleteLobby(t *testing.T) {
 	server := NewMultiplayerServer()
-	lobby := server.createLobby()
+	lobby, _ := NewLobby()
+	server.addLobby(lobby)
 	foundLobby, err := server.findLobbyByID(lobby.id)
 	if err != nil {
 		t.Fatal("could not find lobby")

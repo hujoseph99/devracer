@@ -1,21 +1,40 @@
 package multiplayer
 
+import (
+	"context"
+
+	"github.com/dchest/uniuri"
+	"github.com/hujoseph99/typing/backend/db"
+)
+
 type Lobby struct {
 	id         string
+	snippet    *db.Snippet
 	clients    map[*Client]bool
 	register   chan *Client
 	unregister chan *Client
 	broadcast  chan *Message
 }
 
-func NewLobby(id string) *Lobby {
-	return &Lobby{
-		id:         id,
+func generateLobbyId() string {
+	return uniuri.NewLen(uniuri.StdLen)
+}
+
+func NewLobby() (*Lobby, error) {
+	snippet, err := db.GetRandomSnippet(context.Background())
+	if err != nil {
+		return nil, err
+	}
+	res := &Lobby{
+		id:         generateLobbyId(),
+		snippet:    snippet,
 		clients:    make(map[*Client]bool),
 		register:   make(chan *Client),
 		unregister: make(chan *Client),
 		broadcast:  make(chan *Message),
 	}
+	go res.RunLobby()
+	return res, nil
 }
 
 func (lobby *Lobby) RunLobby() {

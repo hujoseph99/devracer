@@ -16,8 +16,8 @@ const (
 
 type Message struct {
 	Action  string `json:"action"`
-	Payload string `json:"payload"`
-	LobbyId string `json:"lobbyId"`
+	Payload string `json:"payload,omitempty"`
+	LobbyId string `json:"lobbyId,omitempty"`
 	client  *Client
 }
 

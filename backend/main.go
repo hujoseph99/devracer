@@ -17,7 +17,7 @@ func main() {
 	graphql.RegisterEndpoints(router)
 
 	multiplayerServer := multiplayer.NewMultiplayerServer()
-	go multiplayerServer.Run()
+	go multiplayerServer.RunServer()
 
 	InitRouter(router, multiplayerServer)
 

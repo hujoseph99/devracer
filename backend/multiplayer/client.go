@@ -1,10 +1,12 @@
 package multiplayer
 
 import (
+	"encoding/json"
 	"fmt"
 	"log"
 	"time"
 
+	"github.com/dchest/uniuri"
 	"github.com/gorilla/websocket"
 )
 
@@ -29,16 +31,22 @@ var upgrader = websocket.Upgrader{
 
 // Client represents the websocket client at the server
 type Client struct {
-	Name   string `json:"name"`
+	id     string
+	name   string
 	conn   *websocket.Conn
 	server *MultiplayerServer
 	send   chan []byte
 	lobby  *Lobby
 }
 
+func generateClientId() string {
+	return uniuri.NewLen(uniuri.StdLen)
+}
+
 func newClient(conn *websocket.Conn, server *MultiplayerServer, name string) *Client {
 	return &Client{
-		Name:   name,
+		id:     generateClientId(),
+		name:   name,
 		conn:   conn,
 		server: server,
 		send:   make(chan []byte, 256),
@@ -47,7 +55,7 @@ func newClient(conn *websocket.Conn, server *MultiplayerServer, name string) *Cl
 }
 
 func (client *Client) GetName() string {
-	return client.Name
+	return client.name
 }
 
 func (client *Client) disconnect() {
@@ -64,6 +72,13 @@ func (client *Client) handleNewMessage(jsonMessage []byte) error {
 		return fmt.Errorf("error on unmarshal JSON message %s", err)
 	}
 
+	switch message.Action {
+	case createGameAction:
+		client.handleCreateGameAction()
+	}
+
+	return nil
+
 	// switch message.Action {
 	// case SendMessageAction:
 	// 	if client.lobby != nil {
@@ -76,6 +91,27 @@ func (client *Client) handleNewMessage(jsonMessage []byte) error {
 	// }
 
 	return nil
+}
+
+func (client *Client) handleCreateGameAction() {
+	var err error
+	client.lobby, err = NewLobby()
+	if err != nil {
+		// TODO: handle error
+		log.Println(err)
+	}
+
+	client.server.create <- client.lobby // add the lobby to the map
+
+	payload := newCreateGameResult(client.id, client.lobby.id, client.lobby.snippet)
+	response := newRequestResponse(createGameReponse, payload)
+	encoded, err := json.Marshal(response)
+	if err != nil {
+		// TODO: handle error
+		log.Println(err)
+	}
+
+	client.send <- encoded
 }
 
 // func (client *Client) handleJoinRoomMessage(message Message) {
@@ -120,6 +156,7 @@ func (client *Client) readPump() {
 			break
 		}
 		client.handleNewMessage(jsonMessage)
+		fmt.Println(client.server.lobbies)
 	}
 }
 
