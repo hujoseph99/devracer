@@ -4,6 +4,7 @@ import "github.com/hujoseph99/typing/backend/db"
 
 const (
 	createGameReponse = "createGameResponse"
+	joinGameResponse  = "joinGameResponse"
 )
 
 type requestResponse struct {
@@ -30,4 +31,36 @@ func newCreateGameResult(playerId string, lobbyId string, snippet *db.Snippet) *
 		LobbyId:  lobbyId,
 		Snippet:  snippet,
 	}
+}
+
+type gameProgressContent struct {
+	PlayerId         string  `json:"playerId"`
+	DisplayName      string  `json:"displayName"`
+	PercentCompleted float32 `json:"percentCompleted"`
+}
+
+func newGameProgressContent(playerId string, displayName string) *gameProgressContent {
+	return &gameProgressContent{
+		PlayerId:         playerId,
+		DisplayName:      displayName,
+		PercentCompleted: 0,
+	}
+}
+
+type joinGameResult struct {
+	PlayerId     string                 `json:"playerId"`
+	Snippet      *db.Snippet            `json:"snippet"`
+	GameProgress []*gameProgressContent `json:"gameProgress"`
+}
+
+func newJoinGameResult(playerId string, snippet *db.Snippet, gameProgress []*gameProgressContent) *joinGameResult {
+	return &joinGameResult{
+		PlayerId:     playerId,
+		Snippet:      snippet,
+		GameProgress: gameProgress,
+	}
+}
+
+type gameProgressResult struct {
+	GameProgress []*gameProgressContent `json:"gameProgress"`
 }

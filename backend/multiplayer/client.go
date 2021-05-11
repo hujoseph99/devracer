@@ -75,6 +75,8 @@ func (client *Client) handleNewMessage(jsonMessage []byte) error {
 	switch message.Action {
 	case createGameAction:
 		client.handleCreateGameAction()
+	case joinGameAction:
+		client.handleJoinGameAction(message)
 	}
 
 	return nil
@@ -89,29 +91,48 @@ func (client *Client) handleNewMessage(jsonMessage []byte) error {
 	// case LeaveRoomAction:
 	// 	client.handleLeaveRoomMessage(message)
 	// }
-
-	return nil
 }
 
+// can ignore the payload in this case and lobby id
 func (client *Client) handleCreateGameAction() {
 	var err error
 	client.lobby, err = NewLobby()
 	if err != nil {
-		// TODO: handle error
 		log.Println(err)
+		return
+		// TODO: handle error
 	}
 
 	client.server.create <- client.lobby // add the lobby to the map
+	client.lobby.register <- client
 
 	payload := newCreateGameResult(client.id, client.lobby.id, client.lobby.snippet)
 	response := newRequestResponse(createGameReponse, payload)
 	encoded, err := json.Marshal(response)
 	if err != nil {
-		// TODO: handle error
 		log.Println(err)
+		return
+		// TODO: handle error
 	}
 
 	client.send <- encoded
+}
+
+// can ignore the payload in this case
+func (client *Client) handleJoinGameAction(message *Message) {
+	if len(message.LobbyId) <= 0 {
+		log.Println("invalid lobby id")
+		return
+		// TODO: handle error
+	}
+	lobby, err := client.server.findLobbyByID(message.LobbyId)
+	if err != nil {
+		log.Println("invalid lobby id")
+		return
+		// TODO: handle error
+	}
+
+	lobby.register <- client
 }
 
 // func (client *Client) handleJoinRoomMessage(message Message) {
@@ -156,7 +177,12 @@ func (client *Client) readPump() {
 			break
 		}
 		client.handleNewMessage(jsonMessage)
-		fmt.Println(client.server.lobbies)
+		if client.lobby != nil {
+			fmt.Println("-")
+			fmt.Println(client.lobby.clients)
+			fmt.Println(client.lobby.gameProgress)
+		}
+		fmt.Println(client.server)
 	}
 }
 
