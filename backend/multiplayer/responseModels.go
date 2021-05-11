@@ -8,10 +8,13 @@ import (
 )
 
 const (
-	errorResponse     = "errorResponse"
-	createGameReponse = "createGameResponse"
-	joinGameResponse  = "joinGameResponse"
-	newPlayerResponse = "newPlayerResponse"
+	errorResponse          = "errorResponse"
+	createGameReponse      = "createGameResponse"
+	joinGameResponse       = "joinGameResponse"
+	newPlayerResponse      = "newPlayerResponse"
+	gameProgressResponse   = "gameProgressResponse"
+	playerFinishedResponse = "playerFinishedResponse"
+	gameFinishedResponse   = "gameFinishedResponse"
 )
 
 type requestResponse struct {
@@ -48,6 +51,18 @@ func createAndSendError(client *Client, message string) {
 	client.send <- encoded
 }
 
+func createAndSendErrorToLobby(lobby *Lobby, message string) {
+	log.Println(message)
+	payload := newErrorResult(message)
+	response := newRequestResponse(errorResponse, payload)
+	encoded, err := json.Marshal(response)
+	if err != nil {
+		log.Println("error when handling error: ", err)
+		return // in this case, silently do nothing and log the error LMAO
+	}
+	lobby.broadcastToClientsInLobby(encoded)
+}
+
 type createGameResult struct {
 	PlayerId string      `json:"playerId"`
 	LobbyId  string      `json:"lobbyId"`
@@ -65,7 +80,7 @@ func newCreateGameResult(playerId string, lobbyId string, snippet *db.Snippet) *
 type gameProgressContent struct {
 	PlayerId         string  `json:"playerId"`
 	DisplayName      string  `json:"displayName"`
-	PercentCompleted float32 `json:"percentCompleted"`
+	PercentCompleted float64 `json:"percentCompleted"`
 }
 
 func newGameProgressContent(playerId string, displayName string) *gameProgressContent {
@@ -80,20 +95,23 @@ type joinGameResult struct {
 	PlayerId     string                 `json:"playerId"`
 	Snippet      *db.Snippet            `json:"snippet"`
 	GameProgress []*gameProgressContent `json:"gameProgress"`
+	Placements   []string               `json:"placements"`
 }
 
-func newJoinGameResult(playerId string, snippet *db.Snippet, gameProgress []*gameProgressContent) *joinGameResult {
+func newJoinGameResult(playerId string, snippet *db.Snippet, gameProgress []*gameProgressContent,
+	placements []string) *joinGameResult {
 	return &joinGameResult{
 		PlayerId:     playerId,
 		Snippet:      snippet,
 		GameProgress: gameProgress,
+		Placements:   placements,
 	}
 }
 
 type newPlayerResult struct {
 	PlayerId         string  `json:"playerId"`
 	DisplayName      string  `json:"displayName"`
-	PercentCompleted float32 `json:"percentCompleted"`
+	PercentCompleted float64 `json:"percentCompleted"`
 }
 
 func newNewPlayerResult(playerId string, displayName string) *newPlayerResult {
@@ -105,5 +123,35 @@ func newNewPlayerResult(playerId string, displayName string) *newPlayerResult {
 }
 
 type gameProgressResult struct {
-	GameProgress []*gameProgressContent `json:"gameProgress"`
+	PlayerId         string  `json:"playerId"`
+	DisplayName      string  `json:"displayName"`
+	PercentCompleted float64 `json:"percentCompleted"`
+}
+
+func newGameProgressResult(playerId string, displayName string, percentCompleted float64) *gameProgressResult {
+	return &gameProgressResult{
+		PlayerId:         playerId,
+		DisplayName:      displayName,
+		PercentCompleted: percentCompleted,
+	}
+}
+
+type playerFinishedResult struct {
+	Placements []string `json:"placements"`
+}
+
+func newPlayerFinishedResult(placements []string) *playerFinishedResult {
+	return &playerFinishedResult{
+		Placements: placements,
+	}
+}
+
+type gameFinishedResult struct {
+	Placements []string `json:"placements"`
+}
+
+func newGameFinishedResult(placements []string) *gameFinishedResult {
+	return &gameFinishedResult{
+		Placements: placements,
+	}
 }

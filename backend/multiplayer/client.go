@@ -8,6 +8,7 @@ import (
 
 	"github.com/dchest/uniuri"
 	"github.com/gorilla/websocket"
+	"github.com/hujoseph99/typing/backend/common/utils"
 )
 
 const (
@@ -77,6 +78,8 @@ func (client *Client) handleNewMessage(jsonMessage []byte) {
 		client.handleCreateGameAction()
 	case joinGameAction:
 		client.handleJoinGameAction(message)
+	case gameProgressAction:
+		client.handleGameProgressAction(message)
 	default:
 		createAndSendError(client, "Invalid message was sent")
 	}
@@ -119,6 +122,47 @@ func (client *Client) handleJoinGameAction(message *Message) {
 	}
 
 	lobby.register <- client
+}
+
+// we expect the payload to be the current string that the user has typed in
+func (client *Client) handleGameProgressAction(message *Message) {
+	lobby, err := client.server.findLobbyByID(message.LobbyId)
+	if err != nil {
+		createAndSendError(client, "An invalid lobby id was provided")
+		return
+	}
+
+	// if the client already finished, don't let them modify anything
+	if lobby.clientInPlacements(client) {
+		return
+	}
+
+	typed := message.Payload
+	differenceIndex := utils.FindFirstDifference(lobby.snippet.RaceContent, typed)
+
+	// this also checks if the user is indeed in the lobby
+	gameProgress, err := lobby.findClientGameProgress(client)
+	if err != nil {
+		createAndSendError(client, "An error has occurred on the server. Please try rejoining the game.")
+		return
+	}
+
+	difference := float64(differenceIndex) / float64(len(lobby.snippet.RaceContent))
+	rounded := utils.RoundFloor(difference, 2)
+	gameProgress.PercentCompleted = rounded
+
+	gameProgressPayload := newGameProgressResult(client.id, client.name, gameProgress.PercentCompleted)
+	gameProgressResponse := newRequestResponse(gameProgressResponse, gameProgressPayload)
+	gameProgressEncoded, err := json.Marshal(gameProgressResponse)
+	if err != nil {
+		createAndSendError(client, "An error occurred on the server. Please try rejoining the game.")
+		return
+	}
+
+	lobby.broadcast <- gameProgressEncoded
+	if rounded == 1 && len(typed) == len(lobby.snippet.RaceContent) { // finished race
+		lobby.finisher <- client
+	}
 }
 
 func (client *Client) readPump() {
