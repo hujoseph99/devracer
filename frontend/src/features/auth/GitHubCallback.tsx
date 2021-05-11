@@ -7,7 +7,7 @@ import { githubCallback, selectIsLoggedIn } from './authSlice';
 
 export const GitHubCallback = (): JSX.Element => {
     const dispatch = useDispatch();
-    const loggedin = useSelector(selectIsLoggedIn);
+    const loggedIn = useSelector(selectIsLoggedIn);
     const history = useHistory();
 
     useEffect(() => {
@@ -15,11 +15,11 @@ export const GitHubCallback = (): JSX.Element => {
     }, [dispatch])
 
     useEffect(() => {
-        if (loggedin) {
+        if (loggedIn) {
             history.push('/')
         }
-    }, [loggedin, history])
-    
-    return <p>Logging in</p>
+    }, [loggedIn, history])
+
+    return <></>
 }
 

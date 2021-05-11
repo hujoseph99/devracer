@@ -46,49 +46,49 @@ export const RaceField = (): JSX.Element => {
 	}, [snippet])
 
 
-	const onfocus = (e: SyntheticEvent) => {
+	const onFocus = (e: SyntheticEvent) => {
 		setFocus(true);
 	}
 
-	const onblur = () => {
+	const onBlur = () => {
 		setFocus(false);
 	}
 
-	const onchange = (text: string) => {
+	const onChange = (text: string) => {
 		if (text === backgroundText){
 			// win
 		}
-		const text_array = text.split("\n");
+		const textArray = text.split("\n");
 
-		const background_array: string[] = [];
-		const marker_array: Ace.Range[] = [];
+		const backgroundArray: string[] = [];
+		const markerArray: Ace.Range[] = [];
 
 		let i = 0;
-		for (; i < text_array.length; i++) {
+		for (; i < textArray.length; i++) {
 			if (i > snippetArray.length - 1) {
 				break
 			}
-			let user_line = text_array[i];
+			let userLine = textArray[i];
 			let snippet_line = snippetArray[i];
 
 			var difference_index = 0;
-			while (user_line[difference_index] === snippet_line[difference_index] && difference_index < user_line.length) difference_index++;
+			while (userLine[difference_index] === snippet_line[difference_index] && difference_index < userLine.length) difference_index++;
 
-			if (difference_index < user_line.length) {
-				marker_array.push(new Range(i, difference_index, i, user_line.length));
+			if (difference_index < userLine.length) {
+				markerArray.push(new Range(i, difference_index, i, userLine.length));
 			}
 			if (difference_index <= snippet_line.length) {
-				snippet_line = snippet_line.slice(0, difference_index) + ' '.repeat(user_line.length - difference_index) + snippet_line.slice(difference_index)
+				snippet_line = snippet_line.slice(0, difference_index) + ' '.repeat(userLine.length - difference_index) + snippet_line.slice(difference_index)
 			}
-			background_array.push(snippet_line)
+			backgroundArray.push(snippet_line)
 		}
 
 		for (; i < snippetArray.length; i++) {
-			let snippet_line = snippetArray[i];
-			background_array.push(snippet_line);
+			let snippetLine = snippetArray[i];
+			backgroundArray.push(snippetLine);
 		}
-		setBackgroundText(background_array.join("\n"));
-		setMarkers(marker_array);
+		setBackgroundText(backgroundArray.join("\n"));
+		setMarkers(markerArray);
 		if (foregroundText !== text) setForegroundText(text);
 	}
 
@@ -97,7 +97,7 @@ export const RaceField = (): JSX.Element => {
 			// onKeyDownCapture={filterKeyboardEvents}
 			// onKeyPressCapture={filterKeyboardEvents}
 			// onKeyUpCapture={filterKeyboardEvents}
-			onClickCapture={onfocus}>
+			onClickCapture={onFocus}>
 			{/* onMouseDownCapture={filterMouseEvents}
 			onMouseMoveCapture={filterMouseEvents}
 			onFocusCapture={filterMouseEvents}
@@ -106,7 +106,7 @@ export const RaceField = (): JSX.Element => {
 			onMouseUpCapture={filterMouseEvents}> */}
 			<BackgroundEditor text={backgroundText}/>
 			{/* elements that appear later are on top */}
-			<ForegroundEditor text={foregroundText} ranges={markers} focus={focus} onchange={onchange} onblur={onblur} />
+			<ForegroundEditor text={foregroundText} ranges={markers} focus={focus} onChange={onChange} onBlur={onBlur} />
 		</Box>
 	)
 };

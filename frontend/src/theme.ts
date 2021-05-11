@@ -5,6 +5,10 @@ export const theme = responsiveFontSizes(createMuiTheme({
 	palette: {
 		type: 'dark',
 		primary: cyan,
+		text: {
+			primary: '#fafafa', // mui grey 50
+			secondary: '#e0e0e0' // mui grey 300
+		}
 	},
 	typography: {
 		h1: {

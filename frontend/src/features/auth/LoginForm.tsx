@@ -18,6 +18,9 @@ const useStyles = makeStyles<Theme>(theme => ({
 	},
 	submit: {
 		margin: theme.spacing(3, 0, 2)
+	},
+	oauthIcons: {
+		color: theme.palette.text.secondary
 	}
 }));
 
@@ -52,7 +55,7 @@ export const LoginForm = (): JSX.Element => {
 		if (status === 'succeeded') {
 			history.push('/');
 			dispatch(resetStatus());
-		} 
+		}
 	}, [dispatch, history, status])
 
 	const handleClickShowPassword = () => {
@@ -60,7 +63,7 @@ export const LoginForm = (): JSX.Element => {
 	}
 
 	const handleClickRememberMe = () => {
-		setFormState(prev => ({ ...prev, rememberMe: !prev.rememberMe}));
+		setFormState(prev => ({ ...prev, rememberMe: !prev.rememberMe }));
 	}
 
 	const handleChange = (key: keyof FormState) => (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -74,12 +77,12 @@ export const LoginForm = (): JSX.Element => {
 	const handleRegister = () => {
 		history.push('/register');
 	}
-	
+
 	return (
 		<Grid container justify='center'>
 			<Grid item xs={12} sm={10}>
 				<Paper>
-					<Box py={5} mt={4}>  { /* because footer also has mt={4} */} 
+					<Box py={5} mt={4}>  { /* because footer also has mt={4} */}
 						<Grid container justify='center'>
 							<Grid item xs={10} sm={8}>
 								<Box display='flex' flexDirection='column' alignItems='center' width='100%'>
@@ -88,15 +91,15 @@ export const LoginForm = (): JSX.Element => {
 									</Avatar>
 									<Typography variant="h4" align='center' gutterBottom>Sign in</Typography>
 									<Box width='100%' mt={2}>
-										<FormTextField 
-											autoFocus 
-											label='Username' 
-											value={formState.username} 
+										<FormTextField
+											autoFocus
+											label='Username'
+											value={formState.username}
 											error={status === 'failed'}
 											onChange={handleChange('username')}
 										/>
-										<FormTextField 
-											label='Password' 
+										<FormTextField
+											label='Password'
 											value={formState.password}
 											type={showPassword ? 'text' : 'password'}
 											error={status === 'failed'}
@@ -116,13 +119,13 @@ export const LoginForm = (): JSX.Element => {
 													</InputAdornment>
 												)
 											}
-										}/>
+											} />
 										<FormControlLabel
 											control={(
-												<Checkbox 
-													checked={formState.rememberMe} 
-													onClick={handleClickRememberMe} 
-													color="primary" 
+												<Checkbox
+													checked={formState.rememberMe}
+													onClick={handleClickRememberMe}
+													color="primary"
 												/>
 											)}
 											label="Remember me"
@@ -135,19 +138,15 @@ export const LoginForm = (): JSX.Element => {
 										>
 											Sign In
 										</Button>
-										<Button
-											fullWidth
-											variant='contained'
-											className={classes.submit}
-											href="http://localhost:8080/auth/githubLogin"
-										>
-											<GitHub></GitHub>Login with GutHub
-										</Button>
 										<Box display='flex' flexDirection='row-reverse'>
 											<Link variant="body2" onClick={handleRegister}>
 												Don't have an account? Sign Up
 											</Link>
 										</Box>
+									</Box>
+									<Box mt={4} display="flex" flexDirection="column" alignItems='center' width='100%'>
+										<Typography color="textSecondary" gutterBottom>or you can sign in with</Typography>
+										<IconButton href="http://localhost:8080/auth/githubLogin"><GitHub className={classes.oauthIcons}/></IconButton>
 									</Box>
 								</Box>
 							</Grid>
