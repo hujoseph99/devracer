@@ -9,8 +9,8 @@ import (
 const (
 	createGameAction   = "createGame"
 	joinGameAction     = "joinGame"
-	startGameAction    = "startGame"
 	gameProgressAction = "gameProgress"
+	startGameAction    = "startGame"
 	nextGameAction     = "nextGame"
 )
 

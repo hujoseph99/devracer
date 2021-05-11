@@ -6,6 +6,9 @@ import (
 
 // TODO: Have to periodically go through the lobbies and check to see if any are inactive.
 // 	If any have been inactive for more than 5 minutes, then just close the lobby.
+// TODO: Batch responses to frontend, race progress response
+// TODO: Add WPM
+
 type MultiplayerServer struct {
 	create  chan *Lobby
 	delete  chan *Lobby
