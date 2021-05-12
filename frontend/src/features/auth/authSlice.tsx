@@ -13,7 +13,7 @@ export const login = createAsyncThunk<LoginResponse, LoginBody>(
 	async body => {
 		const response = await axios.post<LoginResponse>(
 			'http://localhost:8080/auth/login',
-			body, {withCredentials: true}
+			body
 		)
 		return response.data;
 	}
@@ -25,7 +25,7 @@ export const githubCallback = createAsyncThunk<LoginResponse, URLSearchParams>(
 	async body => {
 		const response = await axios.post<LoginResponse>(
 			'http://localhost:8080/auth/githubCallback?' + body.toString(),
-			body, {withCredentials: true}
+			body, { withCredentials: true }
 		)
 		return response.data;
 	}
