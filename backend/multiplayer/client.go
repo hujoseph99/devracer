@@ -121,14 +121,16 @@ func (client *Client) handleJoinGameAction(message *Message) {
 		return
 	}
 
+	client.lobby = lobby
 	lobby.register <- client
 }
 
-// we expect the payload to be the current string that the user has typed in
+// we expect the payload to be the current string that the user has typed in. Can ignore the lobbyId
+// now because they SHOULD be in a lobby if they send this
 func (client *Client) handleGameProgressAction(message *Message) {
-	lobby, err := client.server.findLobbyByID(message.LobbyId)
-	if err != nil {
-		createAndSendError(client, "An invalid lobby id was provided")
+	lobby := client.lobby
+	if lobby == nil {
+		createAndSendError(client, "You have not joined a lobby")
 		return
 	}
 
