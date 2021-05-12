@@ -8,7 +8,6 @@ import (
 
 	"github.com/dchest/uniuri"
 	"github.com/gorilla/websocket"
-	"github.com/hujoseph99/typing/backend/common/utils"
 )
 
 const (
@@ -25,7 +24,6 @@ const (
 	maxMessageSize = 10000
 
 	countdownStart = 5 // time to start the countdown from
-
 )
 
 var upgrader = websocket.Upgrader{
@@ -138,42 +136,9 @@ func (client *Client) handleGameProgressAction(message *Message) {
 		createAndSendError(client, "You have not joined a lobby.")
 		return
 	}
-	if !lobby.inProgress {
-		createAndSendError(client, "The race has not yet started.")
-		return
-	}
-
-	// if the client already finished, don't let them modify anything
-	if lobby.clientInPlacements(client) {
-		return
-	}
-
-	typed := message.Payload
-	differenceIndex := utils.FindFirstDifference(lobby.snippet.RaceContent, typed)
-
-	// this also checks if the user is indeed in the lobby
-	gameProgress, err := lobby.findClientGameProgress(client)
-	if err != nil {
-		createAndSendError(client, "An error has occurred on the server. Please try rejoining the game.")
-		return
-	}
-
-	difference := float64(differenceIndex) / float64(len(lobby.snippet.RaceContent))
-	rounded := utils.RoundFloor(difference, 2)
-	gameProgress.PercentCompleted = rounded
-
-	gameProgressPayload := newGameProgressResult(client.id, client.name, gameProgress.PercentCompleted)
-	gameProgressResponse := newRequestResponse(gameProgressResponse, gameProgressPayload)
-	gameProgressEncoded, err := json.Marshal(gameProgressResponse)
-	if err != nil {
-		createAndSendError(client, "An error occurred on the server. Please try rejoining the game.")
-		return
-	}
-
-	lobby.broadcast <- gameProgressEncoded
-	if rounded == 1 && len(typed) == len(lobby.snippet.RaceContent) { // finished race
-		lobby.finisher <- client
-	}
+	progress := message.Payload
+	progressData := newGameProgressData(client, progress)
+	client.lobby.progress <- progressData
 }
 
 // can more or less ignore the message here

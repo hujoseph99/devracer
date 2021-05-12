@@ -78,28 +78,30 @@ func newCreateGameResult(playerId string, lobbyId string, snippet *db.Snippet) *
 	}
 }
 
-type gameProgressContent struct {
+type gameContent struct {
 	PlayerId         string  `json:"playerId"`
 	DisplayName      string  `json:"displayName"`
 	PercentCompleted float64 `json:"percentCompleted"`
+	Wpm              float64 `json:"wpm"`
 }
 
-func newGameProgressContent(playerId string, displayName string) *gameProgressContent {
-	return &gameProgressContent{
+func newGameContent(playerId string, displayName string) *gameContent {
+	return &gameContent{
 		PlayerId:         playerId,
 		DisplayName:      displayName,
 		PercentCompleted: 0,
+		Wpm:              0,
 	}
 }
 
 type joinGameResult struct {
-	PlayerId     string                 `json:"playerId"`
-	Snippet      *db.Snippet            `json:"snippet"`
-	GameProgress []*gameProgressContent `json:"gameProgress"`
-	Placements   []string               `json:"placements"`
+	PlayerId     string         `json:"playerId"`
+	Snippet      *db.Snippet    `json:"snippet"`
+	GameProgress []*gameContent `json:"gameProgress"`
+	Placements   []string       `json:"placements"`
 }
 
-func newJoinGameResult(playerId string, snippet *db.Snippet, gameProgress []*gameProgressContent,
+func newJoinGameResult(playerId string, snippet *db.Snippet, gameProgress []*gameContent,
 	placements []string) *joinGameResult {
 	return &joinGameResult{
 		PlayerId:     playerId,
@@ -125,15 +127,15 @@ func newNewPlayerResult(playerId string, displayName string) *newPlayerResult {
 
 type gameProgressResult struct {
 	PlayerId         string  `json:"playerId"`
-	DisplayName      string  `json:"displayName"`
 	PercentCompleted float64 `json:"percentCompleted"`
+	Wpm              float64 `json:"wpm"`
 }
 
-func newGameProgressResult(playerId string, displayName string, percentCompleted float64) *gameProgressResult {
+func newGameProgressResult(playerId string, percentCompleted float64, wpm float64) *gameProgressResult {
 	return &gameProgressResult{
 		PlayerId:         playerId,
-		DisplayName:      displayName,
 		PercentCompleted: percentCompleted,
+		Wpm:              wpm,
 	}
 }
 

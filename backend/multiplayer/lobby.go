@@ -7,13 +7,26 @@ import (
 	"time"
 
 	"github.com/dchest/uniuri"
+	"github.com/hujoseph99/typing/backend/common/utils"
 	"github.com/hujoseph99/typing/backend/db"
 )
+
+type gameProgressData struct {
+	client   *Client
+	progress string
+}
+
+func newGameProgressData(client *Client, progress string) *gameProgressData {
+	return &gameProgressData{
+		client:   client,
+		progress: progress,
+	}
+}
 
 type Lobby struct {
 	id           string
 	snippet      *db.Snippet
-	gameProgress []*gameProgressContent
+	gameProgress []*gameContent
 	placements   []string
 	startTime    time.Time
 	leader       *Client
@@ -24,6 +37,7 @@ type Lobby struct {
 	register   chan *Client
 	unregister chan *Client
 	finisher   chan *Client
+	progress   chan *gameProgressData
 	broadcast  chan []byte
 }
 
@@ -39,7 +53,7 @@ func NewLobby(leader *Client) (*Lobby, error) {
 	res := &Lobby{
 		id:           generateLobbyId(),
 		snippet:      snippet,
-		gameProgress: make([]*gameProgressContent, 0),
+		gameProgress: make([]*gameContent, 0),
 		placements:   make([]string, 0),
 		startTime:    time.Now(), // this needs to be cahnged when the game starts
 		leader:       leader,
@@ -49,6 +63,7 @@ func NewLobby(leader *Client) (*Lobby, error) {
 		register:     make(chan *Client),
 		unregister:   make(chan *Client),
 		finisher:     make(chan *Client),
+		progress:     make(chan *gameProgressData),
 		broadcast:    make(chan []byte),
 	}
 	go res.RunLobby()
@@ -67,7 +82,8 @@ func (lobby *Lobby) RunLobby() {
 		case <-lobby.start:
 			lobby.inProgress = true
 			lobby.startTime = time.Now()
-
+		case progress := <-lobby.progress:
+			lobby.handleGameProgress(progress)
 			// case client := <-lobby.unregister:
 			// 	lobby.unregisterClientInLobby(client)
 		}
@@ -94,7 +110,7 @@ func (lobby *Lobby) registerClientInLobby(client *Client) {
 
 	// add the client to the lobby and then send all the details to the client
 	lobby.clients[client] = true
-	lobby.gameProgress = append(lobby.gameProgress, newGameProgressContent(client.id, client.name))
+	lobby.gameProgress = append(lobby.gameProgress, newGameContent(client.id, client.name))
 
 	clientPayload := newJoinGameResult(client.id, lobby.snippet, lobby.gameProgress, lobby.placements)
 	clientResponse := newRequestResponse(joinGameResponse, clientPayload)
@@ -152,6 +168,47 @@ func (lobby *Lobby) handleFinisher(client *Client) {
 	}
 }
 
+func (lobby *Lobby) handleGameProgress(data *gameProgressData) {
+	client := data.client
+
+	if !lobby.inProgress {
+		createAndSendError(client, "The race has not yet started.")
+		return
+	}
+	// if the client already finished, don't let them modify anything
+	if lobby.clientInPlacements(client) {
+		return
+	}
+
+	differenceIndex := utils.FindFirstDifference(lobby.snippet.RaceContent, data.progress)
+	// this also checks if the user is indeed in the lobby
+	gameProgress, err := lobby.findClientGameProgress(client)
+	if err != nil {
+		createAndSendError(client, "An error has occurred on the server. Please try rejoining the game.")
+		return
+	}
+
+	difference := float64(differenceIndex) / float64(len(lobby.snippet.RaceContent))
+	percentCompleted := utils.RoundFloor(difference, 2)
+	secondsElapsed := time.Since(lobby.startTime).Round(time.Millisecond).Seconds()
+	wpm := float64(differenceIndex) / 5.7 / secondsElapsed * 60 // average letters in a word is 4.7, so 5.7 including spaces
+	gameProgress.PercentCompleted = percentCompleted
+	gameProgress.Wpm = utils.RoundFloor(wpm, 0)
+
+	gameProgressPayload := newGameProgressResult(client.id, gameProgress.PercentCompleted, gameProgress.Wpm)
+	gameProgressResponse := newRequestResponse(gameProgressResponse, gameProgressPayload)
+	gameProgressEncoded, err := json.Marshal(gameProgressResponse)
+	if err != nil {
+		createAndSendError(client, "An error occurred on the server. Please try rejoining the game.")
+		return
+	}
+	lobby.broadcastToClientsInLobby(gameProgressEncoded)
+
+	if percentCompleted == 1 && len(data.progress) == len(lobby.snippet.RaceContent) { // finished race
+		lobby.handleFinisher(data.client)
+	}
+}
+
 // func (lobby *Lobby) unregisterClientInLobby(client *Client) {
 // 	if _, ok := lobby.clients[client]; ok {
 // 		delete(lobby.clients, client)
@@ -164,7 +221,7 @@ func (lobby *Lobby) broadcastToClientsInLobby(message []byte) {
 	}
 }
 
-func (lobby *Lobby) findClientGameProgress(client *Client) (*gameProgressContent, error) {
+func (lobby *Lobby) findClientGameProgress(client *Client) (*gameContent, error) {
 	for _, val := range lobby.gameProgress {
 		if val.PlayerId == client.id {
 			return val, nil
