@@ -54,42 +54,50 @@ export const RaceField = (): JSX.Element => {
 		setFocus(false);
 	}
 
-	const onChange = (text: string) => {
-		if (text === backgroundText){
+	const onChange = (playerText: string) => {
+		if (playerText === backgroundText){
 			// win
 		}
-		const textArray = text.split("\n");
+		const playerTextArray = playerText.split("\n");
 
 		const backgroundArray: string[] = [];
-		const markerArray: Ace.Range[] = [];
+		const newMarkers: Ace.Range[] = [];
 
 		let i = 0;
-		for (; i < textArray.length; i++) {
+		// compare text
+		for (; i < playerTextArray.length; i++) {
+			let playerLine = playerTextArray[i];
+
+			// if no line in snippet to compare with, the rest of text is wrong. mark wrong for each line
 			if (i > snippetArray.length - 1) {
+				for (let j = i; j < playerTextArray.length; j++) {
+					newMarkers.push(new Range(j, 0, j, playerLine.length));
+				}
 				break
 			}
-			let userLine = textArray[i];
-			let snippet_line = snippetArray[i];
 
-			var difference_index = 0;
-			while (userLine[difference_index] === snippet_line[difference_index] && difference_index < userLine.length) difference_index++;
-
-			if (difference_index < userLine.length) {
-				markerArray.push(new Range(i, difference_index, i, userLine.length));
-			}
-			if (difference_index <= snippet_line.length) {
-				snippet_line = snippet_line.slice(0, difference_index) + ' '.repeat(userLine.length - difference_index) + snippet_line.slice(difference_index)
-			}
-			backgroundArray.push(snippet_line)
-		}
-
-		for (; i < snippetArray.length; i++) {
+			// compare with line in snippet
 			let snippetLine = snippetArray[i];
-			backgroundArray.push(snippetLine);
+			let differenceIndex = 0;
+			while (playerLine[differenceIndex] === snippetLine[differenceIndex] && differenceIndex < playerLine.length) differenceIndex++;
+
+			if (differenceIndex < playerLine.length) {
+				newMarkers.push(new Range(i, differenceIndex, i, playerLine.length));
+			}
+			if (differenceIndex <= snippetLine.length) {
+				snippetLine = snippetLine.slice(0, differenceIndex) + ' '.repeat(playerLine.length - differenceIndex) + snippetLine.slice(differenceIndex)
+			}
+			backgroundArray.push(snippetLine)
 		}
+
+		// if player_text was shorter than snippet, push rest of snippet into the background.
+		for (; i < snippetArray.length; i++) {
+			backgroundArray.push(snippetArray[i]);
+		}
+
 		setBackgroundText(backgroundArray.join("\n"));
-		setMarkers(markerArray);
-		if (foregroundText !== text) setForegroundText(text);
+		setMarkers(newMarkers);
+		if (foregroundText !== playerText) setForegroundText(playerText);
 	}
 
 	return (
