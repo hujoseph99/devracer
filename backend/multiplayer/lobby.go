@@ -31,6 +31,7 @@ type Lobby struct {
 	startTime    time.Time
 	leader       *Client
 	inProgress   bool
+	hasReloaded  bool
 
 	clients    map[*Client]bool
 	start      chan bool
@@ -38,6 +39,7 @@ type Lobby struct {
 	unregister chan *Client
 	finisher   chan *Client
 	progress   chan *gameProgressData
+	startGame  chan *Client
 	nextGame   chan *Client
 	broadcast  chan []byte
 }
@@ -59,14 +61,17 @@ func NewLobby(leader *Client) (*Lobby, error) {
 		startTime:    time.Now(), // this needs to be cahnged when the game starts
 		leader:       leader,
 		inProgress:   false,
-		clients:      make(map[*Client]bool),
-		start:        make(chan bool),
-		register:     make(chan *Client),
-		unregister:   make(chan *Client),
-		finisher:     make(chan *Client),
-		progress:     make(chan *gameProgressData),
-		nextGame:     make(chan *Client),
-		broadcast:    make(chan []byte),
+		hasReloaded:  true,
+
+		clients:    make(map[*Client]bool),
+		start:      make(chan bool),
+		register:   make(chan *Client),
+		unregister: make(chan *Client),
+		finisher:   make(chan *Client),
+		progress:   make(chan *gameProgressData),
+		startGame:  make(chan *Client),
+		nextGame:   make(chan *Client),
+		broadcast:  make(chan []byte),
 	}
 	go res.RunLobby()
 	return res, nil
@@ -86,6 +91,8 @@ func (lobby *Lobby) RunLobby() {
 			lobby.startTime = time.Now()
 		case progress := <-lobby.progress:
 			lobby.handleGameProgress(progress)
+		case client := <-lobby.startGame:
+			lobby.handleStartGame(client)
 		case client := <-lobby.nextGame:
 			lobby.handleNextGame(client)
 			// case client := <-lobby.unregister:
@@ -213,6 +220,40 @@ func (lobby *Lobby) handleGameProgress(data *gameProgressData) {
 	}
 }
 
+func (lobby *Lobby) handleStartGame(client *Client) {
+	if lobby.leader != client {
+		createAndSendError(client, "You are not the leader of the lobby.")
+		return
+	}
+	if lobby.inProgress {
+		createAndSendError(client, "The game is already in progress.")
+		return
+	}
+	if !lobby.hasReloaded {
+		createAndSendError(client, "Please wait for the leader to get a new game before starting.")
+		return
+	}
+
+	lobby.hasReloaded = false
+
+	for i := countdownStart; i >= 0; i-- {
+		countdownCopy := i
+		time.AfterFunc(time.Second*time.Duration(countdownStart-i), func() {
+			payload := newGameStartResult(countdownCopy)
+			response := newRequestResponse(gameStartResponse, payload)
+			encoded, err := json.Marshal(response)
+			if err != nil {
+				createAndSendError(client, "An error occurred on the server. There is an error sending the countdown")
+				return
+			}
+			if countdownCopy == 0 {
+				lobby.start <- true // start the game
+			}
+			lobby.broadcast <- encoded
+		})
+	}
+}
+
 func (lobby *Lobby) handleNextGame(client *Client) {
 	if lobby.leader != client {
 		createAndSendError(client, "You are not the leader of the lobby.")
@@ -228,6 +269,7 @@ func (lobby *Lobby) handleNextGame(client *Client) {
 		val.Wpm = 0
 	}
 
+	lobby.hasReloaded = true
 	lobby.placements = make([]string, 0)
 	newSnippet, err := db.GetRandomSnippet(context.Background())
 	if err != nil {

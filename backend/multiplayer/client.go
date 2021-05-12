@@ -150,31 +150,7 @@ func (client *Client) handleGameStartAction() {
 		createAndSendError(client, "You have not joined a lobby.")
 		return
 	}
-	if lobby.leader != client {
-		createAndSendError(client, "You are not the leader of the lobby.")
-		return
-	}
-	if lobby.inProgress {
-		createAndSendError(client, "The game is already in progress.")
-		return
-	}
-
-	for i := countdownStart; i >= 0; i-- {
-		countdownCopy := i
-		time.AfterFunc(time.Second*time.Duration(countdownStart-i), func() {
-			payload := newGameStartResult(countdownCopy)
-			response := newRequestResponse(gameStartResponse, payload)
-			encoded, err := json.Marshal(response)
-			if err != nil {
-				createAndSendError(client, "An error occurred on the server. There is an error sending the countdown")
-				return
-			}
-			if countdownCopy == 0 {
-				lobby.start <- true // start the game
-			}
-			lobby.broadcast <- encoded
-		})
-	}
+	lobby.startGame <- client
 }
 
 func (client *Client) handleNextGameAction() {
