@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"time"
 
 	"github.com/dchest/uniuri"
 	"github.com/hujoseph99/typing/backend/db"
@@ -14,8 +15,12 @@ type Lobby struct {
 	snippet      *db.Snippet
 	gameProgress []*gameProgressContent
 	placements   []string
+	startTime    time.Time
+	leader       *Client
+	inProgress   bool
 
 	clients    map[*Client]bool
+	start      chan bool
 	register   chan *Client
 	unregister chan *Client
 	finisher   chan *Client
@@ -26,7 +31,7 @@ func generateLobbyId() string {
 	return uniuri.NewLen(uniuri.StdLen)
 }
 
-func NewLobby() (*Lobby, error) {
+func NewLobby(leader *Client) (*Lobby, error) {
 	snippet, err := db.GetRandomSnippet(context.Background())
 	if err != nil {
 		return nil, err
@@ -36,7 +41,11 @@ func NewLobby() (*Lobby, error) {
 		snippet:      snippet,
 		gameProgress: make([]*gameProgressContent, 0),
 		placements:   make([]string, 0),
+		startTime:    time.Now(), // this needs to be cahnged when the game starts
+		leader:       leader,
+		inProgress:   false,
 		clients:      make(map[*Client]bool),
+		start:        make(chan bool),
 		register:     make(chan *Client),
 		unregister:   make(chan *Client),
 		finisher:     make(chan *Client),
@@ -55,6 +64,9 @@ func (lobby *Lobby) RunLobby() {
 			lobby.broadcastToClientsInLobby(message)
 		case client := <-lobby.finisher:
 			lobby.handleFinisher(client)
+		case <-lobby.start:
+			lobby.inProgress = true
+			lobby.startTime = time.Now()
 
 			// case client := <-lobby.unregister:
 			// 	lobby.unregisterClientInLobby(client)
@@ -63,6 +75,10 @@ func (lobby *Lobby) RunLobby() {
 }
 
 func (lobby *Lobby) registerClientInLobby(client *Client) {
+	if _, exists := lobby.clients[client]; exists {
+		createAndSendError(client, "You have already joined the lobby")
+		return
+	}
 	// first send the client to all the players already in the lobby
 	lobbyPayload := newNewPlayerResult(client.id, client.name)
 	lobbyResponse := newRequestResponse(newPlayerResponse, lobbyPayload)
@@ -131,6 +147,7 @@ func (lobby *Lobby) handleFinisher(client *Client) {
 			createAndSendErrorToLobby(lobby, "There was an error when returning your placements.")
 			return
 		}
+		lobby.inProgress = false // finished, so now should let user start a new game
 		lobby.broadcastToClientsInLobby(gameFinishedEncoded)
 	}
 }

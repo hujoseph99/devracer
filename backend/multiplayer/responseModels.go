@@ -15,6 +15,7 @@ const (
 	gameProgressResponse   = "gameProgressResponse"
 	playerFinishedResponse = "playerFinishedResponse"
 	gameFinishedResponse   = "gameFinishedResponse"
+	gameStartResponse      = "gameStartResponse"
 )
 
 type requestResponse struct {
@@ -153,5 +154,15 @@ type gameFinishedResult struct {
 func newGameFinishedResult(placements []string) *gameFinishedResult {
 	return &gameFinishedResult{
 		Placements: placements,
+	}
+}
+
+type gameStartResult struct {
+	Countdown int `json:"countdown"`
+}
+
+func newGameStartResult(countdown int) *gameStartResult {
+	return &gameStartResult{
+		Countdown: countdown,
 	}
 }

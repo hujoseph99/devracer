@@ -23,6 +23,9 @@ const (
 
 	// Maximum message size allowed from peer.
 	maxMessageSize = 10000
+
+	countdownStart = 5 // time to start the countdown from
+
 )
 
 var upgrader = websocket.Upgrader{
@@ -80,6 +83,8 @@ func (client *Client) handleNewMessage(jsonMessage []byte) {
 		client.handleJoinGameAction(message)
 	case gameProgressAction:
 		client.handleGameProgressAction(message)
+	case startGameAction:
+		client.handleGameStartAction()
 	default:
 		createAndSendError(client, "Invalid message was sent")
 	}
@@ -88,7 +93,7 @@ func (client *Client) handleNewMessage(jsonMessage []byte) {
 // can ignore the payload in this case and lobby id
 func (client *Client) handleCreateGameAction() {
 	var err error
-	client.lobby, err = NewLobby()
+	client.lobby, err = NewLobby(client)
 	if err != nil {
 		createAndSendError(client, "An error occurred when creating a lobby")
 		return
@@ -130,7 +135,11 @@ func (client *Client) handleJoinGameAction(message *Message) {
 func (client *Client) handleGameProgressAction(message *Message) {
 	lobby := client.lobby
 	if lobby == nil {
-		createAndSendError(client, "You have not joined a lobby")
+		createAndSendError(client, "You have not joined a lobby.")
+		return
+	}
+	if !lobby.inProgress {
+		createAndSendError(client, "The race has not yet started.")
 		return
 	}
 
@@ -164,6 +173,40 @@ func (client *Client) handleGameProgressAction(message *Message) {
 	lobby.broadcast <- gameProgressEncoded
 	if rounded == 1 && len(typed) == len(lobby.snippet.RaceContent) { // finished race
 		lobby.finisher <- client
+	}
+}
+
+// can more or less ignore the message here
+func (client *Client) handleGameStartAction() {
+	lobby := client.lobby
+	if lobby == nil {
+		createAndSendError(client, "You have not joined a lobby.")
+		return
+	}
+	if lobby.leader != client {
+		createAndSendError(client, "You are not the leader of the lobby.")
+		return
+	}
+	if lobby.inProgress {
+		createAndSendError(client, "The game is already in progress.")
+		return
+	}
+
+	for i := countdownStart; i >= 0; i-- {
+		countdownCopy := i
+		time.AfterFunc(time.Second*time.Duration(countdownStart-i), func() {
+			payload := newGameStartResult(countdownCopy)
+			response := newRequestResponse(gameStartResponse, payload)
+			encoded, err := json.Marshal(response)
+			if err != nil {
+				createAndSendError(client, "An error occurred on the server. There is an error sending the countdown")
+				return
+			}
+			if countdownCopy == 0 {
+				lobby.start <- true // start the game
+			}
+			lobby.broadcast <- encoded
+		})
 	}
 }
 
