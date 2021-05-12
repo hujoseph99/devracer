@@ -17,6 +17,8 @@ const (
 	gameFinishedResponse   = "gameFinishedResponse"
 	gameStartResponse      = "gameStartResponse"
 	nextGameResponse       = "nextGameResponse"
+	lobbyClosedResponse    = "lobbyClosedResponse"
+	leaveGameResponse      = "leaveGameResponse"
 )
 
 type requestResponse struct {
@@ -181,5 +183,27 @@ func newNextGameResult(snippet *db.Snippet, gameProgress []*gameContent, placeme
 		Snippet:      snippet,
 		GameProgress: gameProgress,
 		Placements:   placements,
+	}
+}
+
+type lobbyClosedResult struct {
+	Message string `json:"message"`
+}
+
+func newLobbyClosedResult(message string) *lobbyClosedResult {
+	return &lobbyClosedResult{
+		Message: message,
+	}
+}
+
+type leaveGameResult struct {
+	PlayerId   string   `json:"playerId"`
+	Placements []string `json:"placements"`
+}
+
+func newLeaveGameResult(playerId string, placements []string) *leaveGameResult {
+	return &leaveGameResult{
+		PlayerId:   playerId,
+		Placements: placements,
 	}
 }

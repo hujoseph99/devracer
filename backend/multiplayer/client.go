@@ -85,6 +85,8 @@ func (client *Client) handleNewMessage(jsonMessage []byte) {
 		client.handleGameStartAction()
 	case nextGameAction:
 		client.handleNextGameAction()
+	case leaveGameAction:
+		client.handleLeaveGameAction()
 	default:
 		createAndSendError(client, "Invalid message was sent")
 	}
@@ -160,6 +162,15 @@ func (client *Client) handleNextGameAction() {
 		return
 	}
 	client.lobby.nextGame <- client
+}
+
+func (client *Client) handleLeaveGameAction() {
+	lobby := client.lobby
+	if lobby == nil {
+		return
+	}
+	lobby.leaveGame <- client
+	client.lobby = nil
 }
 
 func (client *Client) readPump() {

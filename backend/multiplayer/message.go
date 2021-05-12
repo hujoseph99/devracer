@@ -12,6 +12,7 @@ const (
 	gameProgressAction = "gameProgress"
 	startGameAction    = "startGame"
 	nextGameAction     = "nextGame"
+	leaveGameAction    = "leaveGame"
 )
 
 type Message struct {
@@ -19,14 +20,6 @@ type Message struct {
 	Payload string `json:"payload,omitempty"`
 	LobbyId string `json:"lobbyId,omitempty"`
 	client  *Client
-}
-
-func (message *Message) encode() []byte {
-	json, err := json.Marshal(message)
-	if err != nil {
-		log.Println(err)
-	}
-	return json
 }
 
 func decode(jsonMessage []byte, client *Client) (*Message, error) {

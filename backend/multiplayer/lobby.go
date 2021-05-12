@@ -4,12 +4,16 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"log"
 	"time"
 
 	"github.com/dchest/uniuri"
 	"github.com/hujoseph99/typing/backend/common/utils"
 	"github.com/hujoseph99/typing/backend/db"
 )
+
+// TODO: deal with event where someone joins after the game is finished... Might have to implement
+// not allowing the user to race if the game is already in progress
 
 type gameProgressData struct {
 	client   *Client
@@ -41,6 +45,7 @@ type Lobby struct {
 	progress   chan *gameProgressData
 	startGame  chan *Client
 	nextGame   chan *Client
+	leaveGame  chan *Client
 	broadcast  chan []byte
 }
 
@@ -58,7 +63,7 @@ func NewLobby(leader *Client) (*Lobby, error) {
 		snippet:      snippet,
 		gameProgress: make([]*gameContent, 0),
 		placements:   make([]string, 0),
-		startTime:    time.Now(), // this needs to be cahnged when the game starts
+		startTime:    time.Now(),
 		leader:       leader,
 		inProgress:   false,
 		hasReloaded:  true,
@@ -71,6 +76,7 @@ func NewLobby(leader *Client) (*Lobby, error) {
 		progress:   make(chan *gameProgressData),
 		startGame:  make(chan *Client),
 		nextGame:   make(chan *Client),
+		leaveGame:  make(chan *Client),
 		broadcast:  make(chan []byte),
 	}
 	go res.RunLobby()
@@ -95,8 +101,8 @@ func (lobby *Lobby) RunLobby() {
 			lobby.handleStartGame(client)
 		case client := <-lobby.nextGame:
 			lobby.handleNextGame(client)
-			// case client := <-lobby.unregister:
-			// 	lobby.unregisterClientInLobby(client)
+		case client := <-lobby.leaveGame:
+			lobby.handleLeaveGame(client)
 		}
 	}
 }
@@ -239,15 +245,15 @@ func (lobby *Lobby) handleStartGame(client *Client) {
 	for i := countdownStart; i >= 0; i-- {
 		countdownCopy := i
 		time.AfterFunc(time.Second*time.Duration(countdownStart-i), func() {
+			if countdownCopy == 0 {
+				lobby.start <- true // start the game
+			}
 			payload := newGameStartResult(countdownCopy)
 			response := newRequestResponse(gameStartResponse, payload)
 			encoded, err := json.Marshal(response)
 			if err != nil {
 				createAndSendError(client, "An error occurred on the server. There is an error sending the countdown")
 				return
-			}
-			if countdownCopy == 0 {
-				lobby.start <- true // start the game
 			}
 			lobby.broadcast <- encoded
 		})
@@ -288,11 +294,52 @@ func (lobby *Lobby) handleNextGame(client *Client) {
 	lobby.broadcastToClientsInLobby(encoded)
 }
 
-// func (lobby *Lobby) unregisterClientInLobby(client *Client) {
-// 	if _, ok := lobby.clients[client]; ok {
-// 		delete(lobby.clients, client)
-// 	}
-// }
+func (lobby *Lobby) handleLeaveGame(client *Client) {
+	if lobby.leader == client {
+		payload := newLobbyClosedResult("The has been closed because the host left.")
+		response := newRequestResponse(lobbyClosedResponse, payload)
+		encoded, err := json.Marshal(response)
+		if err != nil {
+			log.Println("There was an error when closing the lobby")
+		}
+		lobby.broadcastToClientsInLobby(encoded)
+
+		// remove the lobby from every client
+		for clients := range lobby.clients {
+			clients.lobby = nil
+		}
+		// delete the lobby
+		client.server.delete <- lobby
+	} else {
+		// remove it from the map of clients
+		delete(lobby.clients, client)
+		// remove it from the slice of game progresses
+		for progress := range lobby.gameProgress {
+			if lobby.gameProgress[progress].PlayerId == client.id {
+				lobby.gameProgress = append(lobby.gameProgress[:progress], lobby.gameProgress[progress+1:]...)
+				break
+			}
+		}
+		// remove it from the placements
+		for placement := range lobby.placements {
+			if lobby.placements[placement] == client.id {
+				lobby.placements = append(lobby.placements[:placement], lobby.placements[placement+1:]...)
+				break
+			}
+		}
+
+		client.lobby = nil
+
+		payload := newLeaveGameResult(client.id, lobby.placements)
+		response := newRequestResponse(leaveGameResponse, payload)
+		encoded, err := json.Marshal(response)
+		if err != nil {
+			log.Println("There was an error when encoding the leave game response")
+			return
+		}
+		lobby.broadcastToClientsInLobby(encoded)
+	}
+}
 
 func (lobby *Lobby) broadcastToClientsInLobby(message []byte) {
 	for client := range lobby.clients {
