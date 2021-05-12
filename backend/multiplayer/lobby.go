@@ -38,6 +38,7 @@ type Lobby struct {
 	unregister chan *Client
 	finisher   chan *Client
 	progress   chan *gameProgressData
+	nextGame   chan *Client
 	broadcast  chan []byte
 }
 
@@ -64,6 +65,7 @@ func NewLobby(leader *Client) (*Lobby, error) {
 		unregister:   make(chan *Client),
 		finisher:     make(chan *Client),
 		progress:     make(chan *gameProgressData),
+		nextGame:     make(chan *Client),
 		broadcast:    make(chan []byte),
 	}
 	go res.RunLobby()
@@ -84,6 +86,8 @@ func (lobby *Lobby) RunLobby() {
 			lobby.startTime = time.Now()
 		case progress := <-lobby.progress:
 			lobby.handleGameProgress(progress)
+		case client := <-lobby.nextGame:
+			lobby.handleNextGame(client)
 			// case client := <-lobby.unregister:
 			// 	lobby.unregisterClientInLobby(client)
 		}
@@ -207,6 +211,39 @@ func (lobby *Lobby) handleGameProgress(data *gameProgressData) {
 	if percentCompleted == 1 && len(data.progress) == len(lobby.snippet.RaceContent) { // finished race
 		lobby.handleFinisher(data.client)
 	}
+}
+
+func (lobby *Lobby) handleNextGame(client *Client) {
+	if lobby.leader != client {
+		createAndSendError(client, "You are not the leader of the lobby.")
+		return
+	}
+	if lobby.inProgress {
+		createAndSendError(client, "The game is still in progress.")
+		return
+	}
+
+	for _, val := range lobby.gameProgress {
+		val.PercentCompleted = 0
+		val.Wpm = 0
+	}
+
+	lobby.placements = make([]string, 0)
+	newSnippet, err := db.GetRandomSnippet(context.Background())
+	if err != nil {
+		createAndSendError(client, "There was an error when trying to create a new game. Please try again.")
+		return
+	}
+	lobby.snippet = newSnippet
+
+	payload := newNextGameResult(lobby.snippet, lobby.gameProgress, lobby.placements)
+	response := newRequestResponse(nextGameResponse, payload)
+	encoded, err := json.Marshal(response)
+	if err != nil {
+		createAndSendError(client, "There was an error when trying to create a new game. Please try again.")
+		return
+	}
+	lobby.broadcastToClientsInLobby(encoded)
 }
 
 // func (lobby *Lobby) unregisterClientInLobby(client *Client) {

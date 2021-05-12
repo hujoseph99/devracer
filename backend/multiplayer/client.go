@@ -83,6 +83,8 @@ func (client *Client) handleNewMessage(jsonMessage []byte) {
 		client.handleGameProgressAction(message)
 	case startGameAction:
 		client.handleGameStartAction()
+	case nextGameAction:
+		client.handleNextGameAction()
 	default:
 		createAndSendError(client, "Invalid message was sent")
 	}
@@ -173,6 +175,15 @@ func (client *Client) handleGameStartAction() {
 			lobby.broadcast <- encoded
 		})
 	}
+}
+
+func (client *Client) handleNextGameAction() {
+	lobby := client.lobby
+	if lobby == nil {
+		createAndSendError(client, "You have not joined a lobby.")
+		return
+	}
+	client.lobby.nextGame <- client
 }
 
 func (client *Client) readPump() {

@@ -16,6 +16,7 @@ const (
 	playerFinishedResponse = "playerFinishedResponse"
 	gameFinishedResponse   = "gameFinishedResponse"
 	gameStartResponse      = "gameStartResponse"
+	nextGameResponse       = "nextGameResponse"
 )
 
 type requestResponse struct {
@@ -166,5 +167,19 @@ type gameStartResult struct {
 func newGameStartResult(countdown int) *gameStartResult {
 	return &gameStartResult{
 		Countdown: countdown,
+	}
+}
+
+type nextGameResult struct {
+	Snippet      *db.Snippet    `json:"snippet"`
+	GameProgress []*gameContent `json:"gameProgress"`
+	Placements   []string       `json:"placements"`
+}
+
+func newNextGameResult(snippet *db.Snippet, gameProgress []*gameContent, placements []string) *nextGameResult {
+	return &nextGameResult{
+		Snippet:      snippet,
+		GameProgress: gameProgress,
+		Placements:   placements,
 	}
 }
