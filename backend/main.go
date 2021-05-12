@@ -16,6 +16,6 @@ func main() {
 	graphql.RegisterEndpoints(router)
 	InitRouter(router)
 
-	handler := cors.Default().Handler(router)
+	handler := cors.New(cors.Options{AllowedOrigins: []string{"http://localhost:3000"}, AllowCredentials: true}).Handler(router)
 	http.ListenAndServe(":8080", handler)
 }

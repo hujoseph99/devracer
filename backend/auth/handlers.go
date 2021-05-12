@@ -29,7 +29,7 @@ func HandleLogin(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	existingUser, err := db.FindUserByUsername(ctx, login.Username)
+	existingUser, err := db.GetUserByUsername(ctx, login.Username)
 	if err != nil || existingUser == nil {
 		api.DefaultError(w, r, http.StatusUnauthorized, "The username and password was not found. Please try again.")
 		return

@@ -16,6 +16,7 @@ import { LoginPage } from './features/auth/LoginPage';
 import { RegisterPage } from './features/auth/RegisterPage';
 import { refresh, selectIsLoggedIn, selectRefreshToken, selectUserID } from './features/auth/authSlice';
 import { fetchUserData } from './features/user/userSlice';
+import { GitHubCallback } from './features/auth/GitHubCallback';
 
 const App = (): JSX.Element => {
   const dispatch = useDispatch();
@@ -44,6 +45,9 @@ const App = (): JSX.Element => {
       <CssBaseline />
       <Router>
         <Switch>
+        <Route path='/auth/githubCallback'>
+            <GitHubCallback />
+          </Route>
           <Route path='/practice'>
             <RaceField />
           </Route>
