@@ -10,17 +10,17 @@ import "./editor.css"
 
 interface ForegroundEditorProps {
 	focus?: boolean;
-	onblur?: () => void;
+	onBlur?: () => void;
 	ranges: Ace.Range[];
 	text: string;
-	onchange: (s: string) => void;
+	onChange: (s: string) => void;
 }
 
 export const ForegroundEditor = ({
 	focus = false,
-	onblur = () => {},
+	onBlur,
 	ranges,
-	onchange,
+	onChange,
 	text
 }: ForegroundEditorProps): JSX.Element => {
 	const snippet = useSelector(selectSnippet);
@@ -33,11 +33,11 @@ export const ForegroundEditor = ({
 				editor.current.session.removeMarker(marker);
 			}
 
-			let new_markers: number[] = [];
+			let newMarkers: number[] = [];
 			for (let marker of ranges){
-				new_markers.push(editor.current.session.addMarker(marker, "error-marker", "text"));
+				newMarkers.push(editor.current.session.addMarker(marker, "error-marker", "text"));
 			}
-			markers.current = new_markers;
+			markers.current = newMarkers;
 		}
 	}, [ranges])
 
@@ -56,8 +56,8 @@ export const ForegroundEditor = ({
 			className="foregroundEditor"
 			mode={snippet.language}
 			onLoad={handleLoad}
-			onBlur={onblur}
-			onChange={onchange}
+			onBlur={onBlur}
+			onChange={onChange}
 			value={text}
 		/>
 	);

@@ -46,50 +46,58 @@ export const RaceField = (): JSX.Element => {
 	}, [snippet])
 
 
-	const onfocus = (e: SyntheticEvent) => {
+	const onFocus = (e: SyntheticEvent) => {
 		setFocus(true);
 	}
 
-	const onblur = () => {
+	const onBlur = () => {
 		setFocus(false);
 	}
 
-	const onchange = (text: string) => {
-		if (text === backgroundText){
+	const onChange = (playerText: string) => {
+		if (playerText === backgroundText){
 			// win
 		}
-		const text_array = text.split("\n");
+		const playerTextArray = playerText.split("\n");
 
-		const background_array: string[] = [];
-		const marker_array: Ace.Range[] = [];
+		const backgroundArray: string[] = [];
+		const newMarkers: Ace.Range[] = [];
 
 		let i = 0;
-		for (; i < text_array.length; i++) {
+		// compare text
+		for (; i < playerTextArray.length; i++) {
+			let playerLine = playerTextArray[i];
+
+			// if no line in snippet to compare with, the rest of text is wrong. mark wrong for each line
 			if (i > snippetArray.length - 1) {
+				for (let j = i; j < playerTextArray.length; j++) {
+					newMarkers.push(new Range(j, 0, j, playerLine.length));
+				}
 				break
 			}
-			let user_line = text_array[i];
-			let snippet_line = snippetArray[i];
 
-			var difference_index = 0;
-			while (user_line[difference_index] === snippet_line[difference_index] && difference_index < user_line.length) difference_index++;
+			// compare with line in snippet
+			let snippetLine = snippetArray[i];
+			let differenceIndex = 0;
+			while (playerLine[differenceIndex] === snippetLine[differenceIndex] && differenceIndex < playerLine.length) differenceIndex++;
 
-			if (difference_index < user_line.length) {
-				marker_array.push(new Range(i, difference_index, i, user_line.length));
+			if (differenceIndex < playerLine.length) {
+				newMarkers.push(new Range(i, differenceIndex, i, playerLine.length));
 			}
-			if (difference_index <= snippet_line.length) {
-				snippet_line = snippet_line.slice(0, difference_index) + ' '.repeat(user_line.length - difference_index) + snippet_line.slice(difference_index)
+			if (differenceIndex <= snippetLine.length) {
+				snippetLine = snippetLine.slice(0, differenceIndex) + ' '.repeat(playerLine.length - differenceIndex) + snippetLine.slice(differenceIndex)
 			}
-			background_array.push(snippet_line)
+			backgroundArray.push(snippetLine)
 		}
 
+		// if player_text was shorter than snippet, push rest of snippet into the background.
 		for (; i < snippetArray.length; i++) {
-			let snippet_line = snippetArray[i];
-			background_array.push(snippet_line);
+			backgroundArray.push(snippetArray[i]);
 		}
-		setBackgroundText(background_array.join("\n"));
-		setMarkers(marker_array);
-		if (foregroundText !== text) setForegroundText(text);
+
+		setBackgroundText(backgroundArray.join("\n"));
+		setMarkers(newMarkers);
+		if (foregroundText !== playerText) setForegroundText(playerText);
 	}
 
 	return (
@@ -97,7 +105,7 @@ export const RaceField = (): JSX.Element => {
 			// onKeyDownCapture={filterKeyboardEvents}
 			// onKeyPressCapture={filterKeyboardEvents}
 			// onKeyUpCapture={filterKeyboardEvents}
-			onClickCapture={onfocus}>
+			onClickCapture={onFocus}>
 			{/* onMouseDownCapture={filterMouseEvents}
 			onMouseMoveCapture={filterMouseEvents}
 			onFocusCapture={filterMouseEvents}
@@ -106,7 +114,7 @@ export const RaceField = (): JSX.Element => {
 			onMouseUpCapture={filterMouseEvents}> */}
 			<BackgroundEditor text={backgroundText}/>
 			{/* elements that appear later are on top */}
-			<ForegroundEditor text={foregroundText} ranges={markers} focus={focus} onchange={onchange} onblur={onblur} />
+			<ForegroundEditor text={foregroundText} ranges={markers} focus={focus} onChange={onChange} onBlur={onBlur} />
 		</Box>
 	)
 };

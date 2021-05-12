@@ -10,8 +10,8 @@ interface NavbarProps {
 	isHome?: boolean
 }
 
-export const Navbar = ({ 
-	isHome = false 
+export const Navbar = ({
+	isHome = false
 }: NavbarProps): JSX.Element => {
 	const history = useHistory();
 	const dispatch = useDispatch();
@@ -23,7 +23,7 @@ export const Navbar = ({
 	const onLoginClick = () => {
 		history.push('/login');
 	}
-	
+
 	const onLogoutClick = () => {
 		dispatch(logout({ refreshToken }));
 		dispatch(resetStatus);
@@ -42,21 +42,7 @@ export const Navbar = ({
 		<Button variant='outlined' size='small' onClick={onLoginClick}>Login</Button>
 	)
 
-	return isHome ? (
-		<Grid container>
-			<Grid item xs={3}></Grid>
-			<Grid item xs={6} justify='center'>
-				<Box height='100%' display='flex' justifyContent='center' alignItems='center'>
-					<Typography component='span' align="center">{heading}</Typography>
-				</Box>
-			</Grid>
-			<Grid item xs={3} justify='flex-end'>
-				<Box display='flex' justifyContent='flex-end' alignContent='center'>
-					{loginLogoutButton}
-				</Box>
-			</Grid>
-		</Grid>
-	) : (
+	return (
 		<Grid container justify='space-between'>
 			<Grid item xs={3}>
 				<Box display='flex'>
@@ -65,10 +51,13 @@ export const Navbar = ({
 			</Grid>
 			<Grid item xs={6}>
 				<Box height='100%' display='flex' justifyContent='center' alignItems='center'>
-					<Typography component='span' align="center">{heading}</Typography>
+					<Typography component='span' align="center" color='textSecondary'>{heading}</Typography>
 				</Box>
 			</Grid>
-			<Grid item xs={3}>
+			<Grid item xs={3} justify='flex-end'>
+				<Box display='flex' justifyContent='flex-end' alignContent='center'>
+					{loginLogoutButton}
+				</Box>
 			</Grid>
 		</Grid>
 	);

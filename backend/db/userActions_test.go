@@ -99,7 +99,7 @@ func TestFindUserByUsername(t *testing.T) {
 	}
 
 	id := testUser.ID.Hex()
-	foundUser, err := FindUserByUsername(context.Background(), testUser.Username)
+	foundUser, err := GetUserByUsername(context.Background(), testUser.Username)
 
 	// checking username and password is good enough for me
 	if err != nil || foundUser.ID.Hex() != id || foundUser.Username != testUser.Username ||
@@ -123,7 +123,7 @@ func TestFindUserByEmail(t *testing.T) {
 	}
 
 	id := testUser.ID.Hex()
-	foundUser, err := FindUserByEmail(context.Background(), testUser.Email)
+	foundUser, err := GetUserByEmail(context.Background(), testUser.Email)
 
 	// checking username and password is good enough for me
 	if err != nil || foundUser.ID.Hex() != id || foundUser.Username != testUser.Username ||

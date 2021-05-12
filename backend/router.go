@@ -16,4 +16,6 @@ func InitRouter(router *mux.Router, server *multiplayer.MultiplayerServer) {
 	router.HandleFunc("/custom", func(w http.ResponseWriter, r *http.Request) {
 		multiplayer.HandleCustomGame(server, w, r)
 	})
+	router.HandleFunc("/auth/githubLogin", auth.HandleGithubLogin)
+	router.HandleFunc("/auth/githubCallback", auth.HandleGithubCallback)
 }

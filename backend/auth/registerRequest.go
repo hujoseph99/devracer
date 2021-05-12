@@ -78,14 +78,14 @@ func validateNickname(w http.ResponseWriter, r *http.Request, nickname string) e
 // error, otherwise will return a nil error
 func (model *registerRequest) validateRegisterRequest(w http.ResponseWriter, r *http.Request, ctx context.Context) error {
 	// TODO: Fix this so that it does a case insensitive search
-	existingUser, err := db.FindUserByUsername(ctx, model.Username)
+	existingUser, err := db.GetUserByUsername(ctx, model.Username)
 	if err == nil || existingUser != nil {
 		api.DefaultError(w, r, http.StatusUnauthorized, "The username is already in use. Please try again.")
 		return fmt.Errorf("username was already in use")
 	}
 
 	// TODO: Fix this so that it does a case insensitive search
-	existingUser, err = db.FindUserByEmail(ctx, model.Email)
+	existingUser, err = db.GetUserByEmail(ctx, model.Email)
 	if err == nil || existingUser != nil {
 		api.DefaultError(w, r, http.StatusUnauthorized, "The email is already in use. Please try again.")
 		return fmt.Errorf("email was already in use")
