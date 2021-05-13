@@ -28,14 +28,15 @@ func newGameProgressData(client *Client, progress string) *gameProgressData {
 }
 
 type Lobby struct {
-	id           string
-	snippet      *db.Snippet
-	gameProgress []*gameContent
-	placements   []string
-	startTime    time.Time
-	leader       *Client
-	inProgress   bool
-	hasReloaded  bool
+	id            string
+	snippet       *db.Snippet
+	gameProgress  []*gameContent
+	queuedPlayers []*gameContent
+	placements    []string
+	startTime     time.Time
+	leader        *Client
+	inProgress    bool
+	hasReloaded   bool
 
 	clients    map[*Client]bool
 	start      chan bool
@@ -59,14 +60,15 @@ func NewLobby(leader *Client) (*Lobby, error) {
 		return nil, err
 	}
 	res := &Lobby{
-		id:           generateLobbyId(),
-		snippet:      snippet,
-		gameProgress: make([]*gameContent, 0),
-		placements:   make([]string, 0),
-		startTime:    time.Now(),
-		leader:       leader,
-		inProgress:   false,
-		hasReloaded:  true,
+		id:            generateLobbyId(),
+		snippet:       snippet,
+		gameProgress:  make([]*gameContent, 0),
+		queuedPlayers: make([]*gameContent, 0),
+		placements:    make([]string, 0),
+		startTime:     time.Now(),
+		leader:        leader,
+		inProgress:    false,
+		hasReloaded:   true,
 
 		clients:    make(map[*Client]bool),
 		start:      make(chan bool),
@@ -113,7 +115,7 @@ func (lobby *Lobby) registerClientInLobby(client *Client) {
 		return
 	}
 	// first send the client to all the players already in the lobby
-	lobbyPayload := newNewPlayerResult(client.id, client.name)
+	lobbyPayload := newNewPlayerResult(client.id, client.name, lobby.inProgress)
 	lobbyResponse := newRequestResponse(newPlayerResponse, lobbyPayload)
 	lobbyEncoded, err := json.Marshal(lobbyResponse)
 	if err != nil {
@@ -127,9 +129,13 @@ func (lobby *Lobby) registerClientInLobby(client *Client) {
 
 	// add the client to the lobby and then send all the details to the client
 	lobby.clients[client] = true
-	lobby.gameProgress = append(lobby.gameProgress, newGameContent(client.id, client.name))
+	if lobby.inProgress {
+		lobby.queuedPlayers = append(lobby.queuedPlayers, newGameContent(client.id, client.name))
+	} else {
+		lobby.gameProgress = append(lobby.gameProgress, newGameContent(client.id, client.name))
+	}
 
-	clientPayload := newJoinGameResult(client.id, lobby.snippet, lobby.gameProgress, lobby.placements)
+	clientPayload := newJoinGameResult(client.id, lobby.snippet, lobby.gameProgress, lobby.queuedPlayers, lobby.placements, lobby.inProgress)
 	clientResponse := newRequestResponse(joinGameResponse, clientPayload)
 	clientEncoded, err := json.Marshal(clientResponse)
 	if err != nil {
@@ -172,7 +178,7 @@ func (lobby *Lobby) handleFinisher(client *Client) {
 	lobby.broadcastToClientsInLobby(encoded)
 
 	// check if game is finished
-	if len(lobby.placements) == len(lobby.clients) {
+	if len(lobby.placements) == len(lobby.gameProgress) {
 		gameFinishedPayload := newGameFinishedResult(lobby.placements)
 		gameFinishedResponse := newRequestResponse(gameFinishedResponse, gameFinishedPayload)
 		gameFinishedEncoded, err := json.Marshal(gameFinishedResponse)
@@ -192,8 +198,8 @@ func (lobby *Lobby) handleGameProgress(data *gameProgressData) {
 		createAndSendError(client, "The race has not yet started.")
 		return
 	}
-	// if the client already finished, don't let them modify anything
-	if lobby.clientInPlacements(client) {
+	// if the client already finished or not a part of the race, don't let them modify anything
+	if _, err := lobby.findClientGameProgress(client); lobby.clientInPlacements(client) || err != nil {
 		return
 	}
 
@@ -276,6 +282,9 @@ func (lobby *Lobby) handleNextGame(client *Client) {
 	}
 
 	lobby.hasReloaded = true
+	// add all the queued players over into the actual game
+	lobby.gameProgress = append(lobby.gameProgress, lobby.queuedPlayers...)
+	lobby.queuedPlayers = make([]*gameContent, 0)
 	lobby.placements = make([]string, 0)
 	newSnippet, err := db.GetRandomSnippet(context.Background())
 	if err != nil {
@@ -284,7 +293,7 @@ func (lobby *Lobby) handleNextGame(client *Client) {
 	}
 	lobby.snippet = newSnippet
 
-	payload := newNextGameResult(lobby.snippet, lobby.gameProgress, lobby.placements)
+	payload := newNextGameResult(lobby.snippet, lobby.gameProgress, lobby.queuedPlayers, lobby.placements)
 	response := newRequestResponse(nextGameResponse, payload)
 	encoded, err := json.Marshal(response)
 	if err != nil {
@@ -324,6 +333,13 @@ func (lobby *Lobby) handleLeaveGame(client *Client) {
 		for placement := range lobby.placements {
 			if lobby.placements[placement] == client.id {
 				lobby.placements = append(lobby.placements[:placement], lobby.placements[placement+1:]...)
+				break
+			}
+		}
+		// remove it from the slice of queued players
+		for progress := range lobby.queuedPlayers {
+			if lobby.queuedPlayers[progress].PlayerId == client.id {
+				lobby.queuedPlayers = append(lobby.queuedPlayers[:progress], lobby.queuedPlayers[progress+1:]...)
 				break
 			}
 		}

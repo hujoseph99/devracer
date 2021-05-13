@@ -98,19 +98,23 @@ func newGameContent(playerId string, displayName string) *gameContent {
 }
 
 type joinGameResult struct {
-	PlayerId     string         `json:"playerId"`
-	Snippet      *db.Snippet    `json:"snippet"`
-	GameProgress []*gameContent `json:"gameProgress"`
-	Placements   []string       `json:"placements"`
+	PlayerId      string         `json:"playerId"`
+	Snippet       *db.Snippet    `json:"snippet"`
+	GameProgress  []*gameContent `json:"gameProgress"`
+	QueuedPlayers []*gameContent `json:"queuedPlayers"`
+	Placements    []string       `json:"placements"`
+	WasQueued     bool           `json:"wasQueued"`
 }
 
 func newJoinGameResult(playerId string, snippet *db.Snippet, gameProgress []*gameContent,
-	placements []string) *joinGameResult {
+	queudPlayers []*gameContent, placements []string, wasQueued bool) *joinGameResult {
 	return &joinGameResult{
-		PlayerId:     playerId,
-		Snippet:      snippet,
-		GameProgress: gameProgress,
-		Placements:   placements,
+		PlayerId:      playerId,
+		Snippet:       snippet,
+		GameProgress:  gameProgress,
+		QueuedPlayers: queudPlayers,
+		Placements:    placements,
+		WasQueued:     wasQueued,
 	}
 }
 
@@ -118,13 +122,15 @@ type newPlayerResult struct {
 	PlayerId         string  `json:"playerId"`
 	DisplayName      string  `json:"displayName"`
 	PercentCompleted float64 `json:"percentCompleted"`
+	WasQueued        bool    `json:"wasQueued"`
 }
 
-func newNewPlayerResult(playerId string, displayName string) *newPlayerResult {
+func newNewPlayerResult(playerId string, displayName string, wasQueued bool) *newPlayerResult {
 	return &newPlayerResult{
 		PlayerId:         playerId,
 		DisplayName:      displayName,
 		PercentCompleted: 0,
+		WasQueued:        wasQueued,
 	}
 }
 
@@ -173,16 +179,18 @@ func newGameStartResult(countdown int) *gameStartResult {
 }
 
 type nextGameResult struct {
-	Snippet      *db.Snippet    `json:"snippet"`
-	GameProgress []*gameContent `json:"gameProgress"`
-	Placements   []string       `json:"placements"`
+	Snippet       *db.Snippet    `json:"snippet"`
+	GameProgress  []*gameContent `json:"gameProgress"`
+	QueuedPlayers []*gameContent `json:"queuedPlayers"`
+	Placements    []string       `json:"placements"`
 }
 
-func newNextGameResult(snippet *db.Snippet, gameProgress []*gameContent, placements []string) *nextGameResult {
+func newNextGameResult(snippet *db.Snippet, gameProgress []*gameContent, queudPlayers []*gameContent, placements []string) *nextGameResult {
 	return &nextGameResult{
-		Snippet:      snippet,
-		GameProgress: gameProgress,
-		Placements:   placements,
+		Snippet:       snippet,
+		GameProgress:  gameProgress,
+		QueuedPlayers: queudPlayers,
+		Placements:    placements,
 	}
 }
 
