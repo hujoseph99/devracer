@@ -3,12 +3,15 @@ package secret
 import (
 	"log"
 	"os"
+	"strconv"
 )
 
 var SecretStateString string
 var GithubClientID string
 var GithubClientSecret string
 var MongoURI string
+var FrontendCallback string
+var Production bool
 
 func init() {
 	var check bool
@@ -30,5 +33,21 @@ func init() {
 	MongoURI, check = os.LookupEnv("MONGO_URI")
 	if !check {
 		log.Fatal("No environment variables")
+	}
+
+	FrontendCallback, check = os.LookupEnv("FRONTEND_CALLBACK")
+	if !check {
+		log.Fatal("No environment variables")
+	}
+
+	prodtest, check := os.LookupEnv("PRODUCTION")
+	if !check {
+		log.Fatal("No environment variables")
+	}
+
+	var err error
+	Production, err = strconv.ParseBool(prodtest)
+	if err != nil {
+		log.Fatal("invalid PRODUCTION value")
 	}
 }

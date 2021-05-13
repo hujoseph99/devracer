@@ -3,6 +3,7 @@ import axios from "axios";
 import { RootState } from "../../app/store";
 import { UserRequest, UserState, UserResponse, UserStateGQLResponse } from "./types";
 import { fetchUserDataGQL } from './graphql';
+import { BACKEND_HOSTNAME } from "../../config";
 
 const USER_SLICE_NAME = "user";
 
@@ -10,7 +11,7 @@ export const fetchUserData = createAsyncThunk<UserResponse, UserRequest>(
 	`${USER_SLICE_NAME}/fetchUserData`,
 	async ({ userid }) => {
 		const response = await axios.post<UserStateGQLResponse>(
-			'http://localhost:8080/graphql',
+			`${BACKEND_HOSTNAME}/graphql`,
 			{ query: fetchUserDataGQL, variables: { userid } }
 		)
 

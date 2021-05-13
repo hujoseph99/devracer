@@ -8,6 +8,7 @@ import (
 	"github.com/graphql-go/graphql"
 	"github.com/graphql-go/handler"
 	"github.com/hujoseph99/typing/backend/graphql/queries"
+	"github.com/hujoseph99/typing/backend/secret"
 )
 
 // CORS Middleware, have to change this in the future to be more secure
@@ -35,7 +36,7 @@ func RegisterEndpoints(router *mux.Router) {
 	graphqlHandler := handler.New(&handler.Config{
 		Schema:   &schema,
 		Pretty:   true,
-		GraphiQL: true,
+		GraphiQL: !secret.Production,
 	})
 
 	router.Handle(
