@@ -1,7 +1,10 @@
 package main
 
 import (
+	"fmt"
+	"log"
 	"net/http"
+	"os"
 
 	"github.com/gorilla/mux"
 	"github.com/hujoseph99/typing/backend/db"
@@ -17,5 +20,10 @@ func main() {
 	InitRouter(router)
 
 	handler := cors.New(cors.Options{AllowedOrigins: []string{"http://localhost:3000"}, AllowCredentials: true}).Handler(router)
-	http.ListenAndServe(":8080", handler)
+
+	port, check := os.LookupEnv("port")
+	if !check {
+		log.Fatal("No port env variable")
+	}
+	http.ListenAndServe(fmt.Sprintf(":%s", port), handler)
 }
