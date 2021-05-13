@@ -1,78 +1,87 @@
-import { Box, Button, TextField } from '@material-ui/core';
+import { Box, Button, Container, Grid, TextField } from '@material-ui/core';
 import React, { useEffect, useRef, useState } from 'react';
+import { useSelector } from 'react-redux';
 import { RouteComponentProps } from 'react-router';
+import { Footer } from '../footer/Footer';
+import { Navbar } from '../navbar/Navbar';
+import { RaceField } from '../race-text-field/RaceField';
+import { selectDisplayName } from '../user/userSlice';
+import * as CONSTANTS from './constants'
+
+import "../race-text-field/editor.css"
+import { CreateGameResponse, ErrorResponse, JoinGameResponse } from './types';
+import { isConstructorDeclaration } from 'typescript';
+
 
 interface MatchParams {
-	lobby: string;
+	lobby?: string;
 }
 
 export const CustomGame = (props : RouteComponentProps<MatchParams>): JSX.Element => {
 	const ws = useRef<WebSocket | undefined>(undefined);
-	const [messages, setMessages] = useState<string[]>([]);
-	const [currMessage, setCurrMessage] = useState("");
-	const [joinedRoom, setJoinedRoom] = useState(false);
-	const lobbyId = props.match.params.lobby;
+	const displayName = useSelector(selectDisplayName);
+	const lobbyId = props.match.params.lobby ?? "";
 
 	// connect to websocket
 	useEffect(() => {
-		ws.current = new WebSocket(`ws://localhost:8080/custom?lobby=${lobbyId}`);
-		ws.current.addEventListener('open', () => { onWebsocketOpen() })
+		ws.current = new WebSocket(`ws://localhost:8080/custom?name=${displayName}`);
+		ws.current?.addEventListener('open', handleConnectedToWebsocket);
 		ws.current.addEventListener('message', event => handleNewMessage(event))
-		return () => {
-			ws.current?.send(JSON.stringify({ action: 'leave-room', target: lobbyId }))
-		}
 	}, [])
 
-	if (!joinedRoom) {
-		if (ws.current?.readyState == WebSocket.OPEN) {
-			ws.current?.send(JSON.stringify({ action: 'join-room', target: lobbyId }))
-			setJoinedRoom(true);
+	const handleConnectedToWebsocket = () => {
+		if (lobbyId) {
+			ws.current?.send(JSON.stringify({
+				action: CONSTANTS.JOIN_GAME_ACTION,
+				lobbyId: lobbyId,
+			}));
+		} else {
+			ws.current?.send(JSON.stringify({
+				action: CONSTANTS.CREATE_GAME_ACTION,
+			}));
 		}
 	}
 
 	const handleNewMessage = (event: MessageEvent) => {
-		let data = event.data;
-		console.log(data);
-		let dataArr = data.split(/\r?\n/);
-		for (let i = 0; i < dataArr.length; i++) {
-			let msg = JSON.parse(dataArr[i]);
-			setMessages(messages => [...messages, msg.message]);
+		const message: { action: string, payload: any } = JSON.parse(event.data)
+		switch (message.action) {
+			case CONSTANTS.ERROR_RESPONSE:
+				handleErrorResponse(message.payload as ErrorResponse);
+				break;
+			case CONSTANTS.CREATE_GAME_RESPONSE:
+				handleCreateGameResponse(message.payload as CreateGameResponse);
+				break
+			case CONSTANTS.JOIN_GAME_RESPONSE:
+				handleJoinGameResponse(message.payload as JoinGameResponse);
+				break;
 		}
 	}
 
-	const sendMessage = () => {
-		if (currMessage !== "") {
-			ws.current?.send(JSON.stringify({ 
-				action: 'send-message',
-				message: currMessage ,
-				target: lobbyId
-			}));
-			setCurrMessage("");
-		}
+	const handleErrorResponse = (payload: ErrorResponse) => {
+		console.log(payload);
 	}
 
-	const handleChangeMessage = (e: React.ChangeEvent<HTMLInputElement>) => {
-		setCurrMessage(e.target.value);
+	const handleCreateGameResponse = (payload: CreateGameResponse) => {
+		console.log(payload);
 	}
 
-	const onWebsocketOpen = () => {
-		console.log("connected to WS!");
+	const handleJoinGameResponse = (payload: JoinGameResponse) => {
+		console.log(payload);
 	}
 
-	const messagesDisplay = () => {
-		let messagesConverted = [];
-		for (let i = 0; i < messages.length; i++) {
-			messagesConverted.push(<p>{messages[i]}</p>)
-		}
-		return messagesConverted;
-	}
 
 	return (
-		<Box>
-			{messagesDisplay()}
-			<TextField onChange={handleChangeMessage} value={currMessage} />
-			<Button onClick={sendMessage} variant='contained'>SEND</Button>
-		</Box>
+		<Container maxWidth='sm'>
+			<Box minHeight='100vh' display='flex' flexDirection='column' py={5}>
+				<Navbar />
+				<Grid container justify='center'>
+					<Grid item className="aceEditorContainer">
+						<RaceField />
+					</Grid>
+				</Grid>
+				<Footer />
+			</Box>
+		</Container>
 	)
 }
 

@@ -1,7 +1,7 @@
 type status = 'idle' | 'loading' | 'succeeded' | 'failed';
 export type language = 'plain_text' | 'c_cpp' | 'golang' | 'javascript' | 'python';
 
-interface RaceSnippet {
+export interface RaceSnippet {
 	id: string;
 	raceContent: string;
 	tokenCount: number;

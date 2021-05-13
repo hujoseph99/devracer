@@ -101,7 +101,7 @@ export const RaceField = (): JSX.Element => {
 	}
 
 	return (
-		<Box style={{ height: "1000px", width: "1000px" }}
+		<Box
 			// onKeyDownCapture={filterKeyboardEvents}
 			// onKeyPressCapture={filterKeyboardEvents}
 			// onKeyUpCapture={filterKeyboardEvents}

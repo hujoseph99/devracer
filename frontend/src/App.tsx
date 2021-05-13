@@ -58,7 +58,7 @@ const App = (): JSX.Element => {
           <Route path='/register'>
             <RegisterPage />
           </Route>
-          <Route path='/custom/:lobby' component={CustomGame} />
+          <Route path='/custom/:lobby?' component={CustomGame} />
           <Route path='/'>
             <MainMenu />
           </Route>
