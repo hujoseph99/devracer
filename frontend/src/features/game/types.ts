@@ -51,3 +51,10 @@ export interface JoinGameResponse {
 	placements: string[];
 	wasQueued: boolean;
 }
+
+export interface NewPlayerResponse {
+	playerId: string;
+	displayName: string;
+	percentCompleted: number;
+	wasQueued: boolean;
+}

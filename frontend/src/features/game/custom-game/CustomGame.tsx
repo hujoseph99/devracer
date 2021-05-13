@@ -1,16 +1,19 @@
-import { Box, Button, Container, Grid, TextField } from '@material-ui/core';
 import React, { useEffect, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { RouteComponentProps } from 'react-router';
+
+import { Box, Button, Container, Grid, TextField } from '@material-ui/core';
+
+import * as CONSTANTS from './constants'
+import { CreateGameResponse, ErrorResponse, JoinGameResponse, NewPlayerResponse } from '../types';
+import { createGameAction, joinGameAction, newPlayerAction, selectLangauge, selectRaceContent } from '../gameSlice';
 import { Footer } from '../../footer/Footer';
 import { Navbar } from '../../navbar/Navbar';
 import { RaceField } from '../../race-text-field/RaceField';
 import { selectDisplayName } from '../../user/userSlice';
-import * as CONSTANTS from './constants'
 
 import "../../race-text-field/editor.css"
-import { CreateGameResponse, ErrorResponse, JoinGameResponse } from '../types';
-import { createGameAction, joinGameAction, selectLangauge, selectRaceContent } from '../gameSlice';
+import { UserProgress } from '../UserProgress';
 
 interface MatchParams {
 	lobby?: string;
@@ -23,6 +26,7 @@ export const CustomGame = (props : RouteComponentProps<MatchParams>): JSX.Elemen
 	const displayName = useSelector(selectDisplayName);
 	const raceContent = useSelector(selectRaceContent);
 	const language = useSelector(selectLangauge);
+	
 	console.log(raceContent);
 
 	const lobbyId = props.match.params.lobby ?? "";
@@ -59,6 +63,8 @@ export const CustomGame = (props : RouteComponentProps<MatchParams>): JSX.Elemen
 			case CONSTANTS.JOIN_GAME_RESPONSE:
 				handleJoinGameResponse(message.payload as JoinGameResponse);
 				break;
+			case CONSTANTS.NEW_PLAYER_RESPONSE:
+				handleNewPlayerResponse(message.payload as NewPlayerResponse);
 		}
 	}
 
@@ -73,12 +79,19 @@ export const CustomGame = (props : RouteComponentProps<MatchParams>): JSX.Elemen
 	const handleJoinGameResponse = (payload: JoinGameResponse) => {
 		dispatch(joinGameAction(payload));
 	}
+	
+	const handleNewPlayerResponse = (payload: NewPlayerResponse) => {
+		dispatch(newPlayerAction(payload));
+	}
 
 	return (
 		<Container maxWidth='sm'>
 			<Box minHeight='100vh' display='flex' flexDirection='column' py={5}>
 				<Navbar />
 				<Grid container justify='center'>
+					<Grid item xs={12}>
+						<UserProgress />
+					</Grid>
 					<Grid item className="aceEditorContainer">
 						<RaceField snippet={raceContent} language={language} />
 					</Grid>

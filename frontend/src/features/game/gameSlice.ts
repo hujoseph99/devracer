@@ -1,6 +1,6 @@
 import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { RootState } from "../../app/store";
-import { CreateGameResponse, GameState, JoinGameResponse } from "./types";
+import { CreateGameResponse, GameProgress, GameState, JoinGameResponse, NewPlayerResponse } from "./types";
 import { transformSnippetResponse } from "./utils";
 
 // redux prefix for this slice
@@ -41,12 +41,27 @@ const gameSlice = createSlice({
 			state.placements = payload.placements;
 			state.isQueued = payload.wasQueued;
 		},
+		newPlayerAction: (state, action: PayloadAction<NewPlayerResponse>) => {
+			const payload = action.payload;
+			const gameProgress: GameProgress = {
+				playerId: payload.playerId,
+				displayName: payload.displayName,
+				percentCompleted: payload.percentCompleted,
+				wpm: 0,
+			}
+			if (payload.wasQueued) {
+				state.queuedPlayers.push(gameProgress);
+			} else {
+				state.gameProgress.push(gameProgress)
+			}
+		}
 	},
 })
 
 export default gameSlice.reducer;
 
-export const { createGameAction, joinGameAction } = gameSlice.actions;
+export const { createGameAction, joinGameAction, newPlayerAction } = gameSlice.actions;
 
 export const selectRaceContent = (state: RootState) => state.game.snippet.snippet;
 export const selectLangauge = (state: RootState) => state.game.snippet.language;
+export const selectGameProgress = (state: RootState) => state.game.gameProgress;
