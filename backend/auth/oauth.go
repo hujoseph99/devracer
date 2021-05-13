@@ -75,7 +75,7 @@ func HandleGithubCallback(w http.ResponseWriter, r *http.Request) {
 		if len(c.Name) != 0 {
 			nickname = c.Name
 		} else {
-			nickname = string(c.Id)
+			nickname = c.Login
 		}
 		newPreferences := db.NewPreferences(newUser.ID, nickname)
 		newProfile := db.NewProfile(newUser.ID, 0, 0, 0, 0, 0, 0)
