@@ -1,6 +1,6 @@
 import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { RootState } from "../../app/store";
-import { CreateGameResponse, GameProgress, GameState, JoinGameResponse, NewPlayerResponse } from "./types";
+import { CreateGameResponse, GameProgress, GameProgressResponse, GameState, JoinGameResponse, NewPlayerResponse } from "./types";
 import { transformSnippetResponse } from "./utils";
 
 // redux prefix for this slice
@@ -54,13 +54,23 @@ const gameSlice = createSlice({
 			} else {
 				state.gameProgress.push(gameProgress)
 			}
+		},
+		gameProgressAction: (state, action: PayloadAction<GameProgressResponse>) => {
+			const payload = action.payload;
+			// should only update the game progress if they are actually particpating in the game
+			for (let i = 0; i < state.gameProgress.length; i++) {
+				if (state.gameProgress[i].playerId === payload.playerId) {
+					state.gameProgress[i].percentCompleted = payload.percentCompleted;
+					state.gameProgress[i].wpm = payload.wpm;
+				}
+			}
 		}
 	},
 })
 
 export default gameSlice.reducer;
 
-export const { createGameAction, joinGameAction, newPlayerAction } = gameSlice.actions;
+export const { createGameAction, gameProgressAction, joinGameAction, newPlayerAction } = gameSlice.actions;
 
 export const selectRaceContent = (state: RootState) => state.game.snippet.snippet;
 export const selectLangauge = (state: RootState) => state.game.snippet.language;

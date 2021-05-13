@@ -5,8 +5,8 @@ import { RouteComponentProps } from 'react-router';
 import { Box, Button, Container, Grid, TextField } from '@material-ui/core';
 
 import * as CONSTANTS from './constants'
-import { CreateGameResponse, ErrorResponse, JoinGameResponse, NewPlayerResponse } from '../types';
-import { createGameAction, joinGameAction, newPlayerAction, selectLangauge, selectRaceContent } from '../gameSlice';
+import { CreateGameResponse, ErrorResponse, GameProgressResponse, JoinGameResponse, NewPlayerResponse } from '../types';
+import { createGameAction, gameProgressAction, joinGameAction, newPlayerAction, selectLangauge, selectRaceContent } from '../gameSlice';
 import { Footer } from '../../footer/Footer';
 import { Navbar } from '../../navbar/Navbar';
 import { RaceField } from '../../race-text-field/RaceField';
@@ -65,6 +65,10 @@ export const CustomGame = (props : RouteComponentProps<MatchParams>): JSX.Elemen
 				break;
 			case CONSTANTS.NEW_PLAYER_RESPONSE:
 				handleNewPlayerResponse(message.payload as NewPlayerResponse);
+				break;
+			case CONSTANTS.GAME_PROGRESS_RESPONSE:
+				handleGameProgressResponse(message.payload as GameProgressResponse);
+				break;
 		}
 	}
 
@@ -82,6 +86,10 @@ export const CustomGame = (props : RouteComponentProps<MatchParams>): JSX.Elemen
 	
 	const handleNewPlayerResponse = (payload: NewPlayerResponse) => {
 		dispatch(newPlayerAction(payload));
+	}
+
+	const handleGameProgressResponse = (payload: GameProgressResponse) => {
+		dispatch(gameProgressAction(payload));
 	}
 
 	return (

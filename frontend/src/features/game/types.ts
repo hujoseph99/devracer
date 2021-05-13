@@ -58,3 +58,9 @@ export interface NewPlayerResponse {
 	percentCompleted: number;
 	wasQueued: boolean;
 }
+
+export interface GameProgressResponse {
+	playerId: string;
+	percentCompleted: number;
+	wpm: number;
+}
