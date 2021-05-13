@@ -6,4 +6,6 @@ config
 .vscode
 typing.code-workspace
 
+testSnippets.txt
+
 build

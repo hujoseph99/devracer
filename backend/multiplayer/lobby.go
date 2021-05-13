@@ -12,8 +12,7 @@ import (
 	"github.com/hujoseph99/typing/backend/db"
 )
 
-// TODO: deal with event where someone joins after the game is finished... Might have to implement
-// not allowing the user to race if the game is already in progress
+// TODO: Handle sending out data in batches
 
 type gameProgressData struct {
 	client   *Client
