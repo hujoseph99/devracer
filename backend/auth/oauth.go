@@ -24,6 +24,7 @@ type GitHubCallback struct {
 	Id    json.Number `json:"id"`
 	Email string      `json:"email"`
 	Name  string      `json:"name"`
+	Login string      `json:"login"`
 }
 
 func init() {
@@ -70,7 +71,13 @@ func HandleGithubCallback(w http.ResponseWriter, r *http.Request) {
 	// if user doesn't exist, create one
 	if err != nil {
 		newUser := db.NewUser("", "", c.Email, "", string(c.Id), "", time.Now())
-		newPreferences := db.NewPreferences(newUser.ID, c.Name)
+		var nickname string
+		if len(c.Name) != 0 {
+			nickname = c.Name
+		} else {
+			nickname = string(c.Id)
+		}
+		newPreferences := db.NewPreferences(newUser.ID, nickname)
 		newProfile := db.NewProfile(newUser.ID, 0, 0, 0, 0, 0, 0)
 
 		err = db.RegisterUser(ctx, newUser, newProfile, newPreferences)
