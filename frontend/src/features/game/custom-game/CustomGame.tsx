@@ -1,17 +1,16 @@
 import { Box, Button, Container, Grid, TextField } from '@material-ui/core';
 import React, { useEffect, useRef, useState } from 'react';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { RouteComponentProps } from 'react-router';
-import { Footer } from '../footer/Footer';
-import { Navbar } from '../navbar/Navbar';
-import { RaceField } from '../race-text-field/RaceField';
-import { selectDisplayName } from '../user/userSlice';
+import { Footer } from '../../footer/Footer';
+import { Navbar } from '../../navbar/Navbar';
+import { RaceField } from '../../race-text-field/RaceField';
+import { selectDisplayName } from '../../user/userSlice';
 import * as CONSTANTS from './constants'
 
-import "../race-text-field/editor.css"
-import { CreateGameResponse, ErrorResponse, JoinGameResponse } from './types';
-import { isConstructorDeclaration } from 'typescript';
-
+import "../../race-text-field/editor.css"
+import { CreateGameResponse, ErrorResponse, JoinGameResponse } from '../types';
+import { createGameAction, joinGameAction, selectLangauge, selectRaceContent } from '../gameSlice';
 
 interface MatchParams {
 	lobby?: string;
@@ -19,7 +18,13 @@ interface MatchParams {
 
 export const CustomGame = (props : RouteComponentProps<MatchParams>): JSX.Element => {
 	const ws = useRef<WebSocket | undefined>(undefined);
+	const dispatch = useDispatch();
+
 	const displayName = useSelector(selectDisplayName);
+	const raceContent = useSelector(selectRaceContent);
+	const language = useSelector(selectLangauge);
+	console.log(raceContent);
+
 	const lobbyId = props.match.params.lobby ?? "";
 
 	// connect to websocket
@@ -62,13 +67,12 @@ export const CustomGame = (props : RouteComponentProps<MatchParams>): JSX.Elemen
 	}
 
 	const handleCreateGameResponse = (payload: CreateGameResponse) => {
-		console.log(payload);
+		dispatch(createGameAction(payload));
 	}
 
 	const handleJoinGameResponse = (payload: JoinGameResponse) => {
-		console.log(payload);
+		dispatch(joinGameAction(payload));
 	}
-
 
 	return (
 		<Container maxWidth='sm'>
@@ -76,7 +80,7 @@ export const CustomGame = (props : RouteComponentProps<MatchParams>): JSX.Elemen
 				<Navbar />
 				<Grid container justify='center'>
 					<Grid item className="aceEditorContainer">
-						<RaceField />
+						<RaceField snippet={raceContent} language={language} />
 					</Grid>
 				</Grid>
 				<Footer />

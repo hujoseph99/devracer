@@ -16,7 +16,7 @@ import { LoginPage } from './features/auth/LoginPage';
 import { RegisterPage } from './features/auth/RegisterPage';
 import { refresh, selectIsLoggedIn, selectRefreshToken, selectUserID } from './features/auth/authSlice';
 import { fetchUserData } from './features/user/userSlice';
-import { CustomGame } from './features/custom-game/CustomGame';
+import { CustomGame } from './features/game/custom-game/CustomGame';
 import { GitHubCallback } from './features/auth/GitHubCallback';
 
 const App = (): JSX.Element => {

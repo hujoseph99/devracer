@@ -9,6 +9,8 @@ import { BackgroundEditor } from './BackgroundEditor';
 import { ForegroundEditor } from './ForegroundEditor';
 import { fetchNewPracticeRace } from './raceFieldSlice';
 import { selectSnippet } from './raceFieldSlice';
+import { RaceSnippet } from './types';
+import { language } from '../game/types';
 
 
 // const navkeys = ["ArrowDown",
@@ -27,9 +29,12 @@ import { selectSnippet } from './raceFieldSlice';
 // 	return true
 // }
 
-export const RaceField = (): JSX.Element => {
-	const snippet = useSelector(selectSnippet);
-	const dispatch = useDispatch();
+interface RaceFieldProps {
+	snippet?: string;
+	language?: language;
+}
+
+export const RaceField = ({ snippet = '', language = 'plain_text' }: RaceFieldProps): JSX.Element => {
 	const [focus, setFocus] = useState(false);
 	const [foregroundText, setForegroundText] = useState("");
 	const [backgroundText, setBackgroundText] = useState("");
@@ -37,14 +42,9 @@ export const RaceField = (): JSX.Element => {
 	const [snippetArray, setSnippetArray] = useState<string[]>([]);
 
 	useEffect(() => {
-		dispatch(fetchNewPracticeRace());
-	}, [dispatch])
-
-	useEffect(() => {
-		setSnippetArray(snippet.raceContent.replace(/\t/g, ' '.repeat(4)).split('\n'));
-		setBackgroundText(snippet.raceContent);
+		setSnippetArray(snippet.replace(/\t/g, ' '.repeat(4)).split('\n'));
+		setBackgroundText(snippet);
 	}, [snippet])
-
 
 	const onFocus = (e: SyntheticEvent) => {
 		setFocus(true);
@@ -114,7 +114,14 @@ export const RaceField = (): JSX.Element => {
 			onMouseUpCapture={filterMouseEvents}> */}
 			<BackgroundEditor text={backgroundText}/>
 			{/* elements that appear later are on top */}
-			<ForegroundEditor text={foregroundText} ranges={markers} focus={focus} onChange={onChange} onBlur={onBlur} />
+			<ForegroundEditor 
+				language={language} 
+				text={foregroundText} 
+				ranges={markers} 
+				focus={focus} 
+				onChange={onChange} 
+				onBlur={onBlur} 
+			/>
 		</Box>
 	)
 };

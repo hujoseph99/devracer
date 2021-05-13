@@ -7,8 +7,10 @@ import { AceEditor } from './AceEditor';
 import { selectSnippet } from './raceFieldSlice';
 
 import "./editor.css"
+import { language } from './types';
 
 interface ForegroundEditorProps {
+	language?: language;
 	focus?: boolean;
 	onBlur?: () => void;
 	ranges: Ace.Range[];
@@ -17,13 +19,13 @@ interface ForegroundEditorProps {
 }
 
 export const ForegroundEditor = ({
+	language = 'plain_text',
 	focus = false,
 	onBlur,
 	ranges,
 	onChange,
 	text
 }: ForegroundEditorProps): JSX.Element => {
-	const snippet = useSelector(selectSnippet);
 	const editor = useRef<Ace.Editor>();
 	const markers = useRef<number[]>([]);
 	
@@ -54,7 +56,7 @@ export const ForegroundEditor = ({
 	return (
 		<AceEditor  
 			className="foregroundEditor"
-			mode={snippet.language}
+			mode={language}
 			onLoad={handleLoad}
 			onBlur={onBlur}
 			onChange={onChange}
