@@ -21,7 +21,7 @@ func main() {
 
 	handler := cors.New(cors.Options{AllowedOrigins: []string{"http://localhost:3000"}, AllowCredentials: true}).Handler(router)
 
-	port, check := os.LookupEnv("port")
+	port, check := os.LookupEnv("PORT")
 	if !check {
 		log.Fatal("No port env variable")
 	}
