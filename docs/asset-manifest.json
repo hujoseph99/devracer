@@ -1,8 +1,8 @@
 {
   "files": {
     "main.css": "/devracer/static/css/main.2ec3f668.chunk.css",
-    "main.js": "/devracer/static/js/main.73d887f0.chunk.js",
-    "main.js.map": "/devracer/static/js/main.73d887f0.chunk.js.map",
+    "main.js": "/devracer/static/js/main.a8cfeeb9.chunk.js",
+    "main.js.map": "/devracer/static/js/main.a8cfeeb9.chunk.js.map",
     "runtime-main.js": "/devracer/static/js/runtime-main.5a64b8d3.js",
     "runtime-main.js.map": "/devracer/static/js/runtime-main.5a64b8d3.js.map",
     "static/js/2.754959e3.chunk.js": "/devracer/static/js/2.754959e3.chunk.js",
@@ -15,6 +15,6 @@
     "static/js/runtime-main.5a64b8d3.js",
     "static/js/2.754959e3.chunk.js",
     "static/css/main.2ec3f668.chunk.css",
-    "static/js/main.73d887f0.chunk.js"
+    "static/js/main.a8cfeeb9.chunk.js"
   ]
 }

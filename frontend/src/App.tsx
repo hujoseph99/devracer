@@ -43,7 +43,7 @@ const App = (): JSX.Element => {
   return (
     <MuiThemeProvider theme={theme}>
       <CssBaseline />
-      <HashRouter basename="/devracer">
+      <HashRouter>
         <Switch>
         <Route path='/auth/githubCallback'>
             <GitHubCallback />
