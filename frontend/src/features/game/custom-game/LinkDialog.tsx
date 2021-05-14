@@ -1,8 +1,21 @@
-import { Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogProps, DialogTitle, IconButton, InputAdornment, TextField } from '@material-ui/core';
 import React from 'react';
 import { useSelector } from 'react-redux';
-import { selectLobbyId } from '../gameSlice';
+
+import { 
+	Button, 
+	Dialog, 
+	DialogActions, 
+	DialogContent, 
+	DialogContentText, 
+	DialogProps, 
+	DialogTitle, 
+	IconButton, 
+	InputAdornment, 
+	TextField 
+} from '@material-ui/core';
 import FileCopyIcon from '@material-ui/icons/FileCopy';
+
+import { selectLobbyId } from '../gameSlice';
 
 interface LinkDialogProps extends DialogProps {
 	handleClose?: () => void;

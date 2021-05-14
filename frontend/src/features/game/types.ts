@@ -93,3 +93,7 @@ export interface LeaveGameResponse {
 	placements: string[];
 }
 
+export interface LobbyClosedResponse {
+	message: string;
+}
+

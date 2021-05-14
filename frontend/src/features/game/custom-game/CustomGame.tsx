@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { RouteComponentProps } from 'react-router';
+import { RouteComponentProps, useHistory } from 'react-router';
 
 import { Box, Button, Container, Grid, TextField } from '@material-ui/core';
 
@@ -13,6 +13,7 @@ import {
 	GameStartResponse, 
 	JoinGameResponse, 
 	LeaveGameResponse, 
+	LobbyClosedResponse, 
 	NewPlayerResponse, 
 	NextGameResponse, 
 	PlayerFinishedResponse 
@@ -24,6 +25,7 @@ import {
 	gameStartAction, 
 	joinGameAction, 
 	leaveGameAction, 
+	lobbyClosedAction, 
 	newPlayerAction, 
 	nextGameAction, 
 	playerFinishedAction, 
@@ -43,6 +45,7 @@ import "../../race-text-field/editor.css"
 import { UserProgress } from '../UserProgress';
 import { StatusBar } from '../StatusBar';
 import { LinkDialog } from './LinkDialog';
+import { LobbyClosedDialog } from './LobbyClosedDialog';
 import { checkPlayerFinished } from '../utils';
 
 interface MatchParams {
@@ -51,9 +54,11 @@ interface MatchParams {
 
 export const CustomGame = (props : RouteComponentProps<MatchParams>): JSX.Element => {
 	const ws = useRef<WebSocket | undefined>(undefined);
+	const history = useHistory();
 	const dispatch = useDispatch();
 
 	const [showLink, setShowLink] = useState(false);
+	const [showLobbyClosed, setShowLobbyClosed] = useState(false);
 	const [foregroundText, setForegroundText] = useState('');
 
 	const displayName = useSelector(selectDisplayName);
@@ -124,6 +129,9 @@ export const CustomGame = (props : RouteComponentProps<MatchParams>): JSX.Elemen
 			case CONSTANTS.LEAVE_GAME_RESPONSE:
 				handleLeaveGameResponse(message.payload as LeaveGameResponse);
 				break;
+			case CONSTANTS.LOBBY_CLOSED_RESPONSE:
+				handleLobbyClosedResponse(message.payload as LobbyClosedResponse);
+				break;
 		}
 	}
 
@@ -169,11 +177,17 @@ export const CustomGame = (props : RouteComponentProps<MatchParams>): JSX.Elemen
 		dispatch(leaveGameAction(payload));
 	}
 
+	const handleLobbyClosedResponse = (payload: LobbyClosedResponse) => {
+		dispatch(lobbyClosedAction(payload));
+		handleLobbyClosedOpen();
+	}
+
 	const handleStartGameClick = () => {
 		ws.current?.send(JSON.stringify({
 			action: CONSTANTS.START_GAME_ACTION,
 		}));
 	}
+
 
 	const handleNextGameClick = () => {
 		ws.current?.send(JSON.stringify({
@@ -194,6 +208,15 @@ export const CustomGame = (props : RouteComponentProps<MatchParams>): JSX.Elemen
 
 	const handleLinkClose = () => {
 		setShowLink(false);
+	}
+
+	const handleLobbyClosedOpen = () => {
+		setShowLobbyClosed(true);
+	}
+
+	const handleLobbyClosedClose = () => {
+		setShowLobbyClosed(false);
+		history.push('/');
 	}
 
 	return (
@@ -243,6 +266,7 @@ export const CustomGame = (props : RouteComponentProps<MatchParams>): JSX.Elemen
 				<Footer />
 			</Box>
 			<LinkDialog open={showLink} handleClose={handleLinkClose} />
+			<LobbyClosedDialog open={showLobbyClosed} handleClose={handleLobbyClosedClose} />
 		</Container>
 	)
 }
