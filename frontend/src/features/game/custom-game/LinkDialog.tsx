@@ -27,8 +27,8 @@ export const LinkDialog = ({
 		>
 		<DialogTitle id="responsive-dialog-title">{"Invite your friends"}</DialogTitle>
 		<DialogContent>
-			<DialogContentText>
-				Copy the below link and send it to your friends to have them join you in this race!
+			<DialogContentText gutterBottom>
+				Copy the link below and send it to your friends to have them join you in this race!
 			</DialogContentText>
 			<TextField 
 				disabled 

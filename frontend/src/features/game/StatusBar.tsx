@@ -46,25 +46,29 @@ export const StatusBar = ({ handleOpenLinkDialog }: StatusBarProps): JSX.Element
 				</IconButton>
 			</Grid>
 			<Grid item>
-				<Typography component='span' variant='caption'>{status}</Typography>
-			</Grid>
-			{state === 'countdown' ? (
-				<Box position="relative" display="inline-flex">
-					<CircularProgress variant="determinate" value={progressBarValue} size={30} />
-					<Box
-						top={0}
-						left={0}
-						bottom={0}
-						right={0}
-						position="absolute"
-						display="flex"
-						alignItems="center"
-						justifyContent="center"
-					>
-						<Typography variant="caption" component="div" color="textSecondary">{countdown}</Typography>
+				<Box display='flex' alignItems='center'>
+					<Box mr={1}>
+						<Typography component='span' variant='caption'>{status}</Typography>
 					</Box>
+					{state === 'countdown' ? (
+						<Box position="relative" display="inline-flex">
+							<CircularProgress variant="determinate" value={progressBarValue} size={30} />
+							<Box
+								top={0}
+								left={0}
+								bottom={0}
+								right={0}
+								position="absolute"
+								display="flex"
+								alignItems="center"
+								justifyContent="center"
+							>
+								<Typography variant="caption" component="div" color="textSecondary">{countdown}</Typography>
+							</Box>
+						</Box>
+					) : null}
 				</Box>
-			) : null}
+			</Grid>
 		</Grid>
 	)
 }
