@@ -1,4 +1,4 @@
-import { language, SnippetResponse, SnippetState } from "./types";
+import { GameProgress, language, SnippetResponse, SnippetState } from "./types";
 
 const mapLanguage = (language: number): language => {
 	switch (language) {
@@ -20,4 +20,13 @@ export const transformSnippetResponse = (response: SnippetResponse): SnippetStat
 		...response,
 		language: mapLanguage(response.language)
 	}
+}
+
+export const checkPlayerFinished = (placements: string[], playerId: string): boolean => {
+	for (let i = 0; i < placements.length; i++) {
+		if (placements[i] === playerId) {
+			return true;
+		}
+	}
+	return false;
 }

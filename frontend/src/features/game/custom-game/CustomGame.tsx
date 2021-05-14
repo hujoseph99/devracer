@@ -5,8 +5,8 @@ import { RouteComponentProps } from 'react-router';
 import { Box, Button, Container, Grid, TextField } from '@material-ui/core';
 
 import * as CONSTANTS from './constants'
-import { CreateGameResponse, ErrorResponse, GameProgressResponse, GameStartResponse, JoinGameResponse, NewPlayerResponse } from '../types';
-import { createGameAction, gameProgressAction, gameStartAction, joinGameAction, newPlayerAction, selectIsHost, selectLangauge, selectRaceContent, selectState } from '../gameSlice';
+import { CreateGameResponse, ErrorResponse, GameProgressResponse, GameStartResponse, JoinGameResponse, NewPlayerResponse, PlayerFinishedResponse } from '../types';
+import { createGameAction, gameProgressAction, gameStartAction, joinGameAction, newPlayerAction, playerFinishedAction, selectIsHost, selectLangauge, selectPlacements, selectPlayerId, selectRaceContent, selectState } from '../gameSlice';
 import { Footer } from '../../footer/Footer';
 import { Navbar } from '../../navbar/Navbar';
 import { RaceField } from '../../race-text-field/RaceField';
@@ -17,6 +17,7 @@ import { UserProgress } from '../UserProgress';
 import { selectStatus } from '../../auth/authSlice';
 import { StatusBar } from '../StatusBar';
 import { LinkDialog } from './LinkDialog';
+import { checkPlayerFinished } from '../utils';
 
 interface MatchParams {
 	lobby?: string;
@@ -33,6 +34,8 @@ export const CustomGame = (props : RouteComponentProps<MatchParams>): JSX.Elemen
 	const language = useSelector(selectLangauge);
 	const isHost = useSelector(selectIsHost);
 	const state = useSelector(selectState);
+	const playerId = useSelector(selectPlayerId);
+	const placements = useSelector(selectPlacements);
 	
 	const lobbyId = props.match.params.lobby ?? "";
 
@@ -82,6 +85,9 @@ export const CustomGame = (props : RouteComponentProps<MatchParams>): JSX.Elemen
 			case CONSTANTS.GAME_START_RESPONSE:
 				handleGameStartResponse(message.payload as GameStartResponse);
 				break;
+			case CONSTANTS.PLAYER_FINISHED_RESPONSE:
+				handlePlayerFinishedResponse(message.payload as PlayerFinishedResponse);
+				break
 		}
 	}
 
@@ -108,6 +114,10 @@ export const CustomGame = (props : RouteComponentProps<MatchParams>): JSX.Elemen
 
 	const handleGameStartResponse = (payload: GameStartResponse) => {
 		dispatch(gameStartAction(payload));
+	}
+
+	const handlePlayerFinishedResponse = (payload: PlayerFinishedResponse) => {
+		dispatch(playerFinishedAction(payload));
 	}
 
 	const handleStartGameClick = () => {
@@ -154,7 +164,7 @@ export const CustomGame = (props : RouteComponentProps<MatchParams>): JSX.Elemen
 						<RaceField 
 							snippet={raceContent} 
 							language={language} 
-							disabled={state !== 'inProgress'} 
+							disabled={state !== 'inProgress' || checkPlayerFinished(placements, playerId)} 
 							onChange={handleRaceFieldChange}
 						/>
 					</Grid>

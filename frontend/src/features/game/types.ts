@@ -72,3 +72,7 @@ export interface GameProgressResponse {
 export interface GameStartResponse {
 	countdown: number;
 }
+
+export interface PlayerFinishedResponse {
+	placements: string[];
+}

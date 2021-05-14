@@ -1,10 +1,10 @@
 import React, { useCallback } from 'react';
 import { useSelector } from 'react-redux'
 
-import { Box, LinearProgress, Typography } from '@material-ui/core'
+import { Box } from '@material-ui/core'
 
 import { selectGameProgress } from './gameSlice';
-import { GameProgress } from './types';
+import { Progress } from './Progress';
 
 export const UserProgress = (): JSX.Element => {
 	const progress = useSelector(selectGameProgress);
@@ -18,21 +18,8 @@ export const UserProgress = (): JSX.Element => {
 	}, [progress]);
 
 	return (
-		<Box>
+		<Box width='100%'>
 			{progresses()}
 		</Box>
 	);
-}
-
-interface ProgressProps {
-	progress: GameProgress;
-}
-
-const Progress = ({ progress }: ProgressProps): JSX.Element => {
-	return (
-		<Box mb={1}>
-			<Typography>{progress.displayName} | {progress.wpm}</Typography>
-			<LinearProgress variant='determinate' value={progress.percentCompleted * 100} />
-		</Box>
-	)
 }
