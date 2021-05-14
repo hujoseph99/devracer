@@ -114,6 +114,13 @@ export const CustomGame = (props : RouteComponentProps<MatchParams>): JSX.Elemen
 			action: CONSTANTS.NEXT_GAME_ACTION
 		}));
 	}
+	
+	const handleRaceFieldChange = (text: string) => {
+		ws.current?.send(JSON.stringify({
+			action: CONSTANTS.GAME_PROGRESS_ACTION,
+			payload: text,
+		}));
+	}
 
 	return (
 		<Container maxWidth='sm'>
@@ -133,6 +140,7 @@ export const CustomGame = (props : RouteComponentProps<MatchParams>): JSX.Elemen
 							snippet={raceContent} 
 							language={language} 
 							disabled={state !== 'inProgress'} 
+							onChange={handleRaceFieldChange}
 						/>
 					</Grid>
 					{ isHost ? (

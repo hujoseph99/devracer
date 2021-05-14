@@ -49,9 +49,9 @@ const App = (): JSX.Element => {
         <Route path='/auth/githubCallback'>
             <GitHubCallback />
           </Route>
-          <Route path='/practice'>
+          {/* <Route path='/practice'>
             <RaceField />
-          </Route>
+          </Route> */}
           <Route path='/login'>
             <LoginPage />
           </Route>

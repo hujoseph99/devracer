@@ -33,12 +33,14 @@ interface RaceFieldProps {
 	snippet?: string;
 	language?: language;
 	disabled?: boolean
+	onChange: (text: string) => void;
 }
 
 export const RaceField = ({ 
 	snippet = '', 
 	language = 'plain_text' ,
 	disabled = false,
+	onChange = (text: string) => {},
 }: RaceFieldProps): JSX.Element => {
 	const [focus, setFocus] = useState(false);
 	const [foregroundText, setForegroundText] = useState("");
@@ -59,10 +61,7 @@ export const RaceField = ({
 		setFocus(false);
 	}
 
-	const onChange = (playerText: string) => {
-		if (playerText === backgroundText){
-			// win
-		}
+	const handleChange = (playerText: string) => {
 		const playerTextArray = playerText.split("\n");
 
 		const backgroundArray: string[] = [];
@@ -103,6 +102,7 @@ export const RaceField = ({
 		setBackgroundText(backgroundArray.join("\n"));
 		setMarkers(newMarkers);
 		if (foregroundText !== playerText) setForegroundText(playerText);
+		onChange(playerText);
 	}
 
 	return (
@@ -124,7 +124,7 @@ export const RaceField = ({
 				text={foregroundText} 
 				ranges={markers} 
 				focus={focus} 
-				onChange={onChange} 
+				onChange={handleChange} 
 				onBlur={onBlur} 
 				disabled={disabled}
 			/>
