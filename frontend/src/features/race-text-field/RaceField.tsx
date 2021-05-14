@@ -11,6 +11,7 @@ import { fetchNewPracticeRace } from './raceFieldSlice';
 import { selectSnippet } from './raceFieldSlice';
 import { RaceSnippet } from './types';
 import { language } from '../game/types';
+import { NewLineKind } from 'typescript';
 
 
 // const navkeys = ["ArrowDown",
@@ -53,7 +54,7 @@ export const RaceField = ({
 	const [snippetArray, setSnippetArray] = useState<string[]>([]);
 
 	useEffect(() => {
-		setSnippetArray(snippet.replace(/\t/g, ' '.repeat(4)).split('\n'));
+		setSnippetArray(snippet.split('\n'));
 		setBackgroundText(snippet);
 	}, [snippet])
 
@@ -92,9 +93,16 @@ export const RaceField = ({
 			if (differenceIndex < playerLine.length) {
 				newMarkers.push(new Range(i, differenceIndex, i, playerLine.length));
 			}
-			if (differenceIndex <= snippetLine.length) {
-				snippetLine = snippetLine.slice(0, differenceIndex) + ' '.repeat(playerLine.length - differenceIndex) + snippetLine.slice(differenceIndex)
+			
+			let newLine = "";
+			for (let i = 0; i < playerLine.length; i++) {
+				if (playerLine[i] === '\t') {
+					newLine += '\t';
+				} else {
+					newLine += ' ';
+				}
 			}
+			snippetLine = newLine + snippetLine.slice(differenceIndex)
 			backgroundArray.push(snippetLine)
 		}
 
