@@ -9,6 +9,7 @@ import (
 	"github.com/gorilla/mux"
 	"github.com/hujoseph99/typing/backend/db"
 	"github.com/hujoseph99/typing/backend/graphql"
+	"github.com/hujoseph99/typing/backend/secret"
 	"github.com/rs/cors"
 )
 
@@ -19,7 +20,7 @@ func main() {
 	graphql.RegisterEndpoints(router)
 	InitRouter(router)
 
-	handler := cors.New(cors.Options{AllowedOrigins: []string{"http://localhost:3000"}, AllowCredentials: true}).Handler(router)
+	handler := cors.New(cors.Options{AllowedOrigins: []string{secret.FrontendHostname}, AllowCredentials: true}).Handler(router)
 
 	port, check := os.LookupEnv("PORT")
 	if !check {

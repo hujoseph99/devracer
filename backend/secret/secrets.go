@@ -12,6 +12,7 @@ var GithubClientSecret string
 var MongoURI string
 var FrontendCallback string
 var Production bool
+var FrontendHostname string
 
 func init() {
 	var check bool
@@ -36,6 +37,11 @@ func init() {
 	}
 
 	FrontendCallback, check = os.LookupEnv("FRONTEND_CALLBACK")
+	if !check {
+		log.Fatal("No environment variables")
+	}
+
+	FrontendHostname, check = os.LookupEnv("FRONTEND_HOSTNAME")
 	if !check {
 		log.Fatal("No environment variables")
 	}
