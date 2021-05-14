@@ -43,7 +43,7 @@ const App = (): JSX.Element => {
   return (
     <MuiThemeProvider theme={theme}>
       <CssBaseline />
-      <Router>
+      <Router basename="/devracer">
         <Switch>
         <Route path='/auth/githubCallback'>
             <GitHubCallback />
