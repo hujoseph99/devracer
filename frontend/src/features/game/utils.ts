@@ -23,10 +23,5 @@ export const transformSnippetResponse = (response: SnippetResponse): SnippetStat
 }
 
 export const checkPlayerFinished = (placements: string[], playerId: string): boolean => {
-	for (let i = 0; i < placements.length; i++) {
-		if (placements[i] === playerId) {
-			return true;
-		}
-	}
-	return false;
+	return placements.some(elem => elem === playerId);
 }

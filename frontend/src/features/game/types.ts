@@ -88,3 +88,8 @@ export interface NextGameResponse {
 	placements: string[];
 }
 
+export interface LeaveGameResponse {
+	playerId: string;
+	placements: string[];
+}
+

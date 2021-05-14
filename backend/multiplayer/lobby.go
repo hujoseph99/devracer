@@ -159,6 +159,20 @@ func (lobby *Lobby) clientInPlacements(client *Client) bool {
 	return false
 }
 
+func (lobby *Lobby) checkFinished() {
+	if len(lobby.placements) == len(lobby.gameProgress) {
+		gameFinishedPayload := newGameFinishedResult(lobby.placements)
+		gameFinishedResponse := newRequestResponse(gameFinishedResponse, gameFinishedPayload)
+		gameFinishedEncoded, err := json.Marshal(gameFinishedResponse)
+		if err != nil {
+			createAndSendErrorToLobby(lobby, "There was an error when returning your placements.")
+			return
+		}
+		lobby.inProgress = false // finished, so now should let user start a new game
+		lobby.broadcastToClientsInLobby(gameFinishedEncoded)
+	}
+}
+
 func (lobby *Lobby) handleFinisher(client *Client) {
 	// just do nothing if the client already in placements (will probably be unecessary, but just in case)
 	if lobby.clientInPlacements(client) {
@@ -175,19 +189,7 @@ func (lobby *Lobby) handleFinisher(client *Client) {
 		return
 	}
 	lobby.broadcastToClientsInLobby(encoded)
-
-	// check if game is finished
-	if len(lobby.placements) == len(lobby.gameProgress) {
-		gameFinishedPayload := newGameFinishedResult(lobby.placements)
-		gameFinishedResponse := newRequestResponse(gameFinishedResponse, gameFinishedPayload)
-		gameFinishedEncoded, err := json.Marshal(gameFinishedResponse)
-		if err != nil {
-			createAndSendErrorToLobby(lobby, "There was an error when returning your placements.")
-			return
-		}
-		lobby.inProgress = false // finished, so now should let user start a new game
-		lobby.broadcastToClientsInLobby(gameFinishedEncoded)
-	}
+	lobby.checkFinished()
 }
 
 func (lobby *Lobby) handleGameProgress(data *gameProgressData) {
@@ -353,6 +355,7 @@ func (lobby *Lobby) handleLeaveGame(client *Client) {
 			return
 		}
 		lobby.broadcastToClientsInLobby(encoded)
+		lobby.checkFinished()
 	}
 }
 

@@ -12,6 +12,7 @@ import {
 	GameProgressResponse, 
 	GameStartResponse, 
 	JoinGameResponse, 
+	LeaveGameResponse, 
 	NewPlayerResponse, 
 	NextGameResponse, 
 	PlayerFinishedResponse 
@@ -22,6 +23,7 @@ import {
 	gameProgressAction, 
 	gameStartAction, 
 	joinGameAction, 
+	leaveGameAction, 
 	newPlayerAction, 
 	nextGameAction, 
 	playerFinishedAction, 
@@ -119,6 +121,9 @@ export const CustomGame = (props : RouteComponentProps<MatchParams>): JSX.Elemen
 			case CONSTANTS.NEXT_GAME_RESPONSE:
 				handleNextGameResponse(message.payload as NextGameResponse);
 				break;
+			case CONSTANTS.LEAVE_GAME_RESPONSE:
+				handleLeaveGameResponse(message.payload as LeaveGameResponse);
+				break;
 		}
 	}
 
@@ -158,6 +163,10 @@ export const CustomGame = (props : RouteComponentProps<MatchParams>): JSX.Elemen
 	const handleNextGameResponse = (payload: NextGameResponse) => {
 		dispatch(nextGameAction(payload));
 		setForegroundText('');
+	}
+
+	const handleLeaveGameResponse = (payload: LeaveGameResponse) => {
+		dispatch(leaveGameAction(payload));
 	}
 
 	const handleStartGameClick = () => {
