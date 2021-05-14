@@ -33,6 +33,8 @@ interface RaceFieldProps {
 	snippet?: string;
 	language?: language;
 	disabled?: boolean
+	foregroundText?: string;
+	setForegroundText?: (text: string) => void;
 	onChange: (text: string) => void;
 }
 
@@ -40,10 +42,12 @@ export const RaceField = ({
 	snippet = '', 
 	language = 'plain_text' ,
 	disabled = false,
+	foregroundText = '',
+	setForegroundText = (text: string) => {},
 	onChange = (text: string) => {},
 }: RaceFieldProps): JSX.Element => {
 	const [focus, setFocus] = useState(false);
-	const [foregroundText, setForegroundText] = useState("");
+	// const [foregroundText, setForegroundText] = useState("");
 	const [backgroundText, setBackgroundText] = useState("");
 	const [markers, setMarkers] = useState<Ace.Range[]>([]);
 	const [snippetArray, setSnippetArray] = useState<string[]>([]);

@@ -80,3 +80,11 @@ export interface PlayerFinishedResponse {
 export interface GameFinishedResponse {
 	placements: string[];
 }
+
+export interface NextGameResponse {
+	snippet: SnippetResponse;
+	gameProgress: GameProgress[];
+	queuedPlayers: GameProgress[];
+	placements: string[];
+}
+

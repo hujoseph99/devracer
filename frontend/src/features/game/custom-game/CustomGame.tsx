@@ -13,6 +13,7 @@ import {
 	GameStartResponse, 
 	JoinGameResponse, 
 	NewPlayerResponse, 
+	NextGameResponse, 
 	PlayerFinishedResponse 
 } from '../types';
 import { 
@@ -22,6 +23,7 @@ import {
 	gameStartAction, 
 	joinGameAction, 
 	newPlayerAction, 
+	nextGameAction, 
 	playerFinishedAction, 
 	selectIsHost, 
 	selectLangauge, 
@@ -37,7 +39,6 @@ import { selectDisplayName } from '../../user/userSlice';
 
 import "../../race-text-field/editor.css"
 import { UserProgress } from '../UserProgress';
-import { selectStatus } from '../../auth/authSlice';
 import { StatusBar } from '../StatusBar';
 import { LinkDialog } from './LinkDialog';
 import { checkPlayerFinished } from '../utils';
@@ -51,6 +52,7 @@ export const CustomGame = (props : RouteComponentProps<MatchParams>): JSX.Elemen
 	const dispatch = useDispatch();
 
 	const [showLink, setShowLink] = useState(false);
+	const [foregroundText, setForegroundText] = useState('');
 
 	const displayName = useSelector(selectDisplayName);
 	const raceContent = useSelector(selectRaceContent);
@@ -110,11 +112,13 @@ export const CustomGame = (props : RouteComponentProps<MatchParams>): JSX.Elemen
 				break;
 			case CONSTANTS.PLAYER_FINISHED_RESPONSE:
 				handlePlayerFinishedResponse(message.payload as PlayerFinishedResponse);
-				break
+				break;
 			case CONSTANTS.GAME_FINISHED_RESPONSE:
 				handleGameFinishedResponse(message.payload as GameFinishedResponse);
-				break
-
+				break;
+			case CONSTANTS.NEXT_GAME_RESPONSE:
+				handleNextGameResponse(message.payload as NextGameResponse);
+				break;
 		}
 	}
 
@@ -149,6 +153,11 @@ export const CustomGame = (props : RouteComponentProps<MatchParams>): JSX.Elemen
 
 	const handleGameFinishedResponse = (payload: GameFinishedResponse) => {
 		dispatch(gameFinishedAction(payload));
+	}
+
+	const handleNextGameResponse = (payload: NextGameResponse) => {
+		dispatch(nextGameAction(payload));
+		setForegroundText('');
 	}
 
 	const handleStartGameClick = () => {
@@ -196,6 +205,8 @@ export const CustomGame = (props : RouteComponentProps<MatchParams>): JSX.Elemen
 							snippet={raceContent} 
 							language={language} 
 							disabled={state !== 'inProgress' || checkPlayerFinished(placements, playerId)} 
+							foregroundText={foregroundText}
+							setForegroundText={setForegroundText}
 							onChange={handleRaceFieldChange}
 						/>
 					</Grid>
