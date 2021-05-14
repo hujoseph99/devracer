@@ -1,6 +1,6 @@
 import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { RootState } from "../../app/store";
-import { CreateGameResponse, GameProgress, GameProgressResponse, GameState, JoinGameResponse, NewPlayerResponse } from "./types";
+import { CreateGameResponse, GameProgress, GameProgressResponse, GameStartResponse, GameState, JoinGameResponse, NewPlayerResponse } from "./types";
 import { transformSnippetResponse } from "./utils";
 
 // redux prefix for this slice
@@ -9,6 +9,8 @@ const GAME_SLICE_NAME = 'game';
 const initialState: GameState = {
 	playerId: '',
 	lobbyId: '',
+	isHost: false,
+	state: 'waiting',
 	snippet: {
 		id: '',
 		snippet: '',
@@ -20,6 +22,7 @@ const initialState: GameState = {
 	gameProgress: [],
 	queuedPlayers: [],
 	placements: [],
+	countdown: 0,
 }
 
 const gameSlice = createSlice({
@@ -28,12 +31,15 @@ const gameSlice = createSlice({
 	reducers: {
 		createGameAction: (state, action: PayloadAction<CreateGameResponse>) => {
 			const payload = action.payload;
+			state.state = 'waiting';
+			state.isHost = true;
 			state.playerId = payload.playerId;
 			state.lobbyId = payload.lobbyId;
 			state.snippet = transformSnippetResponse(payload.snippet);
 		},
 		joinGameAction: (state, action: PayloadAction<JoinGameResponse>) => {
 			const payload = action.payload;
+			state.state = 'waiting';
 			state.playerId = payload.playerId;
 			state.snippet = transformSnippetResponse(payload.snippet);
 			state.gameProgress = payload.gameProgress;
@@ -64,14 +70,27 @@ const gameSlice = createSlice({
 					state.gameProgress[i].wpm = payload.wpm;
 				}
 			}
+		},
+		gameStartAction: (state, action: PayloadAction<GameStartResponse>) => {
+			const payload = action.payload;
+			if (payload.countdown === 0) {
+				state.state = 'inProgress'
+			} else {
+				state.state = 'countdown'
+			}
+			state.countdown = payload.countdown;
 		}
 	},
 })
 
 export default gameSlice.reducer;
 
-export const { createGameAction, gameProgressAction, joinGameAction, newPlayerAction } = gameSlice.actions;
+export const { createGameAction, gameProgressAction, gameStartAction, joinGameAction, newPlayerAction } = gameSlice.actions;
+
+export const selectState = (state: RootState) => state.game.state;
+export const selectIsHost = (state: RootState) => state.game.isHost;
 
 export const selectRaceContent = (state: RootState) => state.game.snippet.snippet;
 export const selectLangauge = (state: RootState) => state.game.snippet.language;
 export const selectGameProgress = (state: RootState) => state.game.gameProgress;
+export const selectCountdown = (state: RootState) => state.game.countdown;

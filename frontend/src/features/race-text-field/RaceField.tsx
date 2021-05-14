@@ -32,9 +32,14 @@ import { language } from '../game/types';
 interface RaceFieldProps {
 	snippet?: string;
 	language?: language;
+	disabled?: boolean
 }
 
-export const RaceField = ({ snippet = '', language = 'plain_text' }: RaceFieldProps): JSX.Element => {
+export const RaceField = ({ 
+	snippet = '', 
+	language = 'plain_text' ,
+	disabled = false,
+}: RaceFieldProps): JSX.Element => {
 	const [focus, setFocus] = useState(false);
 	const [foregroundText, setForegroundText] = useState("");
 	const [backgroundText, setBackgroundText] = useState("");
@@ -112,7 +117,7 @@ export const RaceField = ({ snippet = '', language = 'plain_text' }: RaceFieldPr
 			onChangeCapture={filterMouseEvents}
 			onBlurCapture={filterMouseEvents}
 			onMouseUpCapture={filterMouseEvents}> */}
-			<BackgroundEditor text={backgroundText}/>
+			<BackgroundEditor text={backgroundText} />
 			{/* elements that appear later are on top */}
 			<ForegroundEditor 
 				language={language} 
@@ -121,6 +126,7 @@ export const RaceField = ({ snippet = '', language = 'plain_text' }: RaceFieldPr
 				focus={focus} 
 				onChange={onChange} 
 				onBlur={onBlur} 
+				disabled={disabled}
 			/>
 		</Box>
 	)

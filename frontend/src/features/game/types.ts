@@ -1,4 +1,5 @@
 export type language = 'plain_text' | 'c_cpp' | 'golang' | 'javascript' | 'python';
+export type lobbyState = 'waiting' | 'countdown' | 'inProgress' | 'finished';
 
 export interface SnippetState {
 	id: string;
@@ -11,11 +12,14 @@ export interface SnippetState {
 export interface GameState {
 	playerId: string;
 	lobbyId: string;
+	isHost: boolean;
+	state: lobbyState;
 	snippet: SnippetState;
 	isQueued: boolean;
 	gameProgress: GameProgress[];
 	queuedPlayers: GameProgress[];
 	placements: string[];
+	countdown: number;
 }
 
 export interface GameProgress {
@@ -63,4 +67,8 @@ export interface GameProgressResponse {
 	playerId: string;
 	percentCompleted: number;
 	wpm: number;
+}
+
+export interface GameStartResponse {
+	countdown: number;
 }

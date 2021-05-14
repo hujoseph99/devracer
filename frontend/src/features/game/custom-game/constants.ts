@@ -1,7 +1,7 @@
 export const CREATE_GAME_ACTION = 'createGame'
 export const JOIN_GAME_ACTION = 'joinGame'
 export const GAME_PROGRESS_ACTION = 'gameProgress'
-export const START_GAME_ACTION = 'stateGame'
+export const START_GAME_ACTION = 'startGame'
 export const NEXT_GAME_ACTION = 'nextGame'
 export const LEAVE_GAME_ACTION = 'leaveGame'
 

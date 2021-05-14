@@ -11,16 +11,18 @@ import { language } from './types';
 
 interface ForegroundEditorProps {
 	language?: language;
+	disabled?: boolean;
 	focus?: boolean;
-	onBlur?: () => void;
-	ranges: Ace.Range[];
 	text: string;
+	ranges: Ace.Range[];
 	onChange: (s: string) => void;
+	onBlur?: () => void;
 }
 
 export const ForegroundEditor = ({
 	language = 'plain_text',
 	focus = false,
+	disabled = false,
 	onBlur,
 	ranges,
 	onChange,
@@ -61,6 +63,7 @@ export const ForegroundEditor = ({
 			onBlur={onBlur}
 			onChange={onChange}
 			value={text}
+			readOnly={disabled}
 		/>
 	);
 }

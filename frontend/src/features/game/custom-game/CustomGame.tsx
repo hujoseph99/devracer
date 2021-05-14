@@ -5,8 +5,8 @@ import { RouteComponentProps } from 'react-router';
 import { Box, Button, Container, Grid, TextField } from '@material-ui/core';
 
 import * as CONSTANTS from './constants'
-import { CreateGameResponse, ErrorResponse, GameProgressResponse, JoinGameResponse, NewPlayerResponse } from '../types';
-import { createGameAction, gameProgressAction, joinGameAction, newPlayerAction, selectLangauge, selectRaceContent } from '../gameSlice';
+import { CreateGameResponse, ErrorResponse, GameProgressResponse, GameStartResponse, JoinGameResponse, NewPlayerResponse } from '../types';
+import { createGameAction, gameProgressAction, gameStartAction, joinGameAction, newPlayerAction, selectIsHost, selectLangauge, selectRaceContent, selectState } from '../gameSlice';
 import { Footer } from '../../footer/Footer';
 import { Navbar } from '../../navbar/Navbar';
 import { RaceField } from '../../race-text-field/RaceField';
@@ -14,6 +14,8 @@ import { selectDisplayName } from '../../user/userSlice';
 
 import "../../race-text-field/editor.css"
 import { UserProgress } from '../UserProgress';
+import { selectStatus } from '../../auth/authSlice';
+import { StatusBar } from '../StatusBar';
 
 interface MatchParams {
 	lobby?: string;
@@ -26,6 +28,8 @@ export const CustomGame = (props : RouteComponentProps<MatchParams>): JSX.Elemen
 	const displayName = useSelector(selectDisplayName);
 	const raceContent = useSelector(selectRaceContent);
 	const language = useSelector(selectLangauge);
+	const isHost = useSelector(selectIsHost);
+	const state = useSelector(selectState);
 	
 	console.log(raceContent);
 
@@ -69,6 +73,9 @@ export const CustomGame = (props : RouteComponentProps<MatchParams>): JSX.Elemen
 			case CONSTANTS.GAME_PROGRESS_RESPONSE:
 				handleGameProgressResponse(message.payload as GameProgressResponse);
 				break;
+			case CONSTANTS.GAME_START_RESPONSE:
+				handleGameStartResponse(message.payload as GameStartResponse);
+				break;
 		}
 	}
 
@@ -92,17 +99,62 @@ export const CustomGame = (props : RouteComponentProps<MatchParams>): JSX.Elemen
 		dispatch(gameProgressAction(payload));
 	}
 
+	const handleGameStartResponse = (payload: GameStartResponse) => {
+		dispatch(gameStartAction(payload));
+	}
+
+	const handleStartGameClick = () => {
+		ws.current?.send(JSON.stringify({
+			action: CONSTANTS.START_GAME_ACTION,
+		}));
+	}
+
+	const handleNextGameClick = () => {
+		ws.current?.send(JSON.stringify({
+			action: CONSTANTS.NEXT_GAME_ACTION
+		}));
+	}
+
 	return (
 		<Container maxWidth='sm'>
 			<Box minHeight='100vh' display='flex' flexDirection='column' py={5}>
 				<Navbar />
 				<Grid container justify='center'>
 					<Grid item xs={12}>
+						<Box mt={2}>
+							<StatusBar />
+						</Box>
+					</Grid>
+					<Grid item xs={12}>
 						<UserProgress />
 					</Grid>
 					<Grid item className="aceEditorContainer">
-						<RaceField snippet={raceContent} language={language} />
+						<RaceField 
+							snippet={raceContent} 
+							language={language} 
+							disabled={state !== 'inProgress'} 
+						/>
 					</Grid>
+					{ isHost ? (
+						<Grid container item xs={12} justify='flex-end'>
+							<Grid item>
+								<Box mt={2}>
+									{state === 'finished' ? (
+										<Button  variant='contained' onClick={handleNextGameClick}>Next Game</Button>
+									) : (
+										<Button 
+											variant='contained'
+											onClick={handleStartGameClick}
+											disabled={state !== 'waiting'}
+										>
+											Start Game
+										</Button>
+									)}
+								</Box>
+							</Grid>
+						</Grid>
+					) : null
+					}
 				</Grid>
 				<Footer />
 			</Box>
