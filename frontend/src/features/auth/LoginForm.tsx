@@ -10,6 +10,7 @@ import { login, resetStatus, selectStatus } from './authSlice';
 import { useHistory } from 'react-router';
 
 import { GitHub } from '@material-ui/icons';
+import { BACKEND_HOSTNAME } from '../../config';
 
 const useStyles = makeStyles<Theme>(theme => ({
 	avatar: {
@@ -146,7 +147,7 @@ export const LoginForm = (): JSX.Element => {
 									</Box>
 									<Box mt={4} display="flex" flexDirection="column" alignItems='center' width='100%'>
 										<Typography color="textSecondary" gutterBottom>or you can sign in with</Typography>
-										<IconButton href="http://localhost:8080/auth/githubLogin"><GitHub className={classes.oauthIcons}/></IconButton>
+										<IconButton href={`${BACKEND_HOSTNAME}/auth/githubLogin`}><GitHub className={classes.oauthIcons}/></IconButton>
 									</Box>
 								</Box>
 							</Grid>

@@ -5,6 +5,7 @@ import jwtDecode from 'jwt-decode';
 import axios from 'axios';
 import { RootState } from "../../app/store";
 import { resetUser } from "../user/userSlice";
+import { BACKEND_HOSTNAME } from "../../config";
 
 const AUTH_SLICE_NAME = "auth"
 
@@ -12,7 +13,7 @@ export const login = createAsyncThunk<LoginResponse, LoginBody>(
 	`${AUTH_SLICE_NAME}/login`,
 	async body => {
 		const response = await axios.post<LoginResponse>(
-			'http://localhost:8080/auth/login',
+			`${BACKEND_HOSTNAME}/auth/login`,
 			body
 		)
 		return response.data;
@@ -23,9 +24,9 @@ export const login = createAsyncThunk<LoginResponse, LoginBody>(
 export const githubCallback = createAsyncThunk<LoginResponse, URLSearchParams>(
 	`${AUTH_SLICE_NAME}/githubCallback`,
 	async body => {
-		const response = await axios.post<LoginResponse>(
-			'http://localhost:8080/auth/githubCallback?' + body.toString(),
-			body, { withCredentials: true }
+		const response = await axios.get<LoginResponse>(
+			`${BACKEND_HOSTNAME}/auth/githubCallback?${body.toString()}`,
+			{ withCredentials: true }
 		)
 		return response.data;
 	}
@@ -35,7 +36,7 @@ export const register = createAsyncThunk<RegisterResponse, RegisterBody>(
 	`${AUTH_SLICE_NAME}/register`,
 	async body => {
 		const response = await axios.post<RegisterResponse>(
-			'http://localhost:8080/auth/register',
+			`${BACKEND_HOSTNAME}/auth/register`,
 			body
 		);
 		return response.data;
@@ -46,7 +47,7 @@ export const logout = createAsyncThunk<{}, LogoutBody>(
 	`${AUTH_SLICE_NAME}/logout`,
 	async (body, thunkAPI)=> {
 		await axios.post<{}>(
-			'http://localhost:8080/auth/logout',
+			`${BACKEND_HOSTNAME}/auth/logout`,
 			body
 		);
 		thunkAPI.dispatch(resetUser());
@@ -58,7 +59,7 @@ export const refresh = createAsyncThunk<RefreshResponse, RefreshBody>(
 	`${AUTH_SLICE_NAME}/refresh`,
 	async body => {
 		const response = await axios.post<RefreshResponse>(
-			'http://localhost:8080/auth/refresh',
+			`${BACKEND_HOSTNAME}/auth/refresh`,
 			body
 		);
 		return response.data;

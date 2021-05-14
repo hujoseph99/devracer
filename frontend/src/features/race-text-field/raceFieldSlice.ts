@@ -6,6 +6,7 @@ import axios from 'axios'
 import { newPracticeRaceGQL } from "./graphql";
 import { Race, NewPracticeRaceGQLResponse, RaceFieldState } from './types'
 import { mapGQLPracticeRaceToNewPracticeRace } from "./utils";
+import { BACKEND_HOSTNAME } from "../../config";
 
 // redux prefix for this slice
 const RACE_FIELD = 'raceField';
@@ -15,7 +16,7 @@ export const fetchNewPracticeRace = createAsyncThunk<Race>(
 	`${RACE_FIELD}/fetchNewPracticeRace`, 
 	async () => {
 		const response = await axios.post<NewPracticeRaceGQLResponse>(
-			'http://localhost:8080/graphql', 
+			`${BACKEND_HOSTNAME}/graphql`, 
 			{ query: newPracticeRaceGQL }
 		);
 		return mapGQLPracticeRaceToNewPracticeRace(response.data);

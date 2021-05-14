@@ -1,0 +1,1 @@
+export const BACKEND_HOSTNAME = process.env.REACT_APP_BACKEND_HOSTNAME

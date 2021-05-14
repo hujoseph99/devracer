@@ -10,6 +10,7 @@ import (
 
 	"github.com/hujoseph99/typing/backend/common/api"
 	"github.com/hujoseph99/typing/backend/db"
+	"github.com/hujoseph99/typing/backend/secret"
 	"golang.org/x/oauth2"
 	"golang.org/x/oauth2/github"
 )
@@ -29,7 +30,7 @@ type GitHubCallback struct {
 
 func init() {
 	githubOAuthConfig = &oauth2.Config{
-		RedirectURL:  "http://localhost:3000/auth/githubCallback",
+		RedirectURL:  secret.FrontendCallback,
 		ClientID:     getGithubClientID(),
 		ClientSecret: getGithubClientSecret(),
 		Scopes:       []string{"read:user"},
@@ -45,7 +46,12 @@ func HandleGithubLogin(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	url := githubOAuthConfig.AuthCodeURL(oauthStateString)
-	http.SetCookie(w, &http.Cookie{Name: "OAuthState", Value: oauthStateString, SameSite: http.SameSiteStrictMode, MaxAge: 600, Secure: true})
+
+	if secret.Production {
+		http.SetCookie(w, &http.Cookie{Name: "OAuthState", Value: oauthStateString, SameSite: http.SameSiteNoneMode, MaxAge: 600, Secure: true})
+	} else {
+		http.SetCookie(w, &http.Cookie{Name: "OAuthState", Value: oauthStateString, SameSite: http.SameSiteLaxMode, MaxAge: 600})
+	}
 	http.Redirect(w, r, url, http.StatusTemporaryRedirect)
 }
 
