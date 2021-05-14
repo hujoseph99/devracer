@@ -1,1 +1,1 @@
-export const BACKEND_HOSTNAME = "http://localhost:8080"
+export const BACKEND_HOSTNAME = "https://devracer.herokuapp.com"
