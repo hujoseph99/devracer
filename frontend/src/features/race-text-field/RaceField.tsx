@@ -56,7 +56,7 @@ export const RaceField = ({
 	useEffect(() => {
 		setSnippetArray(snippet.split('\n'));
 		setBackgroundText(snippet);
-	}, [snippet])
+	}, [snippet, foregroundText])
 
 	const onFocus = (e: SyntheticEvent) => {
 		setFocus(true);
