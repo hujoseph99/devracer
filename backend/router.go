@@ -5,6 +5,7 @@ import (
 
 	"github.com/gorilla/mux"
 	"github.com/hujoseph99/typing/backend/auth"
+	"github.com/hujoseph99/typing/backend/graphql"
 	"github.com/hujoseph99/typing/backend/multiplayer"
 )
 
@@ -18,4 +19,5 @@ func InitRouter(router *mux.Router, server *multiplayer.MultiplayerServer) {
 	})
 	router.HandleFunc("/auth/githubLogin", auth.HandleGithubLogin)
 	router.HandleFunc("/auth/githubCallback", auth.HandleGithubCallback)
+	graphql.RegisterEndpoints(router)
 }

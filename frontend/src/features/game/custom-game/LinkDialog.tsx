@@ -26,7 +26,7 @@ export const LinkDialog = ({
 	...props
 }: LinkDialogProps) => {
 	const lobbyId = useSelector(selectLobbyId);
-	const url = 'http://localhost:3000/custom/' + lobbyId;
+	const url = `${window.location.href}/${lobbyId}`;
 
 	const handleCopyClick = () => {
 		navigator.clipboard.writeText(url);

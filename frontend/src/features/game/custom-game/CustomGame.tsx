@@ -73,7 +73,7 @@ export const CustomGame = (props : RouteComponentProps<MatchParams>): JSX.Elemen
 
 	// connect to websocket
 	useEffect(() => {
-		ws.current = new WebSocket(`ws://localhost:8080/custom?name=${displayName}`);
+		ws.current = new WebSocket(`${process.env.REACT_APP_BACKEND_WEBSOCKET_HOSTNAME}/custom?name=${displayName}`);
 		ws.current?.addEventListener('open', handleConnectedToWebsocket);
 		ws.current?.addEventListener('message', event => handleNewMessage(event))
 		return () => {

@@ -2,7 +2,6 @@ package graphql
 
 import (
 	"log"
-	"net/http"
 
 	"github.com/gorilla/mux"
 	"github.com/graphql-go/graphql"
@@ -10,20 +9,6 @@ import (
 	"github.com/hujoseph99/typing/backend/graphql/queries"
 	"github.com/hujoseph99/typing/backend/secret"
 )
-
-// CORS Middleware, have to change this in the future to be more secure
-func CorsMiddleware(next http.Handler) http.Handler {
-	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		w.Header().Set("Access-Control-Allow-Origin", "http://localhost:3000")
-		w.Header().Set("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept")
-		w.Header().Set("Access-Control-Allow-Methods", "GET, POST, OPTIONS")
-		if r.Method == "OPTIONS" {
-			w.WriteHeader((http.StatusOK))
-			return
-		}
-		next.ServeHTTP(w, r)
-	})
-}
 
 // RegisterEndpoints registers the endpoints for graphql
 func RegisterEndpoints(router *mux.Router) {
@@ -39,9 +24,5 @@ func RegisterEndpoints(router *mux.Router) {
 		GraphiQL: !secret.Production,
 	})
 
-	router.Handle(
-		"/graphql",
-		CorsMiddleware(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-			graphqlHandler.ServeHTTP(w, r)
-		})))
+	router.Handle("/graphql", graphqlHandler)
 }
