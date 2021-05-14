@@ -46,7 +46,12 @@ func HandleGithubLogin(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	url := githubOAuthConfig.AuthCodeURL(oauthStateString)
-	http.SetCookie(w, &http.Cookie{Name: "OAuthState", Value: oauthStateString, SameSite: http.SameSiteLaxMode, MaxAge: 600, Secure: true})
+
+	if secret.Production {
+		http.SetCookie(w, &http.Cookie{Name: "OAuthState", Value: oauthStateString, SameSite: http.SameSiteNoneMode, MaxAge: 600, Secure: true})
+	} else {
+		http.SetCookie(w, &http.Cookie{Name: "OAuthState", Value: oauthStateString, SameSite: http.SameSiteLaxMode, MaxAge: 600})
+	}
 	http.Redirect(w, r, url, http.StatusTemporaryRedirect)
 }
 
