@@ -39,7 +39,7 @@ export const MainMenu = (): JSX.Element => {
 								<KeyboardIcon className={classes.titleIcon} />
 								{/* <Typist.Delay ms={1000} /> */}
 								<Typography component='span' variant='h3'> 
-									CodeRacers
+									DevRacer
 								</Typography>
 							</Box>
 						{/* </Typist> */}

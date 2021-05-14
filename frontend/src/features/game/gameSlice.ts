@@ -89,6 +89,7 @@ export const { createGameAction, gameProgressAction, gameStartAction, joinGameAc
 
 export const selectState = (state: RootState) => state.game.state;
 export const selectIsHost = (state: RootState) => state.game.isHost;
+export const selectLobbyId = (state: RootState) => state.game.lobbyId;
 
 export const selectRaceContent = (state: RootState) => state.game.snippet.snippet;
 export const selectLangauge = (state: RootState) => state.game.snippet.language;

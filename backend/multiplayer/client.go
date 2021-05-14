@@ -192,6 +192,7 @@ func (client *Client) readPump() {
 			if websocket.IsUnexpectedCloseError(err, websocket.CloseGoingAway, websocket.CloseAbnormalClosure) {
 				log.Printf("unexpected close error: %v", err)
 			}
+			client.handleLeaveGameAction()
 			break
 		}
 		client.handleNewMessage(jsonMessage)

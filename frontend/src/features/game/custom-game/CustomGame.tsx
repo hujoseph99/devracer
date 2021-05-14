@@ -16,6 +16,7 @@ import "../../race-text-field/editor.css"
 import { UserProgress } from '../UserProgress';
 import { selectStatus } from '../../auth/authSlice';
 import { StatusBar } from '../StatusBar';
+import { LinkDialog } from './LinkDialog';
 
 interface MatchParams {
 	lobby?: string;
@@ -25,21 +26,26 @@ export const CustomGame = (props : RouteComponentProps<MatchParams>): JSX.Elemen
 	const ws = useRef<WebSocket | undefined>(undefined);
 	const dispatch = useDispatch();
 
+	const [showLink, setShowLink] = useState(false);
+
 	const displayName = useSelector(selectDisplayName);
 	const raceContent = useSelector(selectRaceContent);
 	const language = useSelector(selectLangauge);
 	const isHost = useSelector(selectIsHost);
 	const state = useSelector(selectState);
 	
-	console.log(raceContent);
-
 	const lobbyId = props.match.params.lobby ?? "";
 
 	// connect to websocket
 	useEffect(() => {
 		ws.current = new WebSocket(`ws://localhost:8080/custom?name=${displayName}`);
 		ws.current?.addEventListener('open', handleConnectedToWebsocket);
-		ws.current.addEventListener('message', event => handleNewMessage(event))
+		ws.current?.addEventListener('message', event => handleNewMessage(event))
+		return () => {
+			ws.current?.send(JSON.stringify({
+				action: CONSTANTS.LEAVE_GAME_ACTION,
+			}));
+		}
 	}, [])
 
 	const handleConnectedToWebsocket = () => {
@@ -85,6 +91,7 @@ export const CustomGame = (props : RouteComponentProps<MatchParams>): JSX.Elemen
 
 	const handleCreateGameResponse = (payload: CreateGameResponse) => {
 		dispatch(createGameAction(payload));
+		setShowLink(true);
 	}
 
 	const handleJoinGameResponse = (payload: JoinGameResponse) => {
@@ -122,6 +129,14 @@ export const CustomGame = (props : RouteComponentProps<MatchParams>): JSX.Elemen
 		}));
 	}
 
+	const handleLinkOpen = () => {
+		setShowLink(true);
+	}
+
+	const handleLinkClose = () => {
+		setShowLink(false);
+	}
+
 	return (
 		<Container maxWidth='sm'>
 			<Box minHeight='100vh' display='flex' flexDirection='column' py={5}>
@@ -129,7 +144,7 @@ export const CustomGame = (props : RouteComponentProps<MatchParams>): JSX.Elemen
 				<Grid container justify='center'>
 					<Grid item xs={12}>
 						<Box mt={2}>
-							<StatusBar />
+							<StatusBar handleOpenLinkDialog={handleLinkOpen} />
 						</Box>
 					</Grid>
 					<Grid item xs={12}>
@@ -166,6 +181,7 @@ export const CustomGame = (props : RouteComponentProps<MatchParams>): JSX.Elemen
 				</Grid>
 				<Footer />
 			</Box>
+			<LinkDialog open={showLink} handleClose={handleLinkClose} />
 		</Container>
 	)
 }

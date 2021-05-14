@@ -1,11 +1,18 @@
-import { Box, CircularProgress, Grid, Typography } from '@material-ui/core';
 import React from 'react';
 import { useSelector } from 'react-redux';
+
+import { Box, CircularProgress, Grid, IconButton, Typography } from '@material-ui/core';
+import LinkIcon from '@material-ui/icons/Link';
+
 import { selectCountdown, selectIsHost, selectState } from './gameSlice';
 
 const COUNTDOWN_START = 5;
 
-export const StatusBar = () => {
+interface StatusBarProps {
+	handleOpenLinkDialog: () => void;
+}
+
+export const StatusBar = ({ handleOpenLinkDialog }: StatusBarProps): JSX.Element => {
 	const state = useSelector(selectState);
 	const isHost = useSelector(selectIsHost);
 	const countdown = useSelector(selectCountdown);
@@ -32,7 +39,12 @@ export const StatusBar = () => {
 	}
 
 	return (
-		<Grid container justify='flex-end' alignItems='center' spacing={1}>
+		<Grid container justify='space-between' alignItems='center' spacing={1}>
+			<Grid item>
+				<IconButton onClick={handleOpenLinkDialog}>
+					<LinkIcon />
+				</IconButton>
+			</Grid>
 			<Grid item>
 				<Typography component='span' variant='caption'>{status}</Typography>
 			</Grid>
