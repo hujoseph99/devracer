@@ -24,9 +24,9 @@ export const login = createAsyncThunk<LoginResponse, LoginBody>(
 export const githubCallback = createAsyncThunk<LoginResponse, URLSearchParams>(
 	`${AUTH_SLICE_NAME}/githubCallback`,
 	async body => {
-		const response = await axios.post<LoginResponse>(
+		const response = await axios.get<LoginResponse>(
 			`${BACKEND_HOSTNAME}/auth/githubCallback?${body.toString()}`,
-			body, { withCredentials: true }
+			{ withCredentials: true }
 		)
 		return response.data;
 	}
