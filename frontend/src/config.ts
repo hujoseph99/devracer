@@ -1,1 +1,1 @@
-export const BACKEND_HOSTNAME = "https://devracer.herokuapp.com"
+export const BACKEND_HOSTNAME = process.env.REACT_APP_BACKEND_HOSTNAME

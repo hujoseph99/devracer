@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import {
 	Route,
-	BrowserRouter as Router,
 	Switch,
-  Redirect
+  Redirect,
+  HashRouter
 } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 
@@ -43,7 +43,7 @@ const App = (): JSX.Element => {
   return (
     <MuiThemeProvider theme={theme}>
       <CssBaseline />
-      <Router basename="/devracer">
+      <HashRouter basename="/devracer">
         <Switch>
         <Route path='/auth/githubCallback'>
             <GitHubCallback />
@@ -62,7 +62,7 @@ const App = (): JSX.Element => {
           </Route>
           <Redirect to='/' />
         </Switch>
-      </Router>
+      </HashRouter>
     </MuiThemeProvider>
   )
 };

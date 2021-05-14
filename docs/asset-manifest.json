@@ -1,20 +1,20 @@
 {
   "files": {
     "main.css": "/devracer/static/css/main.2ec3f668.chunk.css",
-    "main.js": "/devracer/static/js/main.f2a2ed5c.chunk.js",
-    "main.js.map": "/devracer/static/js/main.f2a2ed5c.chunk.js.map",
+    "main.js": "/devracer/static/js/main.73d887f0.chunk.js",
+    "main.js.map": "/devracer/static/js/main.73d887f0.chunk.js.map",
     "runtime-main.js": "/devracer/static/js/runtime-main.5a64b8d3.js",
     "runtime-main.js.map": "/devracer/static/js/runtime-main.5a64b8d3.js.map",
-    "static/js/2.51038e6a.chunk.js": "/devracer/static/js/2.51038e6a.chunk.js",
-    "static/js/2.51038e6a.chunk.js.map": "/devracer/static/js/2.51038e6a.chunk.js.map",
+    "static/js/2.754959e3.chunk.js": "/devracer/static/js/2.754959e3.chunk.js",
+    "static/js/2.754959e3.chunk.js.map": "/devracer/static/js/2.754959e3.chunk.js.map",
     "index.html": "/devracer/index.html",
     "static/css/main.2ec3f668.chunk.css.map": "/devracer/static/css/main.2ec3f668.chunk.css.map",
-    "static/js/2.51038e6a.chunk.js.LICENSE.txt": "/devracer/static/js/2.51038e6a.chunk.js.LICENSE.txt"
+    "static/js/2.754959e3.chunk.js.LICENSE.txt": "/devracer/static/js/2.754959e3.chunk.js.LICENSE.txt"
   },
   "entrypoints": [
     "static/js/runtime-main.5a64b8d3.js",
-    "static/js/2.51038e6a.chunk.js",
+    "static/js/2.754959e3.chunk.js",
     "static/css/main.2ec3f668.chunk.css",
-    "static/js/main.f2a2ed5c.chunk.js"
+    "static/js/main.73d887f0.chunk.js"
   ]
 }
