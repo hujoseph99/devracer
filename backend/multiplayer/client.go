@@ -2,7 +2,6 @@ package multiplayer
 
 import (
 	"encoding/json"
-	"fmt"
 	"log"
 	"time"
 
@@ -196,12 +195,6 @@ func (client *Client) readPump() {
 			break
 		}
 		client.handleNewMessage(jsonMessage)
-		fmt.Println("--------------")
-		if client.lobby != nil {
-			fmt.Println(client.lobby.clients)
-			fmt.Println(client.lobby.gameProgress)
-		}
-		fmt.Println(client.server.lobbies)
 	}
 }
 
