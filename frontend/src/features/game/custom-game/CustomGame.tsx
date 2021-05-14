@@ -5,8 +5,31 @@ import { RouteComponentProps } from 'react-router';
 import { Box, Button, Container, Grid, TextField } from '@material-ui/core';
 
 import * as CONSTANTS from './constants'
-import { CreateGameResponse, ErrorResponse, GameProgressResponse, GameStartResponse, JoinGameResponse, NewPlayerResponse, PlayerFinishedResponse } from '../types';
-import { createGameAction, gameProgressAction, gameStartAction, joinGameAction, newPlayerAction, playerFinishedAction, selectIsHost, selectLangauge, selectPlacements, selectPlayerId, selectRaceContent, selectState } from '../gameSlice';
+import { 
+	CreateGameResponse, 
+	ErrorResponse, 
+	GameFinishedResponse, 
+	GameProgressResponse, 
+	GameStartResponse, 
+	JoinGameResponse, 
+	NewPlayerResponse, 
+	PlayerFinishedResponse 
+} from '../types';
+import { 
+	createGameAction, 
+	gameFinishedAction,
+	gameProgressAction, 
+	gameStartAction, 
+	joinGameAction, 
+	newPlayerAction, 
+	playerFinishedAction, 
+	selectIsHost, 
+	selectLangauge, 
+	selectPlacements, 
+	selectPlayerId, 
+	selectRaceContent, 
+	selectState 
+} from '../gameSlice';
 import { Footer } from '../../footer/Footer';
 import { Navbar } from '../../navbar/Navbar';
 import { RaceField } from '../../race-text-field/RaceField';
@@ -88,6 +111,10 @@ export const CustomGame = (props : RouteComponentProps<MatchParams>): JSX.Elemen
 			case CONSTANTS.PLAYER_FINISHED_RESPONSE:
 				handlePlayerFinishedResponse(message.payload as PlayerFinishedResponse);
 				break
+			case CONSTANTS.GAME_FINISHED_RESPONSE:
+				handleGameFinishedResponse(message.payload as GameFinishedResponse);
+				break
+
 		}
 	}
 
@@ -118,6 +145,10 @@ export const CustomGame = (props : RouteComponentProps<MatchParams>): JSX.Elemen
 
 	const handlePlayerFinishedResponse = (payload: PlayerFinishedResponse) => {
 		dispatch(playerFinishedAction(payload));
+	}
+
+	const handleGameFinishedResponse = (payload: GameFinishedResponse) => {
+		dispatch(gameFinishedAction(payload));
 	}
 
 	const handleStartGameClick = () => {

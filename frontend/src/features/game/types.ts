@@ -76,3 +76,7 @@ export interface GameStartResponse {
 export interface PlayerFinishedResponse {
 	placements: string[];
 }
+
+export interface GameFinishedResponse {
+	placements: string[];
+}
