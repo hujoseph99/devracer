@@ -1,13 +1,10 @@
 import React, { useEffect, useRef } from 'react';
-import { useSelector } from 'react-redux';
-
 import { Ace } from 'ace-builds';
 
 import { AceEditor } from './AceEditor';
-import { selectSnippet } from './raceFieldSlice';
+import { language } from './types';
 
 import "./editor.css"
-import { language } from './types';
 
 interface ForegroundEditorProps {
 	language?: language;

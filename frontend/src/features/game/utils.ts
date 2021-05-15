@@ -1,4 +1,4 @@
-import { GameProgress, language, SnippetResponse, SnippetState } from "./types";
+import { language, SnippetResponse, SnippetState } from "./types";
 
 const mapLanguage = (language: number): language => {
 	switch (language) {

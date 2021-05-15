@@ -1,8 +1,10 @@
-import { Box, createStyles, LinearProgress, makeStyles, Theme, Typography } from '@material-ui/core';
-import { green, grey, lightGreen } from '@material-ui/core/colors';
 import React from 'react';
 import { useSelector } from 'react-redux';
-import { selectPlacements, selectQueuedPlayers } from './gameSlice';
+
+import { Box, createStyles, LinearProgress, makeStyles, Theme, Typography } from '@material-ui/core';
+import { green, grey } from '@material-ui/core/colors';
+
+import { selectPlacements } from './gameSlice';
 import { GameProgress } from './types';
 import { checkPlayerFinished } from './utils';
 

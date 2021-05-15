@@ -1,6 +1,19 @@
-import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { RootState } from "../../app/store";
-import { CreateGameResponse, GameFinishedResponse, GameProgress, GameProgressResponse, GameStartResponse, GameState, JoinGameResponse, LeaveGameResponse, LobbyClosedResponse, NewPlayerResponse, NextGameResponse, PlayerFinishedResponse } from "./types";
+import { 
+	CreateGameResponse, 
+	GameFinishedResponse, 
+	GameProgress, 
+	GameProgressResponse, 
+	GameStartResponse, 
+	GameState, 
+	JoinGameResponse, 
+	LeaveGameResponse, 
+	LobbyClosedResponse, 
+	NewPlayerResponse, 
+	NextGameResponse, 
+	PlayerFinishedResponse 
+} from "./types";
 import { transformSnippetResponse } from "./utils";
 
 // redux prefix for this slice

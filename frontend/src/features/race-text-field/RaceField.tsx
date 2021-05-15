@@ -1,34 +1,11 @@
 import React, { SyntheticEvent, useEffect, useState } from 'react'
-import { useDispatch, useSelector } from 'react-redux';
+import { Ace, Range } from 'ace-builds';
 
 import { Box } from '@material-ui/core';
 
-import { Ace, Range } from 'ace-builds';
-
 import { BackgroundEditor } from './BackgroundEditor';
 import { ForegroundEditor } from './ForegroundEditor';
-import { fetchNewPracticeRace } from './raceFieldSlice';
-import { selectSnippet } from './raceFieldSlice';
-import { RaceSnippet } from './types';
 import { language } from '../game/types';
-import { NewLineKind } from 'typescript';
-
-
-// const navkeys = ["ArrowDown",
-// 	"ArrowLeft",
-// 	"ArrowRight",
-// 	"ArrowUp",
-// 	"End",
-// 	"Home",
-// 	"PageDown",
-// 	"PageUp"];
-
-
-// function filterMouseEvents(e: SyntheticEvent) {
-// 	e.stopPropagation()
-// 	e.preventDefault()
-// 	return true
-// }
 
 interface RaceFieldProps {
 	snippet?: string;
