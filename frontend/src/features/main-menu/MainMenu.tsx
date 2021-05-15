@@ -20,10 +20,6 @@ export const MainMenu = (): JSX.Element => {
 	const history = useHistory();
 	const classes = useStyles();
 
-	const onPracticeClick = () => {
-		history.push('/practice');
-	}
-
 	const onCustomClick = () => {
 		history.push('/custom');
 	}

@@ -16,7 +16,9 @@ export const GitHubCallback = (): JSX.Element => {
 
     useEffect(() => {
         if (loggedIn) {
-            history.push('/')
+            // remove query string from url (oauth state and code)
+            window.history.replaceState(null, "", window.location.href.split("?")[0])
+            history.replace('/')
         }
     }, [loggedIn, history])
 
