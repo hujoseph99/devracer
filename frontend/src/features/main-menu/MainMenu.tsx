@@ -30,8 +30,9 @@ export const MainMenu = (): JSX.Element => {
 
 	return (
 		<Container maxWidth='sm'>
-			<Box minHeight='100vh' display='flex' flexDirection='column' justifyContent='space-between' py={5}>
+			<Box minHeight='100vh' display='flex' flexDirection='column' py={5}>
 				<Navbar isHome />
+				<Box flexGrow={1}></Box>
 				<Grid container>
 					<Grid item xs={12}>
 						<Box display='flex' width='100%' justifyContent='center' alignItems='center' mb={2}>
@@ -52,6 +53,7 @@ export const MainMenu = (): JSX.Element => {
 						</Box>
 					</Grid>
 				</Grid>
+				<Box flexGrow={2}></Box>
 				<Footer />
 			</Box>
 		</Container>
