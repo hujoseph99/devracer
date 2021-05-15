@@ -215,7 +215,7 @@ func (lobby *Lobby) handleGameProgress(data *gameProgressData) {
 	difference := float64(differenceIndex) / float64(len(lobby.snippet.RaceContent))
 	percentCompleted := utils.RoundFloor(difference, 2)
 	secondsElapsed := time.Since(lobby.startTime).Round(time.Millisecond).Seconds()
-	wpm := float64(differenceIndex) / 5.7 / secondsElapsed * 60 // average letters in a word is 4.7, so 5.7 including spaces
+	wpm := float64(differenceIndex) / 4.7 / secondsElapsed * 60 // average letters in a word is 4.7
 	gameProgress.PercentCompleted = percentCompleted
 	gameProgress.Wpm = utils.RoundFloor(wpm, 0)
 
