@@ -1,6 +1,6 @@
 import React from 'react';
 
-import AceEditorComponent, { IAceEditorProps } from "react-ace";
+import AceEditorComponent, { IAceEditorProps, IAceOptions } from "react-ace";
 
 import "./editor.css"
 
@@ -18,9 +18,10 @@ import "ace-builds/src-noconflict/theme-dracula";
 interface AceEditorProps extends IAceEditorProps {
 	value?: string
 	className? : string
+	options?: IAceOptions;
 }
 
-export const AceEditor = ({ value = "", className = "", ...props }: AceEditorProps): JSX.Element => {
+export const AceEditor = ({ value = "", className = "", options = {}, ...props }: AceEditorProps): JSX.Element => {
 	return (
 		<AceEditorComponent 
 			className={"aceEditor " + className}
@@ -31,6 +32,7 @@ export const AceEditor = ({ value = "", className = "", ...props }: AceEditorPro
 			fontSize={13}
 			setOptions={{
 				useSoftTabs: false,
+				...options
 			}}
 			{...props}
 		/>

@@ -32,6 +32,9 @@ export const BackgroundEditor = ({
 			value={text}
 			readOnly={true}
 			onLoad={handleLoad}
+			options={{
+				displayIndentGuides: false,
+			}}
 		/>
 	);
 }
