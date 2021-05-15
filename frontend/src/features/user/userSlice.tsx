@@ -65,4 +65,9 @@ export default userSlice.reducer;
 
 export const { resetUser } = userSlice.actions;
 
-export const selectDisplayName = (state: RootState) => state.user.preferences.displayName;
+export const selectDisplayName = (state: RootState) => {
+	if (state.auth.isLoggedIn) {
+		return state.user.preferences.displayName;
+	}
+	return "Guest"
+}

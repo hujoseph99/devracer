@@ -1,29 +1,30 @@
 import React, { useEffect, useRef } from 'react';
-import { useSelector } from 'react-redux';
-
 import { Ace } from 'ace-builds';
 
 import { AceEditor } from './AceEditor';
-import { selectSnippet } from './raceFieldSlice';
+import { language } from './types';
 
 import "./editor.css"
 
 interface ForegroundEditorProps {
+	language?: language;
+	disabled?: boolean;
 	focus?: boolean;
-	onBlur?: () => void;
-	ranges: Ace.Range[];
 	text: string;
+	ranges: Ace.Range[];
 	onChange: (s: string) => void;
+	onBlur?: () => void;
 }
 
 export const ForegroundEditor = ({
+	language = 'plain_text',
 	focus = false,
+	disabled = false,
 	onBlur,
 	ranges,
 	onChange,
 	text
 }: ForegroundEditorProps): JSX.Element => {
-	const snippet = useSelector(selectSnippet);
 	const editor = useRef<Ace.Editor>();
 	const markers = useRef<number[]>([]);
 	
@@ -54,11 +55,12 @@ export const ForegroundEditor = ({
 	return (
 		<AceEditor  
 			className="foregroundEditor"
-			mode={snippet.language}
+			mode={language}
 			onLoad={handleLoad}
 			onBlur={onBlur}
 			onChange={onChange}
 			value={text}
+			readOnly={disabled}
 		/>
 	);
 }

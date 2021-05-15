@@ -11,11 +11,11 @@ import { CssBaseline, MuiThemeProvider } from '@material-ui/core';
 
 import { theme } from './theme';
 import { MainMenu } from './features/main-menu/MainMenu';
-import { RaceField } from './features/race-text-field/RaceField';
 import { LoginPage } from './features/auth/LoginPage';
 import { RegisterPage } from './features/auth/RegisterPage';
 import { refresh, selectIsLoggedIn, selectRefreshToken, selectUserID } from './features/auth/authSlice';
 import { fetchUserData } from './features/user/userSlice';
+import { CustomGame } from './features/game/custom-game/CustomGame';
 import { GitHubCallback } from './features/auth/GitHubCallback';
 
 const App = (): JSX.Element => {
@@ -48,15 +48,16 @@ const App = (): JSX.Element => {
         <Route path='/auth/githubCallback'>
             <GitHubCallback />
           </Route>
-          <Route path='/practice'>
+          {/* <Route path='/practice'>
             <RaceField />
-          </Route>
+          </Route> */}
           <Route path='/login'>
             <LoginPage />
           </Route>
           <Route path='/register'>
             <RegisterPage />
           </Route>
+          <Route path='/custom/:lobby?' component={CustomGame} />
           <Route path='/'>
             <MainMenu />
           </Route>

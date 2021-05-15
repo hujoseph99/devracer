@@ -24,6 +24,10 @@ export const MainMenu = (): JSX.Element => {
 		history.push('/practice');
 	}
 
+	const onCustomClick = () => {
+		history.push('/custom');
+	}
+
 	return (
 		<Container maxWidth='sm'>
 			<Box minHeight='100vh' display='flex' flexDirection='column' py={5}>
@@ -35,7 +39,7 @@ export const MainMenu = (): JSX.Element => {
 								<KeyboardIcon className={classes.titleIcon} />
 								{/* <Typist.Delay ms={1000} /> */}
 								<Typography component='span' variant='h3'> 
-									CodeRacers
+									DevRacer
 								</Typography>
 							</Box>
 						{/* </Typist> */}
@@ -55,6 +59,11 @@ export const MainMenu = (): JSX.Element => {
 					<Grid item xs={12} spacing={3}>
 						<Box display='flex' width='100%' justifyContent='center' mt="3vh">
 							<Button variant='contained' size='large' endIcon={<PersonIcon />} onClick={onPracticeClick}>Practice</Button>
+						</Box>
+					</Grid>
+					<Grid item xs={12} spacing={3}>
+						<Box display='flex' width='100%' justifyContent='center' mt="3vh">
+							<Button variant='contained' size='large' endIcon={<PersonIcon />} onClick={onCustomClick}>Custom Game</Button>
 						</Box>
 					</Grid>
 				</Grid>

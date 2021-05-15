@@ -21,3 +21,16 @@ func CheckValidUsernameCharacters(str string) bool {
 func CheckValidPasswordCharacters(str string) bool {
 	return validateRegex(str, `^[A-Za-z0-9\[\*\.\!\@\#\$\%\^\&\(\)\{\}\[\]\:\;\<\>\,\.\?\/\~\_\+\-\=\|\\\]]*$`)
 }
+
+// FindFirstDifference will find the first difference between two strings. It will use str1 as the base
+// and then find the first instance that str2 is different from str1. In the case where there is no difference,
+// it will return the length of str1
+func FindFirstDifference(str1, str2 string) int {
+	idx := 0
+	for ; idx < len(str1) && idx < len(str2); idx++ {
+		if str1[idx] != str2[idx] {
+			return idx
+		}
+	}
+	return idx
+}

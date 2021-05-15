@@ -2,7 +2,13 @@ import React from 'react'
 import { Ace } from 'ace-builds';
 import { AceEditor } from './AceEditor';
 
-export const BackgroundEditor = ({text}: {text: string}): JSX.Element => {
+interface BackgroundEditorProps {
+	text?: string;
+}
+
+export const BackgroundEditor = ({
+	text = "",
+}: BackgroundEditorProps): JSX.Element => {
 
 	const handleLoad = (editor: Ace.Editor) => {
 		// settings to make the text editor look like it's disabled, some of the things are

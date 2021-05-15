@@ -1,50 +1,39 @@
 import React, { SyntheticEvent, useEffect, useState } from 'react'
-import { useDispatch, useSelector } from 'react-redux';
+import { Ace, Range } from 'ace-builds';
 
 import { Box } from '@material-ui/core';
 
-import { Ace, Range } from 'ace-builds';
-
 import { BackgroundEditor } from './BackgroundEditor';
 import { ForegroundEditor } from './ForegroundEditor';
-import { fetchNewPracticeRace } from './raceFieldSlice';
-import { selectSnippet } from './raceFieldSlice';
+import { language } from '../game/types';
 
+interface RaceFieldProps {
+	snippet?: string;
+	language?: language;
+	disabled?: boolean
+	foregroundText?: string;
+	setForegroundText?: (text: string) => void;
+	onChange: (text: string) => void;
+}
 
-// const navkeys = ["ArrowDown",
-// 	"ArrowLeft",
-// 	"ArrowRight",
-// 	"ArrowUp",
-// 	"End",
-// 	"Home",
-// 	"PageDown",
-// 	"PageUp"];
-
-
-// function filterMouseEvents(e: SyntheticEvent) {
-// 	e.stopPropagation()
-// 	e.preventDefault()
-// 	return true
-// }
-
-export const RaceField = (): JSX.Element => {
-	const snippet = useSelector(selectSnippet);
-	const dispatch = useDispatch();
+export const RaceField = ({ 
+	snippet = '', 
+	language = 'plain_text' ,
+	disabled = false,
+	foregroundText = '',
+	setForegroundText = (text: string) => {},
+	onChange = (text: string) => {},
+}: RaceFieldProps): JSX.Element => {
 	const [focus, setFocus] = useState(false);
-	const [foregroundText, setForegroundText] = useState("");
+	// const [foregroundText, setForegroundText] = useState("");
 	const [backgroundText, setBackgroundText] = useState("");
 	const [markers, setMarkers] = useState<Ace.Range[]>([]);
 	const [snippetArray, setSnippetArray] = useState<string[]>([]);
 
 	useEffect(() => {
-		dispatch(fetchNewPracticeRace());
-	}, [dispatch])
-
-	useEffect(() => {
-		setSnippetArray(snippet.raceContent.replace(/\t/g, ' '.repeat(4)).split('\n'));
-		setBackgroundText(snippet.raceContent);
-	}, [snippet])
-
+		setSnippetArray(snippet.split('\n'));
+		setBackgroundText(snippet);
+	}, [snippet, foregroundText])
 
 	const onFocus = (e: SyntheticEvent) => {
 		setFocus(true);
@@ -54,10 +43,7 @@ export const RaceField = (): JSX.Element => {
 		setFocus(false);
 	}
 
-	const onChange = (playerText: string) => {
-		if (playerText === backgroundText){
-			// win
-		}
+	const handleChange = (playerText: string) => {
 		const playerTextArray = playerText.split("\n");
 
 		const backgroundArray: string[] = [];
@@ -84,9 +70,16 @@ export const RaceField = (): JSX.Element => {
 			if (differenceIndex < playerLine.length) {
 				newMarkers.push(new Range(i, differenceIndex, i, playerLine.length));
 			}
-			if (differenceIndex <= snippetLine.length) {
-				snippetLine = snippetLine.slice(0, differenceIndex) + ' '.repeat(playerLine.length - differenceIndex) + snippetLine.slice(differenceIndex)
+			
+			let newLine = "";
+			for (let i = 0; i < playerLine.length; i++) {
+				if (playerLine[i] === '\t') {
+					newLine += '\t';
+				} else {
+					newLine += ' ';
+				}
 			}
+			snippetLine = newLine + snippetLine.slice(differenceIndex)
 			backgroundArray.push(snippetLine)
 		}
 
@@ -98,10 +91,11 @@ export const RaceField = (): JSX.Element => {
 		setBackgroundText(backgroundArray.join("\n"));
 		setMarkers(newMarkers);
 		if (foregroundText !== playerText) setForegroundText(playerText);
+		onChange(playerText);
 	}
 
 	return (
-		<Box style={{ height: "1000px", width: "1000px" }}
+		<Box
 			// onKeyDownCapture={filterKeyboardEvents}
 			// onKeyPressCapture={filterKeyboardEvents}
 			// onKeyUpCapture={filterKeyboardEvents}
@@ -112,9 +106,17 @@ export const RaceField = (): JSX.Element => {
 			onChangeCapture={filterMouseEvents}
 			onBlurCapture={filterMouseEvents}
 			onMouseUpCapture={filterMouseEvents}> */}
-			<BackgroundEditor text={backgroundText}/>
+			<BackgroundEditor text={backgroundText} />
 			{/* elements that appear later are on top */}
-			<ForegroundEditor text={foregroundText} ranges={markers} focus={focus} onChange={onChange} onBlur={onBlur} />
+			<ForegroundEditor 
+				language={language} 
+				text={foregroundText} 
+				ranges={markers} 
+				focus={focus} 
+				onChange={handleChange} 
+				onBlur={onBlur} 
+				disabled={disabled}
+			/>
 		</Box>
 	)
 };

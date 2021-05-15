@@ -2,6 +2,7 @@ import { configureStore, ThunkAction, Action, getDefaultMiddleware, combineReduc
 import raceFieldReducer from '../features/race-text-field/raceFieldSlice'
 import authReducer from '../features/auth/authSlice';
 import userReducer from '../features/user/userSlice';
+import gameReducer from '../features/game/gameSlice';
 
 import storage from 'redux-persist/lib/storage';
 import {
@@ -26,6 +27,7 @@ const rootReducer = combineReducers({
   raceField: raceFieldReducer,
   user: userReducer,
   auth: authReducer,
+  game: gameReducer,
 });
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);

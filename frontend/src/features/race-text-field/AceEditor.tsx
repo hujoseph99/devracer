@@ -28,6 +28,9 @@ export const AceEditor = ({ value = "", className = "", ...props }: AceEditorPro
 			theme="dracula"
 			showGutter={false}
 			highlightActiveLine={false}
+			setOptions={{
+				useSoftTabs: false,
+			}}
 			{...props}
 		/>
 	);

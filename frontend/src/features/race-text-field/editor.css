@@ -1,9 +1,17 @@
 .aceEditor {
 	position: absolute;
+	top: 0;
+	left: 0;
 }
 
 .foregroundEditor {
 	background-color: transparent;
+}
+
+.aceEditorContainer {
+	position: relative;
+	width: 500px; /* defaults for ace editor for now */
+	height: 500px;
 }
 
 .backgroundEditor .ace_line {

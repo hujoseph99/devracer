@@ -17,11 +17,11 @@ const (
 
 // Snippet is a model for a mongodb
 type Snippet struct {
-	ID          primitive.ObjectID `bson:"_id,omitempty"`
-	RaceContent string             `bson:"snippet"`
-	TokenCount  int                `bson:"-"`
-	Language    int                `bson:"language"`
-	DateCreated time.Time          `bson:"dateCreated"`
+	ID          primitive.ObjectID `bson:"_id,omitempty" json:"_id,omitempty"`
+	RaceContent string             `bson:"snippet" json:"snippet"`
+	TokenCount  int                `bson:"-" json:"tokenCount"`
+	Language    int                `bson:"language" json:"language"`
+	DateCreated time.Time          `bson:"dateCreated" json:"dateCreated"`
 	// UsageCount  int                `bson:"usageCount" json:"usageCount"`
 }
 
