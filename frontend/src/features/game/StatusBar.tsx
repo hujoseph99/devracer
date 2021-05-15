@@ -38,14 +38,7 @@ export const StatusBar = ({ handleOpenLinkDialog }: StatusBarProps): JSX.Element
 		}
 	}
 
-	return state === 'fetching' ? (
-		<Box display='flex' alignItems='center' justifyContent='center'>
-			<Box mr={1}>
-				<CircularProgress variant='indeterminate' size={20} />
-			</Box>
-			<Typography variant='caption' component='span'>Creating the lobby...</Typography>
-		</Box>
-	) : (
+	return (
 		<Grid container justify='space-between' alignItems='center' spacing={1}>
 			<Grid item>
 				<IconButton onClick={handleOpenLinkDialog}>
@@ -77,5 +70,5 @@ export const StatusBar = ({ handleOpenLinkDialog }: StatusBarProps): JSX.Element
 				</Box>
 			</Grid>
 		</Grid>
-	);
+	)
 }

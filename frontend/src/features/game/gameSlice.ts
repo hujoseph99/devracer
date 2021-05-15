@@ -42,12 +42,6 @@ const gameSlice = createSlice({
 	name: GAME_SLICE_NAME,
 	initialState,
 	reducers: {
-		fetchGame: state => {
-			state.state = 'fetching';
-		},
-		finishFetchGame: state => {
-			state.state = 'waiting';
-		},
 		createGameAction: (state, action: PayloadAction<CreateGameResponse>) => {
 			const payload = action.payload;
 			state.state = 'waiting';
@@ -134,8 +128,6 @@ export default gameSlice.reducer;
 export const { 
 	createGameAction, 
 	gameFinishedAction,
-	fetchGame,
-	finishFetchGame,
 	gameProgressAction, 
 	gameStartAction, 
 	joinGameAction, 

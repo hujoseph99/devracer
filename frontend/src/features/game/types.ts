@@ -1,5 +1,5 @@
 export type language = 'plain_text' | 'c_cpp' | 'golang' | 'javascript' | 'python';
-export type lobbyState = 'waiting' | 'countdown' | 'inProgress' | 'finished' | 'fetching';
+export type lobbyState = 'waiting' | 'countdown' | 'inProgress' | 'finished';
 
 export interface SnippetState {
 	id: string;
