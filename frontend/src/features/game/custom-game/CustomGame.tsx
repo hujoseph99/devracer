@@ -20,6 +20,8 @@ import {
 } from '../types';
 import { 
 	createGameAction, 
+	fetchGame, 
+	finishFetchGame, 
 	gameFinishedAction,
 	gameProgressAction, 
 	gameStartAction, 
@@ -73,7 +75,9 @@ export const CustomGame = (props : RouteComponentProps<MatchParams>): JSX.Elemen
 
 	// connect to websocket
 	useEffect(() => {
+		dispatch(fetchGame);
 		ws.current = new WebSocket(`${process.env.REACT_APP_BACKEND_WEBSOCKET_HOSTNAME}/custom?name=${displayName}`);
+		dispatch(finishFetchGame);
 		ws.current?.addEventListener('open', handleConnectedToWebsocket);
 		ws.current?.addEventListener('message', event => handleNewMessage(event))
 		return () => {
