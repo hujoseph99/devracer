@@ -10,9 +10,8 @@ import { language } from '../game/types';
 interface RaceFieldProps {
 	snippet?: string;
 	language?: language;
-	disabled?: boolean
-	foregroundText?: string;
-	setForegroundText?: (text: string) => void;
+	disabled?: boolean;
+	reloaded: boolean;
 	onChange: (text: string) => void;
 }
 
@@ -20,12 +19,11 @@ export const RaceField = ({
 	snippet = '', 
 	language = 'plain_text' ,
 	disabled = false,
-	foregroundText = '',
-	setForegroundText = (text: string) => {},
+	reloaded,
 	onChange = (text: string) => {},
 }: RaceFieldProps): JSX.Element => {
 	const [focus, setFocus] = useState(false);
-	// const [foregroundText, setForegroundText] = useState("");
+	const [foregroundText, setForegroundText] = useState("");
 	const [backgroundText, setBackgroundText] = useState("");
 	const [markers, setMarkers] = useState<Ace.Range[]>([]);
 	const [snippetArray, setSnippetArray] = useState<string[]>([]);
@@ -33,7 +31,8 @@ export const RaceField = ({
 	useEffect(() => {
 		setSnippetArray(snippet.split('\n'));
 		setBackgroundText(snippet);
-	}, [snippet, foregroundText])
+		setForegroundText('');
+	}, [snippet, reloaded])
 
 	const onFocus = (e: SyntheticEvent) => {
 		setFocus(true);

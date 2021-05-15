@@ -59,7 +59,7 @@ export const CustomGame = (props : RouteComponentProps<MatchParams>): JSX.Elemen
 
 	const [showLink, setShowLink] = useState(false);
 	const [showLobbyClosed, setShowLobbyClosed] = useState(false);
-	const [foregroundText, setForegroundText] = useState('');
+	const [reloaded, setReloaded] = useState(true);
 
 	const displayName = useSelector(selectDisplayName);
 	const raceContent = useSelector(selectRaceContent);
@@ -171,7 +171,7 @@ export const CustomGame = (props : RouteComponentProps<MatchParams>): JSX.Elemen
 
 	const handleNextGameResponse = (payload: NextGameResponse) => {
 		dispatch(nextGameAction(payload));
-		setForegroundText('');
+		setReloaded(prev => !prev);
 	}
 
 	const handleLeaveGameResponse = (payload: LeaveGameResponse) => {
@@ -238,8 +238,7 @@ export const CustomGame = (props : RouteComponentProps<MatchParams>): JSX.Elemen
 							snippet={raceContent} 
 							language={language} 
 							disabled={state !== 'inProgress' || checkPlayerFinished(placements, playerId)} 
-							foregroundText={foregroundText}
-							setForegroundText={setForegroundText}
+							reloaded={reloaded}
 							onChange={handleRaceFieldChange}
 						/>
 					</Grid>
