@@ -1,6 +1,6 @@
 # DevRacer
 
-DevRacer is an online typing game for developers that took inspiration from [Typeracer](play.typeracer.com). Type the most popular snippets in various programming languages to increase your typing speed! It is currently live and you can check it out [here](hujoseph99.github.io/devracer).
+DevRacer is an online typing game for developers that took inspiration from [Typeracer](https://play.typeracer.com). Type the most popular snippets in various programming languages to increase your typing speed! It is currently live and you can check it out [here](https://hujoseph99.github.io/devracer).
 
 <img src="./images/devracerPreview.png" alt="drawing" width="400"/>
 
