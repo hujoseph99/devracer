@@ -30,46 +30,29 @@ export const MainMenu = (): JSX.Element => {
 
 	return (
 		<Container maxWidth='sm'>
-			<Box minHeight='100vh' display='flex' flexDirection='column' py={5}>
+			<Box minHeight='100vh' display='flex' flexDirection='column' justifyContent='space-between' py={5}>
 				<Navbar isHome />
 				<Grid container>
 					<Grid item xs={12}>
-						{/* <Typist> */}
-							<Box mt='5vh' display='flex' width='100%' justifyContent='center' alignItems='center' mb={3}>
-								<KeyboardIcon className={classes.titleIcon} />
-								{/* <Typist.Delay ms={1000} /> */}
-								<Typography component='span' variant='h3'> 
-									DevRacer
-								</Typography>
-							</Box>
-						{/* </Typist> */}
+						<Box display='flex' width='100%' justifyContent='center' alignItems='center' mb={2}>
+							<KeyboardIcon className={classes.titleIcon} />
+							<Typography component='span' variant='h3'> 
+								DevRacer
+							</Typography>
+						</Box>
 					</Grid>
 					<Grid container item xs={12}>
 						<Typography variant='body1' align='center'>
 							{blurb}
 						</Typography>
 					</Grid>
-					<Grid item xs={12}>
-						<Box mt='5vh' display='flex' width='100%' justifyContent='center' alignItems='center'>
-							<Typography component='span' variant='h4'> 
-								Modes
-							</Typography>
-						</Box>
-					</Grid>
 					<Grid item xs={12} spacing={3}>
-						<Box display='flex' width='100%' justifyContent='center' mt="3vh">
-							<Button variant='contained' size='large' endIcon={<PersonIcon />} onClick={onPracticeClick}>Practice</Button>
-						</Box>
-					</Grid>
-					<Grid item xs={12} spacing={3}>
-						<Box display='flex' width='100%' justifyContent='center' mt="3vh">
-							<Button variant='contained' size='large' endIcon={<PersonIcon />} onClick={onCustomClick}>Custom Game</Button>
+						<Box display='flex' width='100%' justifyContent='center' mt={8}>
+							<Button variant='contained' size='large' endIcon={<PersonIcon />} onClick={onCustomClick}>Start a Lobby</Button>
 						</Box>
 					</Grid>
 				</Grid>
-				<Box mt='auto'>
-					<Footer />
-				</Box>
+				<Footer />
 			</Box>
 		</Container>
 	);
