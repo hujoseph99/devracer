@@ -1,0 +1,13 @@
+{
+  "name": "DevRacer",
+  "icons": [
+    {
+      "src": "favicon.svg",
+      "type": "image/svg"
+    }
+  ],
+  "start_url": "/devracer",
+  "display": "standalone",
+  "theme_color": "#303030",
+  "background_color": "#303030"
+}

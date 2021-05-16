@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { RouteComponentProps, useHistory } from 'react-router';
+import { useHistory, useParams } from 'react-router';
 
 import { Box, Button, Container, Grid } from '@material-ui/core';
 
@@ -52,7 +52,7 @@ interface MatchParams {
 	lobby?: string;
 }
 
-export const CustomGame = (props : RouteComponentProps<MatchParams>): JSX.Element => {
+export const CustomGame = (): JSX.Element => {
 	const ws = useRef<WebSocket | undefined>(undefined);
 	const history = useHistory();
 	const dispatch = useDispatch();
@@ -69,7 +69,7 @@ export const CustomGame = (props : RouteComponentProps<MatchParams>): JSX.Elemen
 	const playerId = useSelector(selectPlayerId);
 	const placements = useSelector(selectPlacements);
 	
-	const lobbyId = props.match.params.lobby ?? "";
+	const { lobby: lobbyId } = useParams<MatchParams>();
 
 	// connect to websocket
 	useEffect(() => {
