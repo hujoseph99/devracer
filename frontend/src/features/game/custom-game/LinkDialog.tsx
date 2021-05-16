@@ -44,7 +44,6 @@ export const LinkDialog = ({
 				Copy the link below and send it to your friends to have them join you in this race!
 			</DialogContentText>
 			<TextField 
-				disabled 
 				value={url} 
 				variant='outlined' 
 				fullWidth 
