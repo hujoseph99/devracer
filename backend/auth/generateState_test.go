@@ -26,7 +26,7 @@ func TestGenerateRandomBytes(t *testing.T) {
 
 func TestGenerateStateOAuthCookie(t *testing.T) {
 	w := httptest.NewRecorder()
-	state, err := generateStateOAuthCookie(w)
+	state, err := generateAndSetStateOAuthCookie(w)
 	if err != nil || state == "" {
 		t.Errorf("Could not create state string for OAuth cookie")
 	}

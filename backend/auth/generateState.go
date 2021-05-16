@@ -5,6 +5,8 @@ import (
 	"encoding/base64"
 	"net/http"
 	"time"
+
+	"github.com/hujoseph99/typing/backend/secret"
 )
 
 const stateLength = 16
@@ -27,7 +29,7 @@ func generateRandomBytes(n int) ([]byte, error) {
 
 // generateEcryptedOAuthStateString will geneate a state string
 //	that can be passed along OAuth requests
-func generateStateOAuthCookie(w http.ResponseWriter) (string, error) {
+func generateAndSetStateOAuthCookie(w http.ResponseWriter) (string, error) {
 	var expiration = time.Now().Add(10 * time.Minute)
 
 	stateBytes, err := generateRandomBytes(stateLength)
@@ -35,11 +37,24 @@ func generateStateOAuthCookie(w http.ResponseWriter) (string, error) {
 		return "", err
 	}
 	state := base64.URLEncoding.EncodeToString(stateBytes)
-	cookie := http.Cookie{
-		Name:     oauthCookieName,
-		Value:    state,
-		Expires:  expiration,
-		HttpOnly: true,
+	var cookie http.Cookie
+	if secret.Production {
+		cookie = http.Cookie{
+			Name:     oauthCookieName,
+			Value:    state,
+			Expires:  expiration,
+			SameSite: http.SameSiteNoneMode,
+			Secure:   true,
+			HttpOnly: true,
+		}
+	} else {
+		cookie = http.Cookie{
+			Name:     oauthCookieName,
+			Value:    state,
+			Expires:  expiration,
+			SameSite: http.SameSiteLaxMode,
+			HttpOnly: true,
+		}
 	}
 	http.SetCookie(w, &cookie)
 

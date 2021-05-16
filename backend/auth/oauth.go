@@ -40,18 +40,13 @@ func init() {
 
 func HandleGithubLogin(w http.ResponseWriter, r *http.Request) {
 	// TODO: Add error handling
-	oauthStateString, err := generateStateOAuthCookie(w)
+	oauthStateString, err := generateAndSetStateOAuthCookie(w)
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
 	url := githubOAuthConfig.AuthCodeURL(oauthStateString)
 
-	if secret.Production {
-		http.SetCookie(w, &http.Cookie{Name: "OAuthState", Value: oauthStateString, SameSite: http.SameSiteNoneMode, MaxAge: 600, Secure: true})
-	} else {
-		http.SetCookie(w, &http.Cookie{Name: "OAuthState", Value: oauthStateString, SameSite: http.SameSiteLaxMode, MaxAge: 600})
-	}
 	http.Redirect(w, r, url, http.StatusTemporaryRedirect)
 }
 
