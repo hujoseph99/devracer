@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import {
-	Route,
-	Switch,
+  Route,
+  Switch,
   Redirect,
   HashRouter
 } from 'react-router-dom';
@@ -45,17 +45,24 @@ const App = (): JSX.Element => {
       <CssBaseline />
       <HashRouter>
         <Switch>
-        <Route path='/auth/githubCallback'>
+          <Route path='/auth/githubCallback'>
+            <Title title="Logging in..." />
             <GitHubCallback />
           </Route>
           <Route path='/login'>
+            <Title title="Login - DevRacer" />
             <LoginPage />
           </Route>
           <Route path='/register'>
+            <Title title="Register - DevRacer" />
             <RegisterPage />
           </Route>
-          <Route path='/custom/:lobby?' component={CustomGame} />
+          <Route path='/custom/:lobby?'>
+            <Title title="Custom Game - DevRacer" />
+            <CustomGame />
+          </Route>
           <Route path='/'>
+            <Title title="DevRacer" />
             <MainMenu />
           </Route>
           <Redirect to='/' />
@@ -63,6 +70,13 @@ const App = (): JSX.Element => {
       </HashRouter>
     </MuiThemeProvider>
   )
+};
+
+const Title = (props: any): JSX.Element => {
+  useEffect(() => {
+    document.title = props.title;
+  }, [props.title]);
+  return <></>;
 };
 
 export default App;
